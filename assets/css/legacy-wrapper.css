@@ -1,0 +1,5 @@
+.legacy-route { min-height: 100vh; background: var(--eip-canvas); }
+.legacy-route-main { width: 100%; min-height: calc(100vh - 48px); }
+.legacy-frame { display: block; width: 100%; height: calc(100vh - 48px); border: 0; background: #fff; }
+.legacy-fallback { margin: 16px; padding: 12px 16px; border: 1px solid var(--eip-line); border-radius: 8px; background: #fff; color: var(--eip-muted); font-size: 13px; }
+@media (max-width: 700px) { .legacy-frame { height: calc(100vh - 86px); } }

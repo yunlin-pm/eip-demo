@@ -1,0 +1,174 @@
+body{background:#eef1f5}.cloud-title{display:flex;justify-content:space-between;align-items:flex-end;margin:0 0 14px;padding:18px 20px;background:#fff;border:1px solid #d7dee7;border-radius:4px}.cloud-title h1{margin:4px 0 0;font-size:24px;color:#164f7e}.cloud-title span{display:block;color:#68778a}.cloud-title>div:last-child{text-align:right;display:grid;gap:5px}.cloud-form{max-width:none}.cloud-form>.panel{margin-bottom:14px}.cloud-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 22px}.cloud-grid label,.cloud-stack>label{display:flex;flex-direction:column;gap:7px}.field-span-2{grid-column:1/-1}.cloud-stack{display:grid;gap:18px}.cloud-question{display:grid;gap:9px;padding-bottom:15px;border-bottom:1px dashed #d9e0e7}.cloud-choices{display:flex;align-items:center;flex-wrap:wrap;gap:18px}.cloud-choices label,.environment-list label,.same{display:flex;align-items:center;gap:6px}.environment-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.inline-text{min-width:240px}.cloud-form textarea{min-height:86px;resize:vertical}.cloud-route{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}.cloud-route span{min-width:112px;padding:11px 9px;border:1px solid #92abc0;border-radius:4px;background:#f5f9fc;text-align:center;font-weight:700}.cloud-route small{display:block;margin-top:4px;color:#667789;font-weight:400}.cloud-route i{color:#176aa6;font-style:normal;font-weight:700}.execution-help{margin:16px 0 0;padding:12px;background:#f4f8fb;border-left:3px solid #176aa6}.view-only{display:none!important}@media(max-width:900px){.cloud-grid,.environment-list{grid-template-columns:1fr}.field-span-2{grid-column:auto}.cloud-title{align-items:flex-start;flex-direction:column;gap:12px}.cloud-title>div:last-child{text-align:left}.cloud-choices{align-items:flex-start;flex-direction:column}.inline-text{width:100%;min-width:0}}
+
+/* Override claim-detail field sizing for choice controls. */
+.cloud-form input[type="checkbox"],
+.cloud-form input[type="radio"]{
+  width:16px!important;
+  min-width:16px!important;
+  max-width:16px!important;
+  height:16px!important;
+  min-height:16px!important;
+  padding:0!important;
+  margin:0!important;
+  flex:0 0 16px!important;
+}
+.cloud-form .cloud-choices label,
+.cloud-form .environment-list label,
+.cloud-form .same{
+  width:auto!important;
+  min-width:0!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  white-space:nowrap!important;
+  writing-mode:horizontal-tb!important;
+}
+.cloud-form .cloud-choices{
+  align-items:center!important;
+  flex-direction:row!important;
+}
+.cloud-form .environment-list .inline-text{
+  flex:1 1 220px;
+  width:auto!important;
+  max-width:none!important;
+}
+.cloud-form .cloud-question>.label{
+  width:auto!important;
+  white-space:nowrap!important;
+}
+@media(max-width:700px){
+  .cloud-form .cloud-choices{align-items:flex-start!important;flex-direction:row!important}
+  .cloud-form .environment-list label{white-space:normal!important}
+}
+
+.cloud-basic-grid{display:grid!important;grid-template-columns:repeat(3,minmax(220px,1fr))!important;gap:18px 24px!important}
+.cloud-basic-grid label{display:flex;min-width:0;flex-direction:column;gap:4px}
+.cloud-basic-grid .control{width:100%!important;max-width:none!important}
+.cloud-basic-title{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.cloud-doc-meta{display:flex;align-items:flex-end;flex-direction:column;gap:3px;color:#667085;font-size:13px;font-weight:400}
+.cloud-doc-meta b{color:#344054;font-size:13px}.cloud-doc-meta small{font-size:12px}
+.cloud-route-panel{margin-bottom:14px!important}.cloud-route-panel>.body.route{grid-template-columns:repeat(4,minmax(190px,1fr))!important}
+@media(max-width:900px){.cloud-basic-grid{grid-template-columns:1fr!important}.cloud-route-panel>.body.route{grid-template-columns:repeat(2,minmax(220px,1fr))!important}}
+@media(max-width:700px){.cloud-basic-title{align-items:flex-start;flex-direction:column}.cloud-doc-meta{align-items:flex-start}.cloud-route-panel>.body.route{grid-template-columns:1fr!important}}
+
+.cloud-basic-title>span{display:flex;align-items:center;gap:0}
+.cloud-basic-title #docNo{color:inherit;font-size:inherit}
+.cloud-basic-title>#submitDate{color:#667085;font-size:13px;font-weight:400;white-space:nowrap}
+@media(max-width:900px){.cloud-basic-title>#submitDate{white-space:normal;text-align:right}}
+@media(max-width:700px){.cloud-basic-title>span{display:block}.cloud-basic-title>#submitDate{text-align:left}}
+
+.toolbar #editActions,.toolbar #approveActions,.toolbar #executeActions{display:flex;align-items:center;gap:10px}
+
+/* 申請需求資訊／資安與風險資訊：兩欄並排，比例比照簽呈單內容頁的主／副欄（1.65fr／.85fr），
+   資安與風險資訊欄位少，不需要跟主欄一樣寬。窄螢幕時收合成單欄。 */
+.cloud-detail-grid{display:grid;grid-template-columns:minmax(620px,1.65fr) minmax(360px,.85fr);gap:16px;align-items:start}
+.cloud-detail-grid>.panel{margin-bottom:0}
+.cloud-detail-grid>.cloud-detail-side{display:grid;gap:16px}
+.cloud-detail-grid>.cloud-detail-side>.panel{margin-bottom:0}
+@media(max-width:1200px){.cloud-detail-grid{grid-template-columns:1fr}}
+
+/* 簽核意見彙整：樣式比照簽呈單內容頁的 .opinion-list（該頁樣式定義在 memo.css，本頁未引入，
+   故在此複製一份必要規則）。只有在有意見時才顯示條列（#opinionRows），皆無意見時改顯示
+   #opinionEmpty 的單行文字，由 JS 依 approvalOpinions 資料決定。 */
+.opinion-list{display:grid;gap:0}
+.opinion-list article{padding:12px 15px;border-bottom:1px solid #e4e9ef}
+.opinion-list article:last-child{border-bottom:0}
+.opinion-list article>div{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:#526275;font-size:12px}
+.opinion-list article b{color:#202936;font-size:13px}
+.opinion-list article p{margin:7px 0 0;padding:8px 10px;border-radius:5px;background:#fff8df;color:#4d3b00;font-size:14px;font-weight:700;line-height:1.55}
+.opinion-list article p.muted-opinion{background:#f3f5f7;color:#7a8694;font-weight:400}
+.opinion-list article p.rejected-opinion{background:#fde7ea;color:#b42318}
+#opinionSummary #opinionEmpty{margin:0;padding:12px 15px}
+
+/* 申請需求資訊改成單欄：每個欄位獨佔一列，標題固定寬度在左、輸入內容在右，同一行呈現
+   （取代原本標題在上、選項在下分兩行的排法）。.cloud-question-group（申請項目／申請資源
+   類型／雲端平台）是巢狀 grid，裡面的欄位不是 .cloud-demand-grid 的直接子元素，direct-child
+   選擇器碰不到，所以下面的欄位列樣式需要多列一份對應的選擇器。
+   資安與風險資訊面板較窄，沿用同樣「標題在左、內容在右」會被壓得很擠，故不套用這組樣式，
+   維持原本標題在上、選項或輸入框在下方的排法（與「公司」欄位相同的概念）。 */
+.cloud-demand-grid{display:grid!important;grid-template-columns:1fr!important;gap:14px!important}
+.cloud-risk-grid{display:grid!important;grid-template-columns:1fr!important;gap:16px!important}
+.cloud-demand-grid>.cloud-question-group{display:grid;grid-template-columns:1fr;gap:14px}
+.cloud-demand-grid>.cloud-question,
+.cloud-demand-grid>label,
+.cloud-demand-grid>.cloud-question-group>.cloud-question,
+.cloud-demand-grid>.cloud-question-group>label{
+  display:grid!important;
+  grid-template-columns:140px 1fr!important;
+  column-gap:24px!important;
+  row-gap:6px!important;
+  align-items:start!important;
+  padding:0 0 14px!important;
+  border:0!important;
+  border-bottom:1px solid #e4e8ed!important;
+  border-radius:0!important;
+  background:transparent!important;
+}
+.cloud-demand-grid>.cloud-question>.label,.cloud-demand-grid>label>.label,
+.cloud-demand-grid>.cloud-question-group>.cloud-question>.label,.cloud-demand-grid>.cloud-question-group>label>.label{padding-top:6px;color:#344054;font-size:14px}
+.cloud-demand-grid .cloud-choices,.cloud-risk-grid .cloud-choices{min-height:34px;gap:10px 18px!important}
+.cloud-demand-grid .environment-list{display:grid!important;grid-template-columns:1fr!important;gap:8px!important}
+
+/* 選項列裡「其他」旁的說明輸入框（申請資源類型／雲端平台／使用範圍）：原本沿用 .control
+   的 max-width:360px，選項文字較長時（例如「使用範圍」）加總寬度會超過內容欄，導致自動換行、
+   無法跟選項同一行顯示。改為固定較窄的寬度，確保各欄位都能與選項維持同一行。 */
+.cloud-demand-grid .cloud-choices>.inline-text{width:200px!important;min-width:0!important;max-width:200px!important;flex:0 0 auto!important}
+
+/* 「需求說明」（#riskDescription）預設帶 .hidden，但 base.css 裡 .cloud-stack>label 的
+   display:flex 選擇器優先權（class+type）比 .hidden{display:none}（單一 class）更高，會蓋掉
+   .hidden，導致欄位未勾選「是」時仍顯示。這裡用更高優先權的選擇器修正，確保 .hidden 生效。 */
+.cloud-stack>label.hidden{display:none!important}
+
+/* 預估費用下方的說明文字，對齊到內容欄（第二欄，跟輸入框同寬），不要跑到標題欄下方。 */
+.cloud-demand-grid .demand-cost>.help{grid-column:2}
+
+/* 預計啟用／異動日、使用期限的日期欄位寬度統一，不要撐滿整個內容欄。 */
+.cloud-demand-grid #plannedDate,.cloud-demand-grid #expiry{width:160px!important;flex:0 0 auto}
+
+/* 申請原因／用途、預估費用，以及風險區塊同樣式的「需求說明」：維持約三行高度，但不要被
+   claim-detail.css 裡舊的 .control{max-width:360px} 限制住寬度。 */
+.cloud-demand-grid .demand-reason textarea,
+.cloud-demand-grid .demand-cost textarea,
+.cloud-risk-grid #riskDescription textarea{
+  min-height:96px;
+  width:100%!important;
+  max-width:none!important;
+  resize:vertical;
+}
+
+.risk-alert{position:relative;display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;margin-left:5px;border-radius:50%;background:#667085;color:#fff;font-size:9px;font-weight:800;cursor:help;outline-offset:2px}
+.risk-alert::after{content:attr(data-tooltip);position:absolute;z-index:20;left:50%;bottom:calc(100% + 9px);width:330px;padding:9px 11px;border-radius:5px;background:#27364a;color:#fff;font-size:13px;font-weight:400;line-height:1.5;white-space:normal;box-shadow:0 5px 16px rgba(16,24,40,.2);opacity:0;visibility:hidden;transform:translateX(-50%) translateY(4px);transition:.15s ease;pointer-events:none}
+.risk-alert::before{content:"";position:absolute;z-index:21;left:50%;bottom:calc(100% + 3px);border:6px solid transparent;border-top-color:#27364a;opacity:0;visibility:hidden;transform:translateX(-50%);transition:.15s ease}
+.risk-alert:hover::after,.risk-alert:hover::before,.risk-alert:focus::after,.risk-alert:focus::before{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:700px){
+  .cloud-demand-grid>.cloud-question,
+  .cloud-demand-grid>label,
+  .cloud-demand-grid>.cloud-question-group>.cloud-question,
+  .cloud-demand-grid>.cloud-question-group>label{grid-template-columns:1fr!important}
+  .cloud-demand-grid #plannedDate,.cloud-demand-grid #expiry{width:100%!important}
+}
+
+/* Several shared components (audit-modal, return-alert, round-summary) set their own
+   `display` with !important, at the same specificity as claim-detail.css's own competing
+   rules, so a plain [hidden]{display:none!important} override is not guaranteed to win the
+   tie. Target these elements by id, which outranks any class/attribute selector, so they
+   reliably hide while `hidden`. */
+#routePanel[hidden],#returnAlert[hidden],#roundSummary[hidden],#historyModal[hidden],#executionModal[hidden],#executionPending[hidden],#executionSummary[hidden],#copyBtn[hidden],#editPrintBtn[hidden],#opinionSummary[hidden],#opinionRows[hidden]{display:none!important}
+
+/* Execution record panel: prompt-only state while pending, read-only summary once done. */
+#executionPanel h2{display:flex;align-items:center;justify-content:space-between;gap:12px}
+#executionPending{color:#667085;font-size:13px;line-height:1.6}
+#executionSummary div{min-height:20px;color:#202936}
+#executionSummary label{gap:6px}
+
+/* Execution modal: reuses the shared audit-modal chrome (backdrop/dialog) but holds a form. */
+.execution-dialog{width:min(520px,100%)}
+.execution-dialog .audit-content{display:grid;gap:16px}
+.execution-dialog label{display:flex;flex-direction:column;gap:6px}
+.execution-modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:4px}
+
+/* Return-summary card inside the route panel, matching claim/memo's verified rendering. */
+.round-summary{grid-column:1/-1;display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:4px}
+.round-summary .return-record{display:grid;grid-template-columns:100px 190px 190px minmax(240px,1fr);gap:10px;align-items:center;padding:8px 11px;border:1px solid #f2d3d7;border-left:4px solid #d9364b;border-radius:6px;background:#fff8f8;color:#667085;font-size:13px}
+.round-summary .return-record>b{color:#a61b2b}
+@media(max-width:700px){.round-summary .return-record{grid-template-columns:1fr;gap:3px}}

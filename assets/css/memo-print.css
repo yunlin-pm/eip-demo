@@ -1,0 +1,22 @@
+/* 簽呈單列印樣式（清單頁與內容頁共用）：畫面上不顯示，只有在列印／另存 PDF 時呈現 #printSheet，其餘畫面元素都隱藏。
+   獨立成一個檔案，避免 class 名稱（.panel/.status/.table-wrap...）跟 claim-list.css / list-management.css 共用樣式互相覆蓋。 */
+.print-sheet{display:none}
+@media print{
+  @page{margin:0}
+  body *{visibility:hidden}
+  #printSheet,#printSheet *{visibility:visible}
+  #printSheet{display:block;position:absolute;top:0;left:0;width:100%;padding:14mm 12mm;color:#17202a;font-size:13px;box-sizing:border-box}
+  .print-header{margin-bottom:16px;text-align:center}
+  .print-header h1{margin:0;font-size:20px}
+  .print-header h2{margin:4px 0;font-size:16px}
+  .print-header .print-docno{color:#526275;font-size:13px}
+  .print-note{margin-top:6px;color:#8a97a8;font-size:12px}
+  .print-table{width:100%;border-collapse:collapse;margin-bottom:14px}
+  .print-table caption{caption-side:top;text-align:left;font-weight:700;padding:6px 0}
+  .print-caption-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .print-caption-row .print-docno{color:#526275;font-size:13px;font-weight:400;white-space:nowrap}
+  .print-table th,.print-table td{border:1px solid #b9c5d1;padding:8px 10px;text-align:left;vertical-align:top}
+  .print-table>tbody>tr>th:first-child,.print-table>tbody>tr>th[colspan]{background:#f5f7f9}
+  .print-table th{width:110px;font-weight:700;background:#f5f7f9}
+  .print-approval th{width:auto;background:#f5f7f9}
+}

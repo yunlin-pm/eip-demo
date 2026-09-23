@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>個人資料維護｜Bibian EIP 比比昂企業資訊入口平台</title><link rel="stylesheet" href="../../assets/css/bpm-theme.css"><link rel="stylesheet" href="../../assets/css/shell.css"><link rel="stylesheet" href="../../assets/css/eip-layout.css"></head>
+<body class="eip-shared-layout" data-eip-root="../../" data-eip-module="overview" data-eip-sections="" data-eip-l2="" data-eip-l3="" data-eip-user="陳庭瑋 (T037)"><header class="eip-shell-bar demo-preview-bar"><a class="eip-shell-brand demo-preview-brand" href="../../index.html" aria-label="返回系統功能目錄"><span class="demo-back" aria-hidden="true">‹</span><b class="demo-badge">Demo</b><strong>Bibian EIP</strong></a></header><div id="eipAppHeader"></div><div id="appShell"><div class="topbar">
+    <div class="topbar-left">
+      <div class="menu-wrap">
+        <button class="grid-toggle" id="gridToggle" onclick="toggleDropdown('pageDropdown')">
+          <span class="grid-icon">
+            <span></span><span></span><span></span>
+            <span></span><span></span><span></span>
+            <span></span><span></span><span></span>
+          </span>
+        </button>
+        <div class="dropdown" id="pageDropdown">
+          <button class="dropdown-item" onclick="goToPage('overview')">總覽</button>
+          <button class="dropdown-item" onclick="goToPage('admin-form-list')">表單申請／簽核</button>
+          <button class="dropdown-item" onclick="goToPage('remit-vendor-list')">匯款資料維護</button>
+        </div>
+      </div>
+      <span class="app-label" id="topbarAppLabel">總覽</span>
+      <div class="submenu-group" id="topbarSubmenuGroup" style="display:none;">
+        <div class="finance-menu">
+          <span class="finance-menu-label">行政相關表單 <span class="caret-mini">&#9662;</span></span>
+          <div class="finance-dropdown">
+            <button class="dropdown-item" onclick="goToPage('admin-form-list')">請購單管理</button>
+          </div>
+        </div>
+        <div class="delegate-menu">
+          <span class="delegate-menu-label">代理人設定 <span class="caret-mini">&#9662;</span></span>
+          <div class="delegate-dropdown">
+            <button class="dropdown-item" onclick="goToPage('my-delegate')">我的代理人</button>
+            <button class="dropdown-item" onclick="goToPage('delegate-settings')">人員代理設定</button>
+          </div>
+        </div>
+        <div class="menu-wrap submenu-collapsed">
+          <button class="submenu-collapsed-btn" id="submenuCollapsedToggle" onclick="toggleDropdown('submenuCollapsedDropdown')">
+            <span class="submenu-collapsed-icon">&#9776;</span> 選單 <span class="caret">▼</span>
+          </button>
+          <div class="dropdown align-right submenu-collapsed-dropdown" id="submenuCollapsedDropdown">
+            <div class="dropdown-group-label">行政相關表單</div>
+            <button class="dropdown-item" onclick="goToPage('admin-form-list')">請購單管理</button>
+            <div class="dropdown-divider"></div>
+            <div class="dropdown-group-label">代理人設定</div>
+            <button class="dropdown-item" onclick="goToPage('my-delegate')">我的代理人</button>
+            <button class="dropdown-item" onclick="goToPage('delegate-settings')">人員代理設定</button>
+          </div>
+        </div>
+      </div>
+      <div class="submenu-group" id="topbarRemitGroup" style="display:none;">
+        <div class="remit-links">
+          <span class="remit-link-label" id="remitLinkVendor" onclick="goToPage('remit-vendor-list')">廠商匯款資料</span>
+          <span class="remit-link-label" id="remitLinkPayroll" onclick="goToPage('remit-payroll-list')">員工薪資帳戶資料</span>
+        </div>
+        <div class="menu-wrap submenu-collapsed">
+          <button class="submenu-collapsed-btn" id="remitCollapsedToggle" onclick="toggleDropdown('remitCollapsedDropdown')">
+            <span class="submenu-collapsed-icon">&#9776;</span> 選單 <span class="caret">▼</span>
+          </button>
+          <div class="dropdown align-right submenu-collapsed-dropdown" id="remitCollapsedDropdown">
+            <button class="dropdown-item" onclick="goToPage('remit-vendor-list')">廠商匯款資料</button>
+            <button class="dropdown-item" onclick="goToPage('remit-payroll-list')">員工薪資帳戶資料</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="menu-wrap">
+        <button class="profile-btn" id="profileToggle" onclick="toggleDropdown('profileDropdown')">
+          Hi 王曉明 (A123) <span class="caret">▼</span>
+        </button>
+        <div class="dropdown align-right profile-dropdown" id="profileDropdown">
+          <button class="dropdown-item" onclick="goToPage('profile')">個人資料維護</button>
+          <button class="dropdown-item" onclick="showLoginScreen()">登出</button>
+        </div>
+      </div>
+    </div>
+  </div><div class="header">
+    <div class="header-logo">
+      <img src="data:image/png;base64,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" alt="Bibian">
+      <span class="brand-text">Bibian EIP 比比昂企業資訊入口平台</span>
+    </div>
+  </div><div class="breadcrumb-bar" id="breadcrumbBar"><span class="crumb-item">系統功能目錄</span><span class="crumb-sep">›</span><span class="crumb-item active">個人資料維護</span></div><div class="main"><div class="page active" id="page-profile">
+      <div class="form-action-bar">
+        <div class="form-action-bar-left">
+          <button class="btn btn-outline">捨棄變更</button>
+          <button class="btn btn-primary">儲存資料</button>
+        </div>
+      </div>
+
+      <div class="profile-header">
+        <h2 class="profile-name">王曉明</h2>
+        <div class="profile-avatar">測</div>
+      </div>
+      <div class="profile-meta-row">
+        <div class="profile-meta-item">
+          <span class="profile-meta-label">通知Email</span>
+          <a class="profile-meta-link" href="javascript:void(0)">winnie.chen@japan-import.com.tw</a>
+        </div>
+        <div class="profile-meta-item">
+          <span class="profile-meta-label">上級主管</span>
+          <span class="static-text">王部長</span>
+        </div>
+      </div>
+
+      <div class="page-tabs">
+        <button class="page-tab active" onclick="switchProfileTab(this,'personal')">個人設定</button>
+        <button class="page-tab" onclick="switchProfileTab(this,'work')">工作資訊</button>
+      </div>
+
+      <div class="profile-tab-content active" id="profileTabPersonal">
+        <div class="profile-grid">
+          <div>
+            <div class="form-field">
+              <label><span class="req">*</span>通知<span class="profile-help-q">?</span></label>
+              <label class="profile-radio-label"><input type="radio" name="profileNotify" checked> 用信件處理</label>
+            </div>
+            <div class="form-field">
+              <label>通知Email</label>
+              <input type="text" value="winnie.chen@japan-import.com.tw">
+            </div>
+          </div>
+          <div>
+            <div class="form-field">
+              <label><span class="req">*</span>語言<span class="profile-help-q">?</span></label>
+              <div class="menu-wrap lang-select-wrap">
+                <button type="button" class="lang-select-btn" id="langSelectToggle" onclick="toggleDropdown('langDropdown')">Chinese (Traditional) / 繁體中文</button>
+                <div class="dropdown lang-dropdown" id="langDropdown">
+                  <button type="button" class="dropdown-item lang-option current" onclick="selectLang(this)">Chinese (Traditional) / 繁體中文</button>
+                  <button type="button" class="dropdown-item lang-option" onclick="selectLang(this)">English (US)</button>
+                  <button type="button" class="dropdown-item lang-option" onclick="selectLang(this)">Japanese / 日本語</button>
+                </div>
+              </div>
+            </div>
+            <div class="form-field">
+              <label><span class="req">*</span>時區<span class="profile-help-q">?</span></label>
+              <select>
+                <option>Asia/Taipei</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-tab-content" id="profileTabWork" style="display:none;">
+        <div class="form-section-heading">地點</div>
+        <div class="profile-grid">
+          <div>
+            <div class="form-field">
+              <label>部門</label>
+              <span class="static-text">CBS營業本部 / CBS營業一課</span>
+            </div>
+            <div class="form-field form-field-top">
+              <label>工作地址</label>
+              <span class="static-text">網家跨境服務股份有限公司<br>台灣</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section-heading">流程審批管理人</div>
+        <div class="profile-grid">
+          <div>
+            <div class="form-field">
+              <label>開支<span class="profile-help-q">?</span></label>
+              <span class="static-text"></span>
+            </div>
+            <div class="form-field">
+              <label>休假<span class="profile-help-q">?</span></label>
+              <span class="static-text">王部長</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div><div class="site-footer">Copyright &copy; PChome Bibian Inc. All Rights Reserved.</div></div><div class="demo-toast" id="profileToast" style="display:none;">Demo：資料已儲存</div><script src="../../assets/js/profile.js"></script><div id="eipAppFooter"></div><script src="../../assets/js/eip-layout.js"></script></body></html>

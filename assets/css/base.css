@@ -1,0 +1,6 @@
+* { box-sizing: border-box; }
+html { color-scheme: light; }
+body { margin: 0; font-family: var(--eip-font); color: var(--eip-ink); background: var(--eip-canvas); }
+button, input, select, textarea { font: inherit; }
+a { color: inherit; }
+.view-only { display: none !important; }

@@ -1,0 +1,27 @@
+.demo-home { min-height: 100vh; background: #f4f6f8; }
+.demo-home main { width: min(1240px, calc(100% - 40px)); margin: 0 auto; padding: 32px 0 64px; }
+.hero { padding: 26px 30px; border: 1px solid #d9e1e8; border-radius: 10px; background: #fff; box-shadow: var(--eip-shadow); }
+.eyebrow { margin: 0 0 7px; color: var(--eip-blue); font-size: 12px; font-weight: 800; letter-spacing: .08em; }
+.hero h1 { margin: 0; color: var(--eip-navy); font-size: 30px; line-height: 1.25; }
+.hero p { margin: 10px 0 0; color: var(--eip-muted); font-size: 14px; line-height: 1.65; }
+.legend { display: flex; align-items: center; gap: 8px 16px; flex-wrap: wrap; margin: 18px 0; color: var(--eip-muted); font-size: 12px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: #aeb7c2; }
+.dot.ready { background: #1f78b4; }.dot.progress { background: #d98218; }.dot.planned { background: #aeb7c2; }
+.catalog { display: grid; gap: 16px; }
+.catalog-group { overflow: hidden; border: 1px solid var(--eip-line); border-radius: 9px; background: #fff; }
+.group-title { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 0; padding: 13px 18px; border-bottom: 1px solid var(--eip-line); background: #edf3f8; color: var(--eip-navy); font-size: 17px; }
+.group-title small { color: var(--eip-muted); font-size: 11px; font-weight: 600; }
+.catalog-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.catalog-table th { padding: 9px 12px; border-bottom: 1px solid var(--eip-line); background: #fafbfc; color: #667085; font-size: 11px; text-align: left; }
+.catalog-table td { padding: 11px 12px; border-bottom: 1px solid #e8ecf0; color: #344054; font-size: 13px; line-height: 1.45; vertical-align: top; }
+.catalog-table tr:last-child td { border-bottom: 0; }
+.catalog-table th:nth-child(1),.catalog-table td:nth-child(1){width:17%}.catalog-table th:nth-child(2),.catalog-table td:nth-child(2){width:20%}.catalog-table th:nth-child(3),.catalog-table td:nth-child(3){width:27%}.catalog-table th:nth-child(4),.catalog-table td:nth-child(4){width:11%}.catalog-table th:nth-child(5),.catalog-table td:nth-child(5){width:12%}.catalog-table th:nth-child(6),.catalog-table td:nth-child(6){width:13%}
+.muted { color: #98a2b3; }.state { display: inline-flex; padding: 3px 8px; border-radius: 10px; background: #eef1f4; color: #667085; font-size: 11px; font-weight: 800; white-space: nowrap; }
+.state.ready { background: #e5f1fb; color: #15578f; }.state.progress { background: #fff2df; color: #9a5600; }.state.shared { background: #eee9f7; color: #664c91; }
+.open-link { color: var(--eip-blue); font-weight: 800; text-decoration: none; }.open-link:hover { text-decoration: underline; }
+.source-note { margin-top: 18px; padding: 12px 15px; border-left: 4px solid #8fa6bd; background: #fff; color: var(--eip-muted); font-size: 12px; line-height: 1.6; }
+@media(max-width:760px){.demo-home main{width:min(100% - 24px,1240px);padding-top:20px}.hero{padding:21px 18px}.catalog-group{overflow-x:auto}.catalog-table{min-width:820px}.group-title{position:sticky;left:0}.hero h1{font-size:25px}}
+
+.spec-hub{display:grid;grid-template-columns:minmax(240px,.8fr) 2fr;gap:24px;align-items:center;margin:20px 0;padding:22px 24px;border:1px solid #d9e0e7;border-left:5px solid #ef8b22;border-radius:8px;background:#fff}.spec-hub h2{margin:3px 0 6px;color:#173858}.spec-hub p{margin:0;color:#667382}.spec-grid{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:10px}.spec-grid a{display:flex;flex-direction:column;gap:4px;padding:14px;border:1px solid #d8e0e8;border-radius:6px;background:#f8fafc;color:#173858;text-decoration:none}.spec-grid a:hover{border-color:#ef8b22;background:#fffaf3}.spec-grid strong{font-size:12px;color:#7b8794}.spec-grid span{font-weight:700}@media(max-width:850px){.spec-hub{grid-template-columns:1fr}.spec-grid{grid-template-columns:repeat(2,1fr)}}
+.feature-name{margin-right:0}.spec-link{display:inline-flex;align-items:center;padding:2px 7px;border:1px solid #b8c8d8;border-radius:4px;background:#f7fafc;color:#315f86;font-size:11px;font-weight:700;text-decoration:none;white-space:nowrap}.spec-link:hover{border-color:#5e87aa;background:#edf5fb}
