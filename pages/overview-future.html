@@ -26,9 +26,9 @@
     <div data-view="employee">
 
 
-      <section class="employee-today-info" aria-label="今日資訊">
-        <strong>今日資訊</strong>
-        <time datetime="2026-09-23">9/23</time>
+      <section class="employee-today-info" aria-label="今日快訊">
+        <strong>今日快訊</strong>
+        <time datetime="2026-09-23">9/23・星期三</time>
         <span class="jp-info"><i class="jp">JP</i>日本假期中｜秋分の日</span>
         <span class="tw-info"><i class="tw">TW</i>台灣假期中｜教師節</span>
         <span class="company-info"><i>CBS</i>福委活動｜剝柚子大賽</span>
@@ -40,27 +40,27 @@
           <strong>09/26－09/28 已設定李赫宰 (B123) 代理您的簽核工作</strong>
           <b>查看設定 ›</b>
         </a>
-        <a class="delegation-alert acting" href="overview/list.html?status=toSign">
+        <div class="delegation-alert acting">
           <span class="delegation-alert-label">我的代理任務</span>
-          <strong>09/22－09/25 您需代理李東海 (B125) 的簽核工作</strong>
-          <b>待處理 2 筆 ›</b>
-        </a>
+          <strong>目前代理 李東海 (B125)、曹圭賢 (B126) 簽核，另有 1 筆即將開始</strong>
+          <button type="button" data-open-delegation>代理詳情 ›</button>
+        </div>
       </section>
 
-      <section class="employee-summary" aria-label="我的工作摘要">
-        <a class="has-count" href="overview/list.html?status=toSign"><b>3</b><span>我的待辦</span><small>簽核、補件與執行任務</small></a>
-        <a class="has-count" href="overview/list.html?status=pending"><b>2</b><span>申請中表單</span><small>可查看目前簽核關卡</small></a>
-        <a class="has-count" href="#announcements"><b>3</b><span>未讀公告</span><small>其中 1 則為重要公告</small></a>
-        <button class="has-count" type="button" data-open-delegation><b>1</b><span>我的代理</span><small>查看即將開始的代理排程</small></button>
-      </section>
+
 
 
       <div class="employee-grid employee-primary-grid">
         <section class="panel employee-tasks">
           <div class="panel-head"><div><p class="panel-eyebrow">MY WORK</p><h2>我的待辦</h2></div><a href="overview/list.html?status=toSign">查看全部 ›</a></div>
+          <div class="task-status-summary" aria-label="待辦狀態統計">
+            <a href="overview/list.html?status=toSign"><span>待簽核</span><b>2</b></a>
+            <a class="is-zero" href="overview/list.html?status=rejected"><span>被退回</span><b>0</b></a>
+            <a href="overview/list.html?status=execute"><span>待執行</span><b>1</b></a>
+          </div>
           <div class="task-list">
             <a href="forms/claim-detail.html?mode=approve"><span class="task-type approval">待簽核</span><div><strong>請款單 CBS-PAY-2026-00124</strong><small>申請人：陳庭瑋 (T037)・等待 1 天</small></div><b>今日</b></a>
-            <a href="purchases/detail.html?mode=edit"><span class="task-type revision">被退回</span><div><strong>採購請購單退回待處理</strong><small>請補充第二家廠商詢價資料</small></div><b>09/24</b></a>
+            <a href="purchases/detail.html?mode=approve"><span class="task-type approval">待簽核</span><div><strong>採購請購單 CBS-PUR-2026-00018</strong><small>申請人：羅弘奕 (B019)・今天送達</small></div><b>今日</b></a>
             <a href="cloud-resources/detail.html?mode=view"><span class="task-type execute">待執行</span><div><strong>雲端資源申請已核准</strong><small>請完成 VM 建立並回報執行結果</small></div><b>09/25</b></a>
           </div>
         </section>
@@ -75,12 +75,12 @@
         <section class="panel employee-calendar" aria-labelledby="employeeCalendarTitle">
           <div class="panel-head"><div><p class="panel-eyebrow">CALENDAR</p><h2 id="employeeCalendarTitle">行事曆</h2></div><button type="button" data-open-holidays>更多 ›</button></div>
           <div class="employee-calendar-compact">
-            <div class="calendar-compact-row calendar-compact-head"><strong>日期</strong><strong><i class="tw">TW</i>台灣</strong><strong><i class="jp">JP</i>日本</strong></div>
-            <div class="calendar-compact-row is-today"><time>9/23</time><span class="holiday-cell tw-holiday">教師節</span><span class="holiday-cell jp-holiday">秋分の日</span></div>
-            <div class="calendar-compact-row"><time>9/24</time><span>—</span><span>—</span></div>
-            <div class="calendar-compact-row"><time>9/25</time><span>—</span><span>—</span></div>
-            <div class="calendar-compact-row"><time>9/26</time><span>—</span><span>—</span></div>
-            <div class="calendar-compact-row"><time>9/27</time><span>—</span><span>—</span></div>
+            <div class="calendar-compact-row calendar-compact-head"><strong>日期</strong><strong>星期</strong><strong><i class="tw">TW</i>台灣</strong><strong><i class="jp">JP</i>日本</strong></div>
+            <div class="calendar-compact-row is-today"><time>9/23</time><span>三</span><span class="holiday-cell tw-holiday">教師節</span><span class="holiday-cell jp-holiday">秋分の日</span></div>
+            <div class="calendar-compact-row"><time>9/24</time><span>四</span><span>—</span><span>—</span></div>
+            <div class="calendar-compact-row"><time>9/25</time><span>五</span><span>—</span><span>—</span></div>
+            <div class="calendar-compact-row"><time>9/26</time><span>六</span><span>—</span><span>—</span></div>
+            <div class="calendar-compact-row"><time>9/27</time><span>日</span><span>—</span><span>—</span></div>
           </div>
         </section>
 
@@ -137,15 +137,17 @@
       <div class="delegation-modal" id="delegationModal" hidden>
         <div class="delegation-backdrop" data-close-delegation></div>
         <section class="delegation-dialog" role="dialog" aria-modal="true" aria-labelledby="delegationTitle">
-          <header><div><p class="panel-eyebrow">DELEGATION SCHEDULE</p><h2 id="delegationTitle">我的代理</h2></div><button type="button" data-close-delegation aria-label="關閉">×</button></header>
+          <header><div><p class="panel-eyebrow">DELEGATION DETAILS</p><h2 id="delegationTitle">代理詳情</h2></div><button type="button" data-close-delegation aria-label="關閉">×</button></header>
           <div class="delegation-dialog-body">
-            <p class="dialog-hint">代理資訊分為「您休假時由誰代理」及「您需要代理誰」，生效期間將持續顯示於總覽。</p>
+            <p class="dialog-hint">顯示目前生效及即將開始的代理任務；點擊待辦筆數可查看代為簽核的表單。</p>
+            <div class="delegation-dialog-head" aria-hidden="true"><span>狀態</span><span>代理對象</span><span>代理期間</span><span>代理待辦</span></div>
             <div class="delegation-dialog-list">
-              <article><span class="delegation-state scheduled">代理安排</span><div><strong>代理人：李赫宰 (B123)</strong><small>代理您的簽核工作</small></div><time>2026/09/26－2026/09/28</time></article>
-              <article><span class="delegation-state active">代理中</span><div><strong>被代理人：李東海 (B125)</strong><small>目前有 2 筆簽核案件待處理</small></div><time>2026/09/22－2026/09/25</time></article>
+              <article><span class="delegation-state active">代理中</span><div><strong>李東海 (B125)</strong></div><time>2026/09/22－2026/09/25</time><a class="delegation-tasks" href="overview/list.html?status=toSign&amp;proxy=B125">2 筆</a></article>
+              <article><span class="delegation-state active">代理中</span><div><strong>曹圭賢 (B126)</strong></div><time>2026/09/23－2026/09/30</time><a class="delegation-tasks" href="overview/list.html?status=toSign&amp;proxy=B126">1 筆</a></article>
+              <article><span class="delegation-state scheduled">即將開始</span><div><strong>陳庭瑋 (T037)</strong></div><time>2026/09/28－2026/10/02</time><span class="delegation-empty">—</span></article>
             </div>
           </div>
-          <footer><button type="button" data-close-delegation>關閉</button><a href="delegates/my-delegate.html">查看代理設定</a></footer>
+          <footer><button type="button" data-close-delegation>關閉</button></footer>
         </section>
       </div>
     </div>

@@ -88,7 +88,7 @@
 /* Taller equal secondary panels */
 .employee-secondary-grid>.panel{min-height:326px}
 .employee-calendar-compact{display:grid;margin:13px 16px 16px;overflow:hidden;border:1px solid #dfe5ea;border-radius:5px}
-.calendar-compact-row{display:grid;grid-template-columns:80px 1fr 1fr;align-items:center;min-height:43px;border-top:1px solid #e4e9ed}
+.calendar-compact-row{display:grid;grid-template-columns:64px 52px 1fr 1fr;align-items:center;min-height:43px;border-top:1px solid #e4e9ed}
 .calendar-compact-row:first-child{border-top:0}
 .calendar-compact-row>*{display:flex;align-items:center;min-height:43px;padding:7px 11px;border-left:1px solid #e8edf1;color:#607286;font-size:11px}
 .calendar-compact-row>*:first-child{border-left:0}
@@ -97,7 +97,7 @@
 .employee-secondary-grid .quick-grid{grid-template-columns:repeat(2,1fr)}
 .employee-secondary-grid .quick-grid a{min-height:82px}
 .employee-secondary-grid .bibian-update-card img{height:150px}
-@media(max-width:700px){.employee-secondary-grid>.panel{min-height:0}.calendar-compact-row{grid-template-columns:66px 1fr 1fr}.calendar-compact-row:not(.calendar-compact-head):not(.is-today){display:none}.employee-secondary-grid .bibian-update-card img{height:170px}}
+@media(max-width:700px){.employee-secondary-grid>.panel{min-height:0}.calendar-compact-row{grid-template-columns:58px 44px 1fr 1fr}.calendar-compact-row:not(.calendar-compact-head):not(.is-today){display:none}.employee-secondary-grid .bibian-update-card img{height:170px}}
 /* Compact five-row calendar */
 .calendar-compact-row{min-height:34px}
 .calendar-compact-row>*{min-height:34px;padding:5px 10px}
@@ -111,3 +111,26 @@
 .employee-guide .resource-grid i svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 /* Task status tags */
 .task-type{width:auto;min-width:50px;padding:0 8px;white-space:nowrap}
+/* Compact task status summary */
+.task-status-summary{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid #e4e9ee;background:#f7f9fb}
+.task-status-summary a{display:flex;align-items:center;justify-content:center;gap:9px;min-height:48px;border-left:1px solid #e1e6eb;color:#52677b;text-decoration:none}
+.task-status-summary a:first-child{border-left:0}
+.task-status-summary a:hover{background:#f0f5f8}
+.task-status-summary span{font-size:11px;font-weight:800}
+.task-status-summary b{color:#d63c4a;font-size:20px}
+.task-status-summary .is-zero b{color:#98a4b1}
+@media(max-width:500px){.task-status-summary a{gap:5px;min-height:44px}.task-status-summary span{font-size:10px}.task-status-summary b{font-size:17px}}
+/* Delegation task summary and detail dialog */
+.delegation-alert.acting>button{padding:0;border:0;background:transparent;color:#a85d12;font:inherit;font-size:10px;font-weight:800;white-space:nowrap;cursor:pointer}
+.delegation-alert.acting>button:hover{text-decoration:underline}
+.delegation-dialog{width:min(760px,100%)}
+.delegation-dialog-head,.delegation-dialog article{display:grid;grid-template-columns:84px minmax(150px,1fr) 210px 72px;align-items:center;gap:12px}
+.delegation-dialog-head{padding:0 14px 8px;color:#7a8999;font-size:10px;font-weight:800}
+.delegation-dialog article{padding:13px 14px}
+.delegation-state{display:inline-flex;justify-content:center;padding:4px 8px;border-radius:12px;font-size:10px;font-weight:800;white-space:nowrap}
+.delegation-state.active{background:#e6f4ec;color:#237448}
+.delegation-state.scheduled{background:#eef2f6;color:#607286}
+.delegation-tasks{justify-self:start;color:#17639d;font-size:11px;font-weight:800;text-decoration:none;white-space:nowrap}
+.delegation-tasks:hover{text-decoration:underline}
+.delegation-empty{color:#98a4b1;font-size:11px}
+@media(max-width:700px){.delegation-dialog-head{display:none}.delegation-dialog article{grid-template-columns:auto 1fr}.delegation-dialog article time{grid-column:2}.delegation-tasks,.delegation-empty{grid-column:2}.delegation-alert.acting>button{grid-column:2;justify-self:start}}
