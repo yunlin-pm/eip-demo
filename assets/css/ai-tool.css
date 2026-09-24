@@ -1,0 +1,264 @@
+/* AI 工具使用申請內容頁專用樣式：申請人資訊、申請需求、預期效益、資安與風險資訊、
+   執行紀錄與簽核意見彙整。比照 cloud-permission.css／cloud-resource.css／purchase.css
+   既有作法，各表單獨立複製一份必要規則，不跨表單互相引用共用檔案；本表單沒有多列表格
+   （不像雲端權限申請有「存取權限需求」「權限使用者資訊」），欄位結構相對單純，class 名稱
+   改用 ai- 前綴（不沿用「cloud-」，因為本表單性質不是雲端資源）。 */
+.hidden{display:none}
+
+/* claim-detail.css 的 .panel／.audit-modal 等規則優先權會蓋掉瀏覽器對 [hidden] 屬性的預設
+   display:none（既有問題，每個新表單都要各自補一次），這裡比照既有作法補上修正。 */
+[hidden]{display:none!important}
+
+/* claim-detail.css 的 .toolbar 只讓工具列裡的各個按鈕群組（div）彼此保持間距，
+   群組「內部」沒有預設 gap，比照 cloud-permission.css 既有修正補上。 */
+.toolbar #editActions,.toolbar #approveActions,.toolbar #executeActions,.toolbar #doneActions,.toolbar #viewActions{display:flex;align-items:center;gap:10px}
+
+.ai-form{max-width:none}
+
+/* 表頭：公司／申請人（含部門）兩欄並排。申請人 Email 已移至「申請需求資訊」panel、
+   申請項目上方，改成「AI 工具帳號」欄位（比照該 panel 其他列的 140px／1fr 版型），
+   不再放在表頭；.full 規則保留供未來若有其他需要獨占一整列的欄位使用。 */
+.ai-head{position:relative}
+.ai-head .head-grid{display:grid;grid-template-columns:repeat(2,minmax(220px,1fr));gap:16px 24px}
+.ai-head .head-grid label{display:flex;flex-direction:column;gap:4px;min-width:0}
+.ai-head .head-grid .control{width:100%!important;max-width:none!important}
+.ai-head .head-grid .full{grid-column:span 2}
+/* .readonly-value：系統自動帶出、不可編輯的唯讀顯示欄（例如下面「申請需求資訊」panel
+   的「AI 工具帳號」），跟 .control 搭配使用但視覺上不是輸入框；不限定在 .ai-head 內，
+   .ai-demand-grid 的 label 列也會用到（見下方 AI 工具帳號欄位）。 */
+.readonly-value{display:flex;align-items:center;min-height:38px;padding:0 2px;color:#344054;font-size:14px}
+@media(max-width:700px){.ai-head .head-grid{grid-template-columns:1fr}.ai-head .head-grid .full{grid-column:span 1}}
+
+/* 表頭標題列與「申請日期」小灰字：樣式比照雲端服務／雲端權限申請內容頁的
+   .cloud-basic-title／#submitDate（本頁未引入該檔，複製一份必要規則）。 */
+.ai-basic-title{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.ai-basic-title>span{display:flex;align-items:center;gap:0}
+.ai-basic-title #docNo{color:inherit;font-size:inherit}
+.ai-basic-title>#submitDate{color:#667085;font-size:13px;font-weight:400;white-space:nowrap}
+@media(max-width:900px){.ai-basic-title>#submitDate{white-space:normal;text-align:right}}
+@media(max-width:700px){.ai-basic-title{align-items:flex-start;flex-direction:column}.ai-basic-title>span{display:block}.ai-basic-title>#submitDate{text-align:left}}
+
+/* 主欄／側欄雙欄版面：比照既有表單的 .detail-grid 比例，左欄放表單本體，右欄放
+   查看性質的紀錄／彙整區塊；1200px 以下收合成單欄。本表單沒有寬表格（無存取權限需求
+   這類多列表格），左右欄不需要像雲端權限申請那樣特別調整比例，採用較平衡的 1.5fr／1fr。 */
+.ai-detail-grid{display:grid;grid-template-columns:minmax(520px,1.5fr) minmax(300px,1fr);gap:16px;align-items:start}
+.ai-detail-grid>.ai-detail-main{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;min-width:0}
+.ai-detail-grid>.ai-detail-main>.panel{margin-bottom:0;min-width:0}
+.ai-detail-grid>.ai-detail-side{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;min-width:0}
+.ai-detail-grid>.ai-detail-side>.panel{margin-bottom:0;min-width:0}
+@media(max-width:1200px){.ai-detail-grid{grid-template-columns:1fr}}
+
+/* 申請需求資訊／預期效益／資安與風險資訊：欄位標題固定寬度在左、輸入內容在右，
+   同一行呈現，比照雲端服務／雲端權限申請內容頁的 .cloud-demand-grid 排法。 */
+.ai-demand-grid{display:grid!important;grid-template-columns:1fr!important;gap:14px!important}
+.ai-demand-grid>.ai-question,
+.ai-demand-grid>label{
+  display:grid!important;
+  grid-template-columns:140px 1fr!important;
+  column-gap:24px!important;
+  row-gap:6px!important;
+  align-items:start!important;
+  padding:0 0 14px!important;
+  border:0!important;
+  border-bottom:1px solid #e4e8ed!important;
+  border-radius:0!important;
+  background:transparent!important;
+}
+/* #riskNoteField（「需求說明」欄位，資安與風險資訊）本身就是 .ai-demand-grid>label，
+   會被上面這條 .ai-demand-grid>.ai-question,.ai-demand-grid>label{display:grid!important}
+   規則選到。這條規則有 !important，檔案開頭的 .hidden{display:none} 沒有 !important，
+   即使 JS（syncRiskNote）正確切換了 .hidden class，CSS 疊層時 display:grid!important
+   還是會贏過沒有 !important 的 .hidden，導致這個欄位永遠無法真正隱藏（使用者截圖回報：
+   兩個風險選項都選「否」時，需求說明欄位仍然顯示——這是本表單同一種「!important 蓋掉
+   .hidden」的問題第二次出現，第一次是 111 行的 .ai-other-fields.hidden，這裡比照同樣
+   作法補上，並寫成通用規則而不只針對 #riskNoteField，避免這層任何欄位以後也用
+   .hidden 隱藏時又要重新診斷同一個成因）。 */
+.ai-demand-grid>.ai-question.hidden,
+.ai-demand-grid>label.hidden{display:none!important}
+.ai-demand-grid>.ai-question:last-child,.ai-demand-grid>label:last-child{border-bottom:0;padding-bottom:0}
+.ai-demand-grid>.ai-question>.label,.ai-demand-grid>label>.label{padding-top:6px;color:#344054;font-size:14px}
+.ai-demand-grid .ai-choices{min-height:34px;gap:10px 18px!important}
+.ai-demand-grid textarea.control{min-height:88px;width:100%!important;max-width:none!important;resize:vertical}
+/* .ai-question／label 本身是 140px＋1fr 兩欄 grid，說明文字（.help）若只是第 3 個子元素，
+   grid 預設會自動排列到下一列的第 1 欄（140px 窄欄，跟著標題文字對齊），導致說明文字被
+   壓成很窄的欄位、跟它說明的輸入欄位（第 2 欄）對不齊。這裡明講讓 .help 固定放在第 2 欄，
+   對齊在輸入欄位正下方。選擇器限定「直接子元素」（.ai-question>.help／label>.help），
+   不能只用後代選擇器 .ai-demand-grid .help——「表單附件」欄位的 .ai-attach-field 裡也有一個
+   .help（想讓它顯示在上傳按鈕下方，屬於 .ai-attach-field 自己的 grid，不是 .ai-question／
+   label 那層的），如果選到它會被硬塞進 .ai-attach-field 這層 grid 的第 2 欄，跟附件卡片
+   並排到右邊，而不是排在下方（發現過一次的實際 bug，這裡直接把選擇器收緊來避免）。 */
+.ai-demand-grid>.ai-question>.help,
+.ai-demand-grid>label>.help{grid-column:2;margin:4px 0 0;color:#667085;font-size:12.5px;line-height:1.6}
+/* 「AI 工具／方案」選「其他」時額外出現的說明／每月費用欄（#planOtherFields）跟 .help
+   是同一種情形：它是 .ai-question 的第 3 個子元素，grid 預設也會把它排到下一列的第 1 欄
+   （140px 窄欄），導致跟「其他」選項對不齊、被壓成一小塊。這裡一併明講固定在第 2 欄。 */
+.ai-demand-grid .ai-other-fields{grid-column:2}
+@media(max-width:700px){
+  .ai-demand-grid>.ai-question,
+  .ai-demand-grid>label{grid-template-columns:1fr!important}
+  .ai-demand-grid>.ai-question>.help,
+  .ai-demand-grid>label>.help{grid-column:1}
+  .ai-demand-grid .ai-other-fields{grid-column:1}
+}
+
+/* 資安與風險資訊改為「標題在上、選項在下」的堆疊樣式，使用者提供《雲端服務與資源申請》
+   內容頁同一個面板現有的畫面截圖作為參考樣式。查證後發現雲端服務與資源申請本來就是這樣做：
+   同頁「申請需求資訊」用的是 .cloud-demand-grid「標題固定寬度在左、內容在右」排法，但
+   「資安與風險資訊」面板本身較窄，沿用同樣排法欄位會被壓得很擠，所以雲端服務與資源申請的
+   資安與風險資訊從一開始就改用另一組獨立樣式（.cloud-risk-grid／.cloud-question／
+   .risk-alert，定義在 cloud-resource.css），維持「標題在上、選項或輸入框在下」的排法。
+   本表單「申請需求資訊」維持原本 .ai-demand-grid（140px/1fr）不變，只有「資安與風險資訊」
+   這裡改用比照雲端服務與資源申請既有做法複製的一組獨立樣式（比照各表單各自複製一份必要
+   規則、不跨表單互相引用的既有慣例）。「機敏資料」原本的 <p class="help"> 說明文字，這次也
+   一併比照雲端服務與資源申請改成滑鼠移入／鍵盤聚焦顯示的圓形 ! 提示圖示（.risk-alert），
+   不再各自佔一整行。
+   後續使用者指示把「資安與風險資訊」搬到右側欄（.ai-detail-side，見六十五），並認為同樣在
+   右側欄、寬度一樣窄的「預期效益」面板也適用同一種理由，一併改成這組堆疊樣式——因此
+   .ai-risk-grid 這個名稱雖然沿用「風險」字面，但實際上代表的是「窄欄位用的堆疊排法」，
+   不是只限風險區塊專用，「預期效益」面板也共用同一組規則（不重新命名是為了跟已經送達
+   使用者電腦的既有規則保持一致，避免無意義的改名成本）。 */
+.ai-risk-grid{display:grid!important;grid-template-columns:1fr!important;gap:16px!important}
+.ai-risk-grid>.ai-question,
+.ai-risk-grid>label{display:grid;gap:9px;padding-bottom:15px;border-bottom:1px dashed #d9e0e7}
+.ai-risk-grid>.ai-question:last-child,.ai-risk-grid>label:last-child{border-bottom:0;padding-bottom:0}
+.ai-risk-grid .ai-choices{min-height:34px;gap:10px 18px!important}
+.ai-risk-grid textarea.control{min-height:88px;width:100%!important;max-width:none!important;resize:vertical}
+/* 「需求說明」（#riskNoteField）預設帶 .hidden，但 .ai-risk-grid>label{display:grid}（class+class
+   兩層選擇器）優先權比 .hidden{display:none}（單一 class）更高，就算這裡沒下 !important，一樣
+   會蓋掉 .hidden，導致欄位未勾選「是」時仍然顯示——跟六十三修過的 .ai-demand-grid 版本
+   （那邊是 !important 疊層問題）成因不同，但结果相同，都是「基礎版型規則優先權比 .hidden
+   高」。這裡比照 cloud-resource.css 既有的 .cloud-stack>label.hidden 修法，直接先補上，
+   不必等使用者截圖回報才處理。 */
+.ai-risk-grid>label.hidden{display:none!important}
+
+/* 「機敏資料」欄位的圓形 ! 提示圖示，滑鼠移入或鍵盤聚焦時彈出說明文字，取代原本的固定
+   說明文字列；樣式與互動邏輯完全比照 cloud-resource.css 既有的 .risk-alert（本表單複製一份，
+   不跨檔案引用）。 */
+.risk-alert{position:relative;display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;margin-left:5px;border-radius:50%;background:#667085;color:#fff;font-size:9px;font-weight:800;cursor:help;outline-offset:2px}
+.risk-alert::after{content:attr(data-tooltip);position:absolute;z-index:20;left:50%;bottom:calc(100% + 9px);width:330px;padding:9px 11px;border-radius:5px;background:#27364a;color:#fff;font-size:13px;font-weight:400;line-height:1.5;white-space:normal;box-shadow:0 5px 16px rgba(16,24,40,.2);opacity:0;visibility:hidden;transform:translateX(-50%) translateY(4px);transition:.15s ease;pointer-events:none}
+.risk-alert::before{content:"";position:absolute;z-index:21;left:50%;bottom:calc(100% + 3px);border:6px solid transparent;border-top-color:#27364a;opacity:0;visibility:hidden;transform:translateX(-50%);transition:.15s ease}
+.risk-alert:hover::after,.risk-alert:hover::before,.risk-alert:focus::after,.risk-alert:focus::before{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+
+.ai-choices{display:flex;align-items:center;flex-wrap:wrap;gap:18px}
+.ai-choices label{display:flex;align-items:center;gap:6px}
+/* claim-detail.css 的 .control{width:100%} 會讓這個「說明」輸入框撐滿整個 .ai-other-fields
+   彈性列的寬度，導致它自己獨佔一行、後面的「，每月費用：USD ___／月」被擠到下一行、
+   最後「／月」又單獨換到第三行（使用者回報的「其他請直接折行」即此現象）。這裡改給固定
+   寬度，讓整組欄位盡量同一行呈現，空間不夠時才依 flex-wrap 自然整組換行。 */
+.ai-inline-text{width:220px!important;flex:0 0 220px;min-width:0}
+.ai-plan-price{color:#667085;font-size:12.5px;white-space:nowrap}
+.ai-other-fields{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+/* .hidden{display:none} 在檔案開頭（第 6 行），跟 .ai-other-fields{display:flex}（上一行）
+   選擇器優先權相同（都是單一 class），CSS 疊層時後面宣告的 .ai-other-fields 會蓋掉前面的
+   .hidden，導致「其他」未勾選時這個欄位仍然是 display:flex、一直顯示在畫面上（跑版成因之一）。
+   這裡補一條「兩個 class 同時命中」的規則，優先權比任一單一 class 都高，確保隱藏一定生效。 */
+.ai-other-fields.hidden{display:none!important}
+.ai-duration-field{display:flex;align-items:center;gap:8px}
+.ai-duration-field input{width:96px!important;flex:0 0 96px}
+/* 預估費用：使用者要求換算新臺幣的提示文字放到「USD 金額」下方（原本是同一行），
+   並移除「※ 每月花費 × 申請使用月數。」這行說明（HTML 已一併移除該 <p class="help">），
+   所以改成直向堆疊、不再需要 flex-wrap。 */
+.ai-estimate-field{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+/* 預估費用改為純顯示文字（USD 金額），不是輸入框，用紅字粗體強調，跟 .req 必填星號
+   共用同一個紅色 token（claim-detail.css 定義的 --red），維持配色一致。 */
+.ai-cost-value{color:var(--red);font-size:16px;font-weight:800}
+.ai-estimate-hint{color:#164d80;font-size:12.5px}
+/* 「預計節省工時」改版：原本「每週／每月／依專案」是獨立一列的選項按鈕（.ai-choices），
+   「目前工時...，預期導入後工時...」擠在同一句、逗號分隔。先改成頻率下拉選單併入「目前
+   工時」那一行、「預期導入後工時」獨立一行（見六十四），使用者這次要求改回單行、逗號分隔
+   的版型（「目前工時 [每週▾] ○○小時，預計導入後 ○○小時」），只是這次多了頻率下拉選單、
+   第二個標籤文字精簡為「預計導入後」（拿掉「工時」二字與冒號），並保留「共節省」計算結果列
+   獨立一行。把「目前工時／預計導入後」這一整行＋「共節省」都包進同一個 .ai-hours-field
+   容器（.ai-question 底下仍然只有「標籤」＋「這個容器」兩個直接子元素），刻意沿用六十記錄
+   「表單附件」欄位發現的作法，避開這個表單反覆出現好幾次的「.ai-question 第 3 個子元素被
+   grid 自動排到 140px 窄欄」問題，不需要再額外補 grid-column 規則。 */
+.ai-hours-field{display:flex;flex-direction:column;gap:8px}
+/* 這一行合併回單行、逗號分隔後，內容變多（標籤文字＋下拉選單＋兩個輸入框），在側欄
+   （.ai-detail-side）較窄的寬度下容易只有最後的「小時」二字被擠到換行。下拉選單跟輸入框
+   寬度、欄位間距都比上一版（六十四，分兩行時的寬鬆設定）略為收緊，讓常見桌機寬度下這一行
+   能夠完整顯示，超出可用寬度時仍會靠 flex-wrap 整組自然換行（不會裁切或溢出）。 */
+.ai-hours-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ai-hours-row select.control{width:auto!important;flex:0 0 76px;min-width:0}
+.ai-hours-row input.control{width:64px!important;flex:0 0 64px}
+/* 「共節省」計算結果列：數字用跟必填星號、預估費用一致的紅色 token 強調；沒有足夠輸入
+   （目前工時或預期導入後工時任一為空）時，syncHoursSaved()（ai-tool-detail.js）顯示「—」
+   佔位，不顯示誤導性的 0 或 NaN。 */
+.ai-hours-summary{margin:2px 0 0;color:#344054;font-size:13.5px}
+.ai-hours-summary b{color:var(--red);font-weight:800}
+
+/* claim-detail.css 的 .control{width:100%} 也套用在 checkbox／radio 上，導致核取方塊被撐成
+   跟欄位一樣寬（既有問題，本表單限定在 .ai-form 內修正）。 */
+.ai-form input[type="checkbox"],
+.ai-form input[type="radio"]{
+  width:16px!important;
+  min-width:16px!important;
+  max-width:16px!important;
+  height:16px!important;
+  min-height:16px!important;
+  padding:0!important;
+  margin:0!important;
+  flex:0 0 16px!important;
+}
+.ai-form .ai-choices label{
+  width:auto!important;
+  min-width:0!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  white-space:nowrap!important;
+}
+.ai-form .ai-choices{
+  align-items:center!important;
+  flex-direction:row!important;
+}
+/* 「AI 工具／方案」選項使用者要求每個選項各自一行（不要「其他」跟上一個選項擠在
+   同一行再折行），跟「申請項目」「預計節省工時」等其他選項清單維持水平排列、空間不夠
+   才換行的預設行為不同，用這個修飾 class 明確改成直向堆疊；優先權要贏過上面
+   .ai-form .ai-choices 的 !important 規則，所以這裡也用 !important 且多疊一個 class。 */
+.ai-form .ai-choices.ai-choices-col{
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  gap:10px!important;
+}
+.ai-form .ai-question>.label{
+  width:auto!important;
+  white-space:nowrap!important;
+}
+@media(max-width:700px){
+  .ai-form .ai-choices{align-items:flex-start!important;flex-direction:row!important;flex-wrap:wrap!important}
+  .ai-form .ai-choices.ai-choices-col{flex-direction:column!important}
+}
+
+/* 「預計產生成效」下方新增「表單附件」欄位：沿用請款單／雲端服務與資源申請既有的
+   .attachment-area／.file-card／.upload-btn（定義在本頁已引入的 claim-detail.css，
+   本表單不需要再複製一份），只有一個範例已上傳檔案、按鈕未綁定實際上傳／刪除邏輯，
+   比照雲端服務與資源申請內容頁既有的 Demo 慣例（見待辦 6）。這個 <label> 只有「標籤」
+   ＋「這個包裝 div」兩個子元素（.attachment-area 與 .help 都包在同一個 div 裡），刻意
+   避免變成第 3 個直接子元素，才不會重蹈五十六～五十九修過好幾次的「grid 自動排列跑到
+   140px 窄欄」問題。claim-detail.css 的 .file-card{min-width:310px} 是設計給較寬的左欄
+   使用，本表單「預期效益」在右側欄（.ai-detail-side），內容欄寬度在常見桌機解析度下
+   可能只有 280～350px，比 310px 還窄，這裡另外覆蓋成可以縮小，避免撐爆版面。 */
+.ai-attach-field{display:grid;gap:8px}
+.ai-attach-field .file-card{min-width:0;width:100%}
+.ai-attach-field .upload-btn{max-width:100%}
+
+/* 執行紀錄：本表單僅有「執行人員」「執行日期」兩個欄位（比雲端權限申請的執行紀錄精簡，
+   無「執行內容」），樣式沿用一般 .cloud-stack 型態的堆疊排法，改名 .ai-stack 避免誤用
+   到其他表單的 class。 */
+.ai-stack{display:grid;gap:14px}
+.ai-stack>label{display:flex;flex-direction:column;gap:7px}
+
+/* 簽核意見彙整：只列出有填寫意見的關卡，皆無意見時改顯示提示文字
+  （比照《EIP_雲端服務與資源申請》ICS-015／《EIP_採購請購單》FPU-C26／
+  《EIP_雲端權限申請》既有規則） */
+.opinion-list{display:grid;gap:0}
+.opinion-list article{padding:12px 15px;border-bottom:1px solid #e4e9ef}
+.opinion-list article:last-child{border-bottom:0}
+.opinion-list article>div{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:#526275;font-size:12px}
+.opinion-list article b{color:#202936;font-size:13px}
+.opinion-list article p{margin:7px 0 0;padding:8px 10px;border-radius:5px;background:#fff8df;color:#4d3b00;font-size:14px;font-weight:700;line-height:1.55}
+#opinionSummary #opinionEmpty{margin:0;padding:12px 15px}
+
+/* 簽核路線：本表單為 6 關卡（課級主管→部級主管→MIS審核→技術副部長→技術部長→
+   副總經理／總經理擇一），最後一關依申購金額換算新臺幣門檻二擇一，用小字註記於
+   流程下方，比照操作手冊 5.1 流程圖「董事會報告」附註的作法（不畫進卡片本身）。 */
+.route-threshold-note{margin:10px 15px 0;color:#667085;font-size:12.5px;line-height:1.6}

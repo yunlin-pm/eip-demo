@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>營運總覽（未來擴展）｜Bibian EIP</title>
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/shell.css">
+  <link rel="stylesheet" href="../assets/css/eip-layout.css">
+  <link rel="stylesheet" href="../assets/css/overview-future.css">
+</head>
+<body class="eip-shared-layout" data-eip-root="../" data-eip-module="overview" data-eip-sections="" data-eip-l2="" data-eip-l3="" data-eip-user="陳庭瑋 (T037)">
+  <header class="eip-shell-bar demo-preview-bar">
+    <a class="eip-shell-brand demo-preview-brand" href="../index.html" aria-label="返回系統功能目錄"><span class="demo-back" aria-hidden="true">‹</span><b class="demo-badge">Demo</b><strong>Bibian EIP</strong></a>
+
+
+    <span class="future-scene">畫面情境：未來擴展</span>
+  </header>
+  <div id="eipAppHeader"></div>
+
+  <main class="future-overview">
+    <nav class="breadcrumb" aria-label="麵包屑">總覽　›　未來擴展</nav>
+
+
+    <div data-view="employee">
+
+
+      <section class="employee-today-info" aria-label="今日資訊">
+        <strong>今日資訊</strong>
+        <time datetime="2026-09-23">9/23</time>
+        <span class="jp-info"><i class="jp">JP</i>日本假期中｜秋分の日</span>
+        <span class="tw-info"><i class="tw">TW</i>台灣假期中｜教師節</span>
+        <span class="company-info"><i>CBS</i>福委活動｜剝柚子大賽</span>
+      </section>
+
+      <section class="delegation-alerts" aria-label="代理簽核提醒">
+        <a class="delegation-alert leave" href="delegates/my-delegate.html">
+          <span class="delegation-alert-label">我的代理安排</span>
+          <strong>09/26－09/28 已設定李赫宰 (B123) 代理您的簽核工作</strong>
+          <b>查看設定 ›</b>
+        </a>
+        <a class="delegation-alert acting" href="overview/list.html?status=toSign">
+          <span class="delegation-alert-label">我的代理任務</span>
+          <strong>09/22－09/25 您需代理李東海 (B125) 的簽核工作</strong>
+          <b>待處理 2 筆 ›</b>
+        </a>
+      </section>
+
+      <section class="employee-summary" aria-label="我的工作摘要">
+        <a class="has-count" href="overview/list.html?status=toSign"><b>3</b><span>我的待辦</span><small>簽核、補件與執行任務</small></a>
+        <a class="has-count" href="overview/list.html?status=pending"><b>2</b><span>申請中表單</span><small>可查看目前簽核關卡</small></a>
+        <a class="has-count" href="#announcements"><b>3</b><span>未讀公告</span><small>其中 1 則為重要公告</small></a>
+        <button class="has-count" type="button" data-open-delegation><b>1</b><span>我的代理</span><small>查看即將開始的代理排程</small></button>
+      </section>
+
+
+      <div class="employee-grid employee-primary-grid">
+        <section class="panel employee-tasks">
+          <div class="panel-head"><div><p class="panel-eyebrow">MY WORK</p><h2>我的待辦</h2></div><a href="overview/list.html?status=toSign">查看全部 ›</a></div>
+          <div class="task-list">
+            <a href="forms/claim-detail.html?mode=approve"><span class="task-type approval">待簽核</span><div><strong>請款單 CBS-PAY-2026-00124</strong><small>申請人：陳庭瑋 (T037)・等待 1 天</small></div><b>今日</b></a>
+            <a href="purchases/detail.html?mode=edit"><span class="task-type revision">被退回</span><div><strong>採購請購單退回待處理</strong><small>請補充第二家廠商詢價資料</small></div><b>09/24</b></a>
+            <a href="cloud-resources/detail.html?mode=view"><span class="task-type execute">待執行</span><div><strong>雲端資源申請已核准</strong><small>請完成 VM 建立並回報執行結果</small></div><b>09/25</b></a>
+          </div>
+        </section>
+
+        <section class="panel" id="announcements">
+          <div class="panel-head"><div><p class="panel-eyebrow">COMPANY NEWS</p><h2>公司公告</h2></div><a href="#">更多公告 ›</a></div>
+          <div class="news-list"><a href="#"><time>09/23</time><div><strong>2026 年中秋連假及出勤提醒</strong><small>人事總務課・重要公告</small></div><span class="new-badge">NEW</span></a><a href="#"><time>09/20</time><div><strong>EIP 表單申請功能第一階段上線</strong><small>資訊系統部</small></div></a><a href="#"><time>09/18</time><div><strong>辦公室設備維護通知</strong><small>行政管理部</small></div></a></div>
+        </section>
+      </div>
+
+      <div class="employee-grid employee-secondary-grid">
+        <section class="panel employee-calendar" aria-labelledby="employeeCalendarTitle">
+          <div class="panel-head"><div><p class="panel-eyebrow">CALENDAR</p><h2 id="employeeCalendarTitle">行事曆</h2></div><button type="button" data-open-holidays>更多 ›</button></div>
+          <div class="employee-calendar-compact">
+            <div class="calendar-compact-row calendar-compact-head"><strong>日期</strong><strong><i class="tw">TW</i>台灣</strong><strong><i class="jp">JP</i>日本</strong></div>
+            <div class="calendar-compact-row is-today"><time>9/23</time><span class="holiday-cell tw-holiday">教師節</span><span class="holiday-cell jp-holiday">秋分の日</span></div>
+            <div class="calendar-compact-row"><time>9/24</time><span>—</span><span>—</span></div>
+            <div class="calendar-compact-row"><time>9/25</time><span>—</span><span>—</span></div>
+            <div class="calendar-compact-row"><time>9/26</time><span>—</span><span>—</span></div>
+            <div class="calendar-compact-row"><time>9/27</time><span>—</span><span>—</span></div>
+          </div>
+        </section>
+
+        <section class="panel bibian-updates" aria-labelledby="bibianUpdatesTitle">
+          <div class="panel-head"><div><p class="panel-eyebrow">BIBIAN UPDATES</p><h2 id="bibianUpdatesTitle">Bibian 動態</h2></div><a href="#">查看更多 ›</a></div>
+          <a class="bibian-update-card" href="#">
+            <img src="../assets/img/activities/2026-pomelo-event.jpg" alt="Bibian 同仁參與中秋剝柚子活動合照">
+            <div><span>活動花絮</span><time>2026/09/23</time></div>
+            <strong>中秋活動｜剝柚子大賽</strong>
+            <p>同仁一起挑戰剝柚子速度，看看本次活動的精彩紀錄。</p>
+          </a>
+        </section>
+
+        <section class="panel quick-panel">
+          <div class="panel-head"><div><p class="panel-eyebrow">QUICK ACCESS</p><h2>快速申請</h2></div></div>
+          <div class="quick-grid">
+            <a href="forms/claim-detail.html?mode=new"><i>＄</i><span>請款單</span></a>
+            <a href="purchases/detail.html?mode=new"><i>購</i><span>採購請購</span></a>
+            <a href="memos/detail.html?mode=new"><i>簽</i><span>簽呈單</span></a>
+            <a href="cloud-resources/detail.html?mode=new"><i>雲</i><span>雲端資源</span></a>
+            <a href="#"><i>印</i><span>公司印鑑</span></a>
+            <a href="#"><i>＋</i><span>更多服務</span></a>
+          </div>
+        </section>
+      </div>
+
+      <section class="panel resource-panel employee-guide" aria-labelledby="employeeGuideTitle">
+        <div class="panel-head"><div><p class="panel-eyebrow">EMPLOYEE GUIDE</p><h2 id="employeeGuideTitle">員工指南</h2><p class="panel-description">快速查找公司、系統、制度、福利與日常工作資訊。</p></div></div>
+        <div class="resource-grid">
+          <a href="#"><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 10h2m2 0h2m-6 4h2m2 0h2m-6 4h6"/></svg></i><div><strong>認識公司</strong><small>公司簡介、部門職掌與常用名詞</small></div></a>
+          <a href="#"><i aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 21h8m-4-5v5m4-11 2 2 3-4"/></svg></i><div><strong>系統與權限</strong><small>系統用途、操作說明與權限申請</small></div></a>
+          <a href="#"><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5zM14 3v5h5M8 12h8m-8 4h8"/></svg></i><div><strong>制度與必修</strong><small>公司規章、個資、資安與軟體規範</small></div></a>
+          <a href="#"><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 10h16v11H4zM2 7h20v3H2zM12 7v14M12 7H8.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7zm0 0h3.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z"/></svg></i><div><strong>員工福利</strong><small>福利辦法、特約商店與福委活動</small></div></a>
+          <a href="#"><i aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M7 6h10M5 8v4c0 3 3 4 7 4m7-8v4c0 3-3 4-7 4"/></svg></i><div><strong>常用流程</strong><small>請假、加班、請款與採購流程</small></div></a>
+          <a href="#"><i aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.5"/><path d="M3 21v-2c0-3 2.5-5 6-5s6 2 6 5v2m0-6c3 0 6 1.5 6 4v2"/></svg></i><div><strong>聯絡窗口</strong><small>HR、資訊、行政與財務服務窗口</small></div></a>
+        </div>
+      </section>
+      <div class="holiday-modal" id="holidayModal" hidden>
+        <div class="delegation-backdrop" data-close-holidays></div>
+        <section class="holiday-dialog" role="dialog" aria-modal="true" aria-labelledby="holidayDialogTitle">
+          <header><div><p class="panel-eyebrow">HOLIDAY CALENDAR</p><h2 id="holidayDialogTitle">台灣／日本國定假日</h2></div><button type="button" data-close-holidays aria-label="關閉">×</button></header>
+          <div class="holiday-dialog-body">
+            <div class="holiday-full-head"><span>日期</span><span>星期</span><span>台灣</span><span>日本</span></div>
+            <div><time>09/23</time><span>三</span><span>—</span><strong><i class="jp">JP</i>秋分の日</strong></div>
+            <div><time>09/28</time><span>一</span><strong><i class="tw">TW</i>教師節</strong><span>—</span></div>
+            <div><time>10/10</time><span>六</span><strong><i class="tw">TW</i>國慶日</strong><span>—</span></div>
+            <div><time>11/03</time><span>二</span><span>—</span><strong><i class="jp">JP</i>文化の日</strong></div>
+            <div><time>11/23</time><span>一</span><span>—</span><strong><i class="jp">JP</i>勤労感謝の日</strong></div>
+            <p>※ Demo 假日資料；正式系統將由假日資料來源同步更新。</p>
+          </div>
+          <footer><button type="button" data-close-holidays>關閉</button></footer>
+        </section>
+      </div>
+      <div class="delegation-modal" id="delegationModal" hidden>
+        <div class="delegation-backdrop" data-close-delegation></div>
+        <section class="delegation-dialog" role="dialog" aria-modal="true" aria-labelledby="delegationTitle">
+          <header><div><p class="panel-eyebrow">DELEGATION SCHEDULE</p><h2 id="delegationTitle">我的代理</h2></div><button type="button" data-close-delegation aria-label="關閉">×</button></header>
+          <div class="delegation-dialog-body">
+            <p class="dialog-hint">代理資訊分為「您休假時由誰代理」及「您需要代理誰」，生效期間將持續顯示於總覽。</p>
+            <div class="delegation-dialog-list">
+              <article><span class="delegation-state scheduled">代理安排</span><div><strong>代理人：李赫宰 (B123)</strong><small>代理您的簽核工作</small></div><time>2026/09/26－2026/09/28</time></article>
+              <article><span class="delegation-state active">代理中</span><div><strong>被代理人：李東海 (B125)</strong><small>目前有 2 筆簽核案件待處理</small></div><time>2026/09/22－2026/09/25</time></article>
+            </div>
+          </div>
+          <footer><button type="button" data-close-delegation>關閉</button><a href="delegates/my-delegate.html">查看代理設定</a></footer>
+        </section>
+      </div>
+    </div>
+
+
+
+    <p class="demo-note">※ 本頁為 Roadmap 完整導入後的情境示意；件數與內容為 Demo 資料，用於呈現未來員工入口整合情境。</p>
+  </main>
+
+  <div id="eipAppFooter"></div>
+  <script src="../assets/js/eip-layout.js"></script>
+  <script src="../assets/js/overview-future.js"></script>
+</body>
+</html>
