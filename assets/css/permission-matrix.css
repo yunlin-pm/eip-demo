@@ -1,0 +1,29 @@
+/* 系統權限「勾選矩陣」共用樣式（permission-matrix.js）：系統權限群組內容頁與員工內容頁共用。
+   L1 為藍色標題列，其下每個功能一列：左側功能名稱格（純文字，無勾選框）（淺藍底），右側為操作權限勾選（固定三個欄位，
+   沒有的操作留白，讓各列的同一種權限上下對齊）。 */
+.pm{border:1px solid #d3dde7;border-bottom:0;font-size:14px;color:#1f2d3d}
+.pm-band{display:flex;align-items:center;min-height:44px;padding:0 16px;background:#d8e9f5;border-bottom:1px solid #d3dde7;font-weight:700}
+.pm-row{display:grid;grid-template-columns:minmax(220px,340px) 1fr;border-bottom:1px solid #d3dde7}
+.pm-fn{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 28px;min-height:30px;background:#eef5fb;border-right:1px solid #d3dde7}
+.pm-acts{display:grid;grid-template-columns:repeat(2,minmax(120px,190px));align-items:center;padding:6px 16px;background:#fff}
+.pm-act{display:flex;align-items:center;gap:8px;cursor:pointer}
+.pm-act-empty{display:block}
+.pm-bandnote{margin-left:12px;color:#4b6178;font-size:12px;font-weight:400}
+.pm input[type=checkbox]{width:16px;height:16px;margin:0;flex:0 0 auto;accent-color:#164d80;cursor:pointer}
+.pm-readonly label,.pm-readonly input[type=checkbox]{cursor:default}
+.pm-readonly .pm-band{background:#e6f0f8}
+.pm-empty{margin:0;padding:18px;border-bottom:1px solid #d3dde7;color:#657384;font-size:14px}
+@media(max-width:700px){
+  .pm-row{grid-template-columns:1fr}
+  .pm-fn{border-right:0;border-bottom:1px solid #e4ebf2;padding-left:14px}
+  .pm-acts{grid-template-columns:repeat(2,1fr);gap:8px 12px;padding:8px 14px}
+  .pm-fn{flex-wrap:wrap}
+  .pm-act-empty{display:none}
+}
+
+/* 所有內部帳號預設具有：灰色打勾、不可取消。 */
+.pm-locked,.pm-locked input[type=checkbox]{cursor:not-allowed}
+.pm-locked span{color:#8a97a6}
+.pm-locked input[type=checkbox]:disabled{opacity:.65}
+.pm-legend{margin:0 0 10px;color:#617286;font-size:13px}
+.pm-legend b{color:#8a97a6}

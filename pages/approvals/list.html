@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>請款單管理｜Bibian EIP Demo</title>
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/shell.css">
+  <link rel="stylesheet" href="../../assets/css/eip-layout.css">
+  <link rel="stylesheet" href="../../assets/css/claim-list.css">
+<link rel="stylesheet" href="../../assets/css/list-management.css"></head>
+<body class="eip-shared-layout eip-list-page" data-eip-root="../../" data-eip-module="forms" data-eip-sections="admin,info,delegate" data-eip-l2="admin" data-eip-l3="claims" data-eip-user="陳庭瑋 (T037)">
+  <header class="eip-shell-bar demo-preview-bar"><a class="eip-shell-brand demo-preview-brand" href="../../index.html" aria-label="返回系統功能目錄"><span class="demo-back" aria-hidden="true">‹</span><b class="demo-badge">Demo</b><strong>Bibian EIP</strong></a></header><div id="eipAppHeader"></div>
+
+  <main>
+    <div class="breadcrumb">總覽　›　表單申請／簽核　›　請款單管理</div>
+    <div class="title-row">
+      <div><h1>請款單管理</h1></div>
+      <a class="btn primary" href="../forms/claim-detail.html?mode=new">＋ 新增請款單</a>
+    </div>
+
+    <div class="mobile-list-category"><label for="mobileTab">表單分類</label><select id="mobileTab"><option value="mine">我的申請單</option><option value="todo">待簽核表單</option><option value="signed">已簽核表單</option><option value="all">全部表單</option></select></div>
+
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-tab="mine">我的申請單</button>
+      <button class="tab" data-tab="todo">待簽核表單</button>
+      <button class="tab" data-tab="signed">已簽核表單</button>
+      <button class="tab" data-tab="all">全部表單</button>
+    </div>
+
+    <section class="filters" aria-label="查詢條件">
+      <div class="field"><label>簽核狀態</label><details class="multi-select" id="statusFilter"><summary id="statusSummary">全部</summary><div class="multi-options"><label><input type="checkbox" value="草稿">草稿</label><label><input type="checkbox" value="申請中">申請中</label><label><input type="checkbox" value="簽核中">簽核中</label><label><input type="checkbox" value="已核准">已核准</label><label><input type="checkbox" value="已退回">已退回</label></div></details></div>
+      <div class="field"><label for="subject">支出科目</label><select id="subject"><option value="">全部</option><option>文具用品</option><option>水電費</option><option>交通費</option><option>交際費</option><option>保險費</option><option>修繕費</option><option>旅費（不含海外出差）</option><option>書報雜誌</option><option>租金支出</option><option>訓練費</option><option>勞務費（委任顧問）</option><option>郵電費</option><option>運費</option><option>廣告費</option><option>薪資／獎金類</option><option>職工福利</option><option>雜項購置</option><option>其他費用</option><option>代付款（BBN）</option></select></div>
+      <div class="field"><label for="company">請款公司</label><select id="company"><option value="">全部</option><option>網家跨境服務股份有限公司</option><option>比比昂株式會社</option><option>空中補給股份有限公司</option></select></div>
+      <div class="field wide"><label for="keyword">關鍵字</label><div class="keyword"><select id="keywordType"><option value="all">全部</option><option value="applicantName">申請人姓名</option><option value="applicantId">申請人員編</option><option value="no">請款單號</option><option value="payee">匯款戶名</option></select><input id="keyword" placeholder="申請人姓名／員編／請款單號／匯款戶名"></div></div>
+      <div class="field"><label>申請日期</label><div class="range"><input id="applyFrom" placeholder="YYYYMMDD"><span>～</span><input id="applyTo" placeholder="YYYYMMDD"></div></div>
+      <div class="field"><label>核准日期</label><div class="range"><input id="approveFrom" placeholder="YYYYMMDD"><span>～</span><input id="approveTo" placeholder="YYYYMMDD"></div></div>
+      <div class="filter-actions"><button class="btn" id="clear">清除</button><button class="btn primary" id="search">查詢</button></div>
+    </section>
+
+    <div class="resultbar">
+      <span>查詢共 <b id="count">0</b> 筆<span id="selectedText">，已勾選 <b id="selected">0</b> 筆</span></span>
+      <div><button class="btn compact" id="withdraw" disabled>撤回</button><button class="btn compact" id="remove" disabled>刪除</button></div>
+    </div>
+
+    <div class="mobile-claim-list" id="mobileCards"></div>
+    <div class="mobile-empty" id="mobileEmpty" hidden>查無符合條件的請款單</div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th><input type="checkbox" id="selectAll" aria-label="全選"></th><th>簽核狀態</th><th>待簽核者</th><th>操作</th><th>請款單號</th><th>請款公司</th><th>支出科目</th><th class="right">請款金額</th><th>申請人</th><th>申請日期</th><th>核准日期</th><th>列印</th><th>複製</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div class="empty" id="empty" hidden>查無符合條件的請款單</div>
+    </div>
+    <div class="pager"><button disabled>‹</button><span>1</span><button disabled>›</button></div>
+  </main>
+  <footer id="eipAppFooter"></footer>
+  <script src="../../assets/js/eip-layout.js"></script>
+  <script src="../../assets/js/claim-list.js"></script>
+</body>
+</html>
+
+

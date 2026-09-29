@@ -1,0 +1,29 @@
+/* 雲端權限申請表專用列印版面；一般畫面隱藏，列印時只顯示本表單。 */
+.permission-print-sheet{display:none}
+@media print{
+  @page{size:A4 portrait;margin:0}
+  body *{visibility:hidden}
+  #permissionPrintSheet,#permissionPrintSheet *{visibility:visible}
+  #permissionPrintSheet{display:block;position:absolute;inset:0 auto auto 0;width:100%;padding:12mm 11mm;color:#17202a;font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;font-size:11px;line-height:1.45;box-sizing:border-box}
+  .permission-print-sheet .print-header{margin:0 0 12px;text-align:center}
+  .permission-print-sheet .print-header h1{margin:0;font-size:18px;line-height:1.4}
+  .permission-print-sheet .print-header h2{margin:2px 0 0;font-size:16px;line-height:1.4}
+  .permission-print-sheet .print-table{width:100%;margin:0 0 10px;border-collapse:collapse;table-layout:fixed;break-inside:avoid-page}
+  .permission-print-sheet .print-table caption{caption-side:top;padding:5px 0;text-align:left;font-size:12px;font-weight:700}
+  .permission-print-sheet .print-caption-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+  .permission-print-sheet .print-docno{color:#3e4b59;font-size:11px;font-weight:400;white-space:nowrap}
+  .permission-print-sheet .print-table th,.permission-print-sheet .print-table td{border:1px solid #aeb8c2;padding:6px 7px;text-align:left;vertical-align:top;overflow-wrap:anywhere}
+  .permission-print-sheet .print-table th{width:18%;background:#f0f0f0;font-weight:700}
+  .permission-print-sheet .print-grid-table thead th{width:auto;text-align:center}
+  .permission-print-sheet .print-grid-table tbody td{text-align:left}
+  .permission-print-sheet .print-grid-table tr{break-inside:avoid}
+  .permission-print-sheet .print-approval{font-size:10px}
+  .permission-print-sheet .print-approval th:nth-child(1){width:15%}
+  .permission-print-sheet .print-approval th:nth-child(2){width:18%}
+  .permission-print-sheet .print-approval th:nth-child(3){width:13%}
+  .permission-print-sheet .print-approval th:nth-child(4){width:14%}
+  .permission-print-sheet .print-approval th:nth-child(5){width:40%}
+  .permission-print-sheet .print-execution th:nth-child(1){width:18%}
+  .permission-print-sheet .print-execution th:nth-child(2){width:22%}
+  .permission-print-sheet .print-execution th:nth-child(3){width:60%}
+}

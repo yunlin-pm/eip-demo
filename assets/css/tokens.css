@@ -1,0 +1,16 @@
+:root {
+  --eip-navy: #173f6d;
+  --eip-blue: #0969c7;
+  --eip-blue-soft: #eaf3fb;
+  --eip-ink: #202936;
+  --eip-muted: #667085;
+  --eip-line: #d7dde5;
+  --eip-surface: #ffffff;
+  --eip-canvas: #f4f6f8;
+  --eip-success: #1f9d55;
+  --eip-warning: #e5a000;
+  --eip-danger: #d9364b;
+  --eip-radius: 8px;
+  --eip-shadow: 0 8px 24px rgba(31, 42, 55, .08);
+  --eip-font: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+}

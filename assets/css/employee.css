@@ -1,0 +1,91 @@
+/* Employee module: page-specific extras layered on the shared claim-list.css / claim-detail.css frame (same architecture as organization.css / cloud-permission.css / ai-tool.css). */
+[hidden]{display:none!important}
+.field-note{display:block;margin-top:6px;color:#617286;font-size:13px;line-height:1.4}
+
+/* 員工內容頁「新增員工」基本資料面板：欄位獨佔一列＋帳號頭像側欄，列版面規則比照
+   organization.css 的 .org-demand-grid（該樣式定義在對方檔案，本頁未引入，故在此
+   複製一份必要規則），另加右側帳號頭像區塊。 */
+.emp-basic-body{display:flex;gap:28px;align-items:flex-start}
+.emp-demand-grid{flex:1;min-width:0;display:grid;grid-template-columns:1fr;gap:14px}
+.emp-demand-grid>label{display:grid;grid-template-columns:140px 1fr;column-gap:24px;row-gap:6px;align-items:start;padding:0 0 14px;border-bottom:1px solid #e4e8ed}
+.emp-demand-grid>label:last-child{border-bottom:0;padding-bottom:0}
+.emp-demand-grid>label>.label{padding-top:6px;color:#344054;font-size:14px}
+.emp-demand-grid>label>.field-note{grid-column:2}
+.emp-demand-grid .control-static{padding-top:6px;color:#617286}
+@media(max-width:700px){.emp-basic-body{flex-direction:column}.emp-demand-grid>label{grid-template-columns:1fr}.emp-demand-grid>label>.field-note{grid-column:1}}
+
+/* 表格橫向捲動容器，比照 cloud-permission.css 的 .table-scroll 既有樣式（同上，
+   複製必要規則）。 */
+.table-scroll{overflow-x:auto}
+
+.emp-avatar-box{flex:0 0 132px;display:flex;flex-direction:column;align-items:center;gap:10px;padding-top:4px;text-align:center}
+.emp-avatar-box>.label{color:#344054;font-size:14px}
+.emp-avatar-box .avatar{width:88px;height:88px;border-radius:50%;background:#dceaf6;border:1px solid #c8d9ea}
+.emp-avatar-actions{display:flex;align-items:center;gap:8px;font-size:13px;color:#98a4b3}
+.emp-avatar-actions button{border:0;background:transparent;color:#0969c7;font-weight:700;cursor:pointer;padding:0;font:inherit}
+
+/* 帳號對應公司組織／帳號權限：可新增列的表格，比照 cloud-permission.css 的
+   .detail-table／.mini／.link-button 既有樣式（同上，複製必要規則）。 */
+.detail-table{width:100%;border-collapse:collapse}
+.detail-table th,.detail-table td{padding:9px;border-bottom:1px solid #e2e8f0;text-align:left;vertical-align:top}
+.detail-table th{background:#f5f7f9;color:#344054}
+.detail-table td:last-child{white-space:nowrap}
+.mini,.link-button{border:0;background:transparent;color:#0969c7;font-weight:700;cursor:pointer;font:inherit}
+.mini{padding:6px;margin-top:10px}
+.link-button{padding:4px}
+.perm-preview-table label{display:flex;align-items:center;gap:6px}
+.perm-preview-table input[type=checkbox]{pointer-events:none}
+
+/* 帳號權限：自訂／指定權限群組 單選切換，比照 cloud-permission.css 的 .cloud-choices
+   既有樣式（同上，複製必要規則）。 */
+.cloud-question{display:grid;grid-template-columns:140px 1fr;column-gap:24px;align-items:start}
+.cloud-choices{display:flex;align-items:center;flex-wrap:wrap;gap:12px 18px;min-height:34px}
+.cloud-choices label{display:flex;align-items:center;gap:6px}
+.cloud-choices select{min-width:180px}
+.perm-block{margin-top:14px}
+.cloud-choices .mini{margin-top:0}
+@media(max-width:700px){.cloud-question{grid-template-columns:1fr}}
+
+/* 簽核資格：可複選的群組標籤（chips），新增後以標籤呈現、可個別移除。 */
+.signoff-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;min-height:20px}
+.signoff-tag{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#eef4fb;border:1px solid #cfe0ef;color:#1e4976;font-size:13px}
+.signoff-tag-remove{border:0;background:transparent;color:#5b7690;font-size:15px;line-height:1;cursor:pointer;padding:0}
+
+.employee-list .filters{border-top:1px solid var(--line)}
+.employee-list table{min-width:1240px}
+
+/* 對應公司組織 詳情彈窗，比照 organization.css 的 .audit-modal 既有樣式（同上，
+   複製必要規則）。 */
+.audit-modal{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:24px}
+.audit-backdrop{position:absolute;inset:0;background:#10182899}
+.audit-dialog{position:relative;width:min(640px,100%);max-height:min(600px,90vh);overflow:auto;border-radius:10px;background:#fff;box-shadow:0 24px 64px #10182855}
+.audit-dialog>header{position:sticky;top:0;z-index:1;display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #d8e0e8;background:#fff}
+.audit-dialog h2{margin:0;font-size:18px}
+.audit-close{width:34px;height:34px;border:0;border-radius:6px;background:#eef1f4;font-size:24px;line-height:1;cursor:pointer}
+.audit-content{padding:16px}
+.audit-content .identity{margin:0 0 12px;color:#344054;font-size:13px;line-height:1.7}
+.emp-toast{position:fixed;right:24px;bottom:24px;display:none;padding:12px 18px;border-radius:4px;background:#223548;color:#fff;box-shadow:0 8px 25px rgba(0,0,0,.22);z-index:60}
+.emp-toast.show{display:block}
+@media(max-width:700px){.audit-modal{padding:10px}.audit-dialog{max-height:92vh}}
+
+/* 帳號對應公司組織：既有列唯讀，新增時另開選擇區塊。 */
+.emp-org-add{display:grid;grid-template-columns:minmax(220px,1fr) minmax(280px,1.5fr) auto;gap:12px;align-items:end;margin-top:12px;padding:14px;border:1px solid #d8e0e8;border-radius:7px;background:#f8fafc}
+.emp-org-add label{display:grid;gap:5px}
+.emp-org-add .label{margin:0}
+.emp-org-add-actions{display:flex;gap:8px;align-items:center;padding-bottom:1px;white-space:nowrap}
+@media(max-width:800px){.emp-org-add{grid-template-columns:1fr}.emp-org-add-actions{justify-content:flex-end}}
+
+
+/* 系統權限：矩陣（permission-matrix.css）與前後說明文字之間的間距。 */
+.perm-block>.field-note{margin:10px 0}
+
+/* 簽核資格彈窗：共用列表樣式會替 table 設定較大的最小寬度，導致彈窗內出現橫向捲動、
+   「說明」欄被截掉，這裡讓彈窗內的表格依彈窗寬度自適應。 */
+.audit-content .detail-table{min-width:0;width:100%}
+.audit-content .detail-table th,.audit-content .detail-table td{white-space:normal}
+
+/* 停用帳號：檢核／確認彈窗（樣式比照 organization.css 的確認彈窗） */
+#deactivateModal .confirm-dialog{width:min(520px,100%)}
+.confirm-text{margin:0 0 12px;color:#344054;font-size:14px;line-height:1.6}
+.confirm-list{margin:0 0 16px;padding-left:20px;color:#1f2d3d;font-size:14px;line-height:1.7}
+.confirm-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:6px}

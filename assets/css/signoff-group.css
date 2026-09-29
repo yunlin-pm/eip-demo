@@ -1,0 +1,42 @@
+/* 簽核資格群組管理模組：疊加在共用 claim-list.css / claim-detail.css 骨架上的頁面專屬樣式（架構比照 organization.css / employee.css / permission-group.css）。 */
+[hidden]{display:none!important}
+.field-note{display:block;margin-top:6px;color:#617286;font-size:13px;line-height:1.4}
+
+/* 新增／編輯面板：欄位獨佔一列，比照 permission-group.css 的 .pg-demand-grid 既有樣式
+   （同上，複製必要規則）。 */
+.sg-demand-grid{display:grid;grid-template-columns:1fr;gap:14px}
+.sg-demand-grid>label{display:grid;grid-template-columns:140px 1fr;column-gap:24px;row-gap:6px;align-items:start;padding:0 0 14px;border-bottom:1px solid #e4e8ed}
+.sg-demand-grid>label:last-child{border-bottom:0;padding-bottom:0}
+.sg-demand-grid>label>.label{padding-top:6px;color:#344054;font-size:14px}
+.sg-demand-grid>label>.field-note{grid-column:2}
+.sg-static{padding-top:6px;color:#1f2d3d;font-size:14px;line-height:1.4}
+.sg-demand-grid textarea.control{min-height:72px;resize:vertical;font:inherit}
+@media(max-width:700px){.sg-demand-grid>label{grid-template-columns:1fr}.sg-demand-grid>label>.field-note{grid-column:1}}
+
+/* 成員：可新增列的表格，比照 employee.css 的 .detail-table／.mini／.link-button
+   既有樣式（同上，複製必要規則）。 */
+.detail-table{width:100%;border-collapse:collapse}
+.detail-table th,.detail-table td{padding:9px;border-bottom:1px solid #e2e8f0;text-align:left;vertical-align:top}
+.detail-table th{background:#f5f7f9;color:#344054}
+.detail-table td:last-child{white-space:nowrap}
+.mini,.link-button{border:0;background:transparent;color:#0969c7;font-weight:700;cursor:pointer;font:inherit}
+.mini{padding:6px;margin-top:10px}
+.link-button{padding:4px}
+.table-scroll{overflow-x:auto}
+.sg-member-table td{vertical-align:middle}
+.sg-add-row td{padding:8px 9px;background:#fafbfc}
+.sg-add-inline{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.sg-search{position:relative;width:360px;max-width:100%}
+.sg-search .control{width:100%}
+.sg-suggest{position:fixed;z-index:50;margin:2px 0 0;padding:4px 0;list-style:none;background:#fff;border:1px solid #b8c4d1;border-radius:4px;max-height:240px;overflow:auto;box-shadow:0 8px 20px rgba(0,0,0,.14)}
+.sg-suggest li{padding:7px 12px;font-size:14px;cursor:pointer;line-height:1.35}
+.sg-suggest li small{display:block;color:#617286;font-size:12px}
+.sg-suggest li:hover,.sg-suggest li.active{background:#eef5fb}
+.sg-suggest li.none{color:#617286;cursor:default}
+.sg-suggest li.none:hover{background:transparent}
+
+.signoff-group-list .filters{border-top:1px solid var(--line)}
+.signoff-group-list table{min-width:1500px}
+
+.sg-toast{position:fixed;right:24px;bottom:24px;display:none;padding:12px 18px;border-radius:4px;background:#223548;color:#fff;box-shadow:0 8px 25px rgba(0,0,0,.22);z-index:60}
+.sg-toast.show{display:block}

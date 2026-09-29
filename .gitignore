@@ -1,0 +1,6 @@
+# Demo 開發過程中的逐步備份，內容已在正式檔案中，git 本身就有版本紀錄，不需要再進 repo
+_backup/
+
+# 系統/編輯器雜項檔案
+.DS_Store
+Thumbs.db

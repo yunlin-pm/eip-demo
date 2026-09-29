@@ -1,0 +1,84 @@
+/* Organization module: page-specific extras layered on the shared claim-list.css / claim-detail.css frame (same architecture as cloud-permission.css / ai-tool.css / purchase.css). */
+[hidden]{display:none!important}
+.field-note{display:block;margin-top:6px;color:#617286;font-size:13px;line-height:1.4}
+/* 組織內容頁「新增組織」面板：每個欄位獨佔一列，標題固定寬度在左、輸入內容在右，
+   同一行呈現，比照 cloud-permission.css／cloud-resource.css 的 .cloud-demand-grid
+   既有樣式（該樣式定義在對方檔案，本頁未引入，故在此複製一份必要規則）。 */
+.org-demand-grid{display:grid;grid-template-columns:1fr;gap:14px}
+.org-demand-grid>label{display:grid;grid-template-columns:140px 1fr;column-gap:24px;row-gap:6px;align-items:start;padding:0 0 14px;border-bottom:1px solid #e4e8ed}
+.org-demand-grid>label:last-child{border-bottom:0;padding-bottom:0}
+.org-demand-grid>label>.label{padding-top:6px;color:#344054;font-size:14px}
+.org-demand-grid>label>.field-note{grid-column:2}
+@media(max-width:700px){.org-demand-grid>label{grid-template-columns:1fr}.org-demand-grid>label>.field-note{grid-column:1}}
+.organization-list .filters{border-top:1px solid var(--line)}
+.organization-list table{min-width:1500px}
+/* z-index 拉高到 300：組織樹彈窗曾被頂部導覽列（eip-app-header 等最高到 220）蓋住，
+   點「查看組織樹」後標題列與樹狀圖上半部被導覽列遮蓋，故蓋過所有導覽層級。 */
+.audit-modal{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:24px}
+.audit-backdrop{position:absolute;inset:0;background:#10182899}
+.audit-dialog{position:relative;width:min(900px,100%);max-height:min(720px,90vh);overflow:auto;border-radius:10px;background:#fff;box-shadow:0 24px 64px #10182855}
+.audit-dialog>header{position:sticky;top:0;z-index:1;display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #d8e0e8;background:#fff}
+.audit-dialog h2{margin:0;font-size:18px}
+.audit-close{width:34px;height:34px;border:0;border-radius:6px;background:#eef1f4;font-size:24px;line-height:1;cursor:pointer}
+.audit-content{padding:16px}
+/* 組織樹節點多達 30 餘筆、最深 4 層，內容本身偏長，改成近全螢幕彈窗讓閱讀空間更充足；
+   外層 .audit-modal 的內距也一併縮小，盡量把可用面積留給樹狀圖。 */
+#orgTreeModal.audit-modal{padding:14px}
+#orgTreeModal .audit-dialog{width:min(1400px,96vw);max-height:92vh}
+/* 彈窗標題固定為「公司組織樹」，公司改選在標題下方獨立一列（單選，開啟時預設帶入
+   列表篩選的公司，否則預設網家跨境服務股份有限公司），取代原本開啟前必須先在列表頁
+   選好公司的限制，也避免可互動的下拉選單混在應該固定不變的標題文字裡。 */
+.org-tree-company-row{display:flex;align-items:center;gap:10px;padding-bottom:14px;margin-bottom:14px;border-bottom:1px solid #e4e8ed}
+.org-tree-company-row label{color:#344054;font-size:14px}
+.org-tree-company-row select{width:auto;min-width:240px}
+.org-tree-empty{padding:24px 4px;color:#657384;font-size:14px}
+.org-tree{overflow:auto;font-size:13px}
+.org-tree ul{list-style:none;margin:0;padding-left:20px}
+.org-tree>ul{padding-left:0}
+.org-tree li{position:relative;padding:3px 0 0 16px}
+.org-tree li:before{content:'';position:absolute;left:3px;top:12px;width:10px;border-top:1px solid #93a5b8}
+.org-tree li:after{content:'';position:absolute;left:3px;top:0;height:100%;border-left:1px solid #93a5b8}
+.org-tree li:last-child:after{height:13px}
+.org-tree .node{display:inline-block;padding:4px 8px;border:1px solid #c8d2dc;border-radius:4px;background:#f7f9fb}
+.org-tree .manager{color:#657384;font-size:11px}
+.org-toast{position:fixed;right:24px;bottom:24px;display:none;padding:12px 18px;border-radius:4px;background:#223548;color:#fff;box-shadow:0 8px 25px rgba(0,0,0,.22);z-index:60}
+.org-toast.show{display:block}
+@media(max-width:700px){.audit-modal{padding:10px}.audit-dialog{max-height:92vh}#orgTreeModal.audit-modal{padding:6px}#orgTreeModal .audit-dialog{width:100%;max-height:94vh}}
+
+/* 部門成員彈窗（查看成員） */
+#memberModal .audit-dialog{width:min(900px,100%)}
+.member-identity{margin:0 0 12px;color:#344054;font-size:14px;line-height:1.7}
+.member-label{font-weight:700}
+.member-scroll{overflow-x:auto}
+.organization-list .member-table{width:100%;min-width:0;border-collapse:collapse}
+.member-table th,.member-table td{padding:9px;border-bottom:1px solid #e2e8f0;text-align:left;white-space:nowrap}
+.member-table th{background:#f5f7f9;color:#344054}
+.member-table td.empty{padding:28px;text-align:center;color:#7d8996;white-space:normal}
+.member-note{margin:12px 0 0;color:#657384;font-size:13px}
+#orgRows td:nth-child(6){white-space:nowrap}
+
+/* 組織異動紀錄彈窗（查看異動紀錄） */
+#logModal.audit-modal{padding:14px}
+#logModal .audit-dialog{width:min(1200px,96vw);max-height:92vh}
+.log-filters{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:end;padding-bottom:12px;margin-bottom:10px;border-bottom:1px solid #e4e8ed}
+.log-filter{display:flex;flex-direction:column;gap:4px;font-size:14px;color:#344054}
+.log-filter select{min-width:220px}
+.log-filter-key{flex:1;min-width:220px}
+.log-count{margin:0 0 8px;color:#344054;font-size:14px}
+.log-scroll{overflow:auto}
+.organization-list .log-table{width:100%;min-width:900px;border-collapse:collapse}
+.log-table th,.log-table td{padding:9px;border-bottom:1px solid #e2e8f0;text-align:left;vertical-align:top}
+.log-table th{background:#f5f7f9;color:#344054;white-space:nowrap;position:sticky;top:0}
+.log-table .nowrap{white-space:nowrap}
+.log-table td.empty{padding:28px;text-align:center;color:#7d8996}
+.log-id{margin-top:2px;color:#7d8996;font-size:12px}
+.log-type{display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:700}
+.log-add{background:#e3f4ea;color:#1c6b3a}.log-edit{background:#e4eef9;color:#1d4f86}.log-del{background:#fbe6e6;color:#a62a2a}
+@media(max-width:700px){#logModal.audit-modal{padding:6px}#logModal .audit-dialog{width:100%;max-height:94vh}}
+.log-filter .control{height:34px}
+
+/* 變更部門主管確認彈窗 */
+#managerConfirmModal .confirm-dialog,#deleteConfirmModal .confirm-dialog{width:min(480px,100%)}
+.confirm-change{margin:0 0 10px;font-weight:700;color:#1f2d3d;font-size:14px}
+.confirm-text{margin:0 0 18px;color:#344054;font-size:14px;line-height:1.6}
+.confirm-actions{display:flex;justify-content:flex-end;gap:10px}

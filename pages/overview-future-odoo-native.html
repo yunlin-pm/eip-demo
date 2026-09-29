@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>總覽（未來擴展）Odoo 原生元件版｜Bibian EIP</title><link rel="stylesheet" href="../assets/css/overview-future-odoo-native.css"></head>
+<body>
+<header class="o-navbar"><a href="../index.html" class="o-apps" aria-label="返回目錄">▦</a><strong>Bibian EIP</strong><nav><a class="active" href="#">工作項目</a><a href="#">公告</a><a href="#">行事曆</a><a href="#">員工指南</a><a href="#">代理設定</a></nav><div class="o-systray"><span title="訊息">◉</span><span title="活動">◷ <b>3</b></span><span>網家跨境服務股份有限公司</span><span>Hi 陳庭瑋 (T037)</span><i>陳</i></div></header>
+<section class="o-control-panel">
+  <div class="o-cp-top"><div class="o-title"><small>總覽</small><h1>我的工作項目</h1></div><div class="o-view-switch"><button class="active" type="button" data-view="kanban" title="Kanban">▦</button><button type="button" data-view="list" title="清單">☷</button><button type="button" data-view="calendar" title="行事曆">▣</button></div></div>
+  <div class="o-cp-bottom"><button class="o-new" type="button">新增</button><div class="o-search"><span class="facet">我的工作 ×</span><input id="searchInput" placeholder="搜尋…"><button type="button">⌕</button></div><div class="o-menus"><button type="button">篩選器⌄</button><button type="button">分組依據⌄</button><button type="button">最愛⌄</button></div><div class="o-pager"><span>1-6 / 6</span><button>‹</button><button>›</button></div></div>
+</section>
+<div class="demo-comparison"><span>Odoo 原生元件模擬</span><p>使用標準 Action、Search、Kanban、List 與 Calendar；不使用客製 Dashboard 版型。</p><a href="overview-future.html">查看入口網站概念版</a></div>
+<main>
+  <section class="o-kanban" id="kanbanView">
+    <section class="o-group"><header><button>▾</button><strong>待簽核</strong><span>2</span><button>＋</button></header><div class="o-column">
+      <article class="o-card" data-search="請款單 陳庭瑋 待簽核"><div class="o-card-title"><strong>請款單 CBS-PAY-2026-00124</strong><button>⋮</button></div><p>申請人：陳庭瑋 (T037)</p><p>公司：網家跨境服務股份有限公司</p><footer><span class="o-tag orange">待簽核</span><time>今日到期</time><i title="活動">◷ 1</i></footer></article>
+      <article class="o-card" data-search="採購請購單 羅弘奕 待簽核"><div class="o-card-title"><strong>採購請購單 CBS-PUR-2026-00018</strong><button>⋮</button></div><p>申請人：羅弘奕 (B019)</p><p>申請用途：資訊設備採購</p><footer><span class="o-tag orange">待簽核</span><time>今天送達</time><i>◷</i></footer></article>
+    </div></section>
+    <section class="o-group"><header><button>▾</button><strong>被退回</strong><span>1</span><button>＋</button></header><div class="o-column">
+      <article class="o-card" data-search="AI 工具使用申請 被退回"><div class="o-card-title"><strong>AI 工具使用申請 CBS-IAI-2026-00002</strong><button>⋮</button></div><p>退回原因：請補充預計產生成效</p><p>退回人：蘇柏宇 (M010)</p><footer><span class="o-tag red">被退回</span><time>09/22</time><i>◷</i></footer></article>
+    </div></section>
+    <section class="o-group"><header><button>▾</button><strong>待執行</strong><span>1</span><button>＋</button></header><div class="o-column">
+      <article class="o-card" data-search="雲端服務 資源 待執行"><div class="o-card-title"><strong>雲端服務與資源申請 CBS-ICS-2026-00005</strong><button>⋮</button></div><p>新增／AWS／VM</p><p>申請人：王曉明 (T021)</p><footer><span class="o-tag blue">待執行</span><time>09/25</time><i>◷ 1</i></footer></article>
+    </div></section>
+    <section class="o-group"><header><button>▾</button><strong>申請中</strong><span>2</span><button>＋</button></header><div class="o-column">
+      <article class="o-card" data-search="簽呈單 申請中"><div class="o-card-title"><strong>簽呈單 CBS-GSI-2026-00003</strong><button>⋮</button></div><p>主旨：年度教育訓練計畫</p><p>目前關卡：部級主管</p><footer><span class="o-tag gray">申請中</span><time>09/23</time><i>◷</i></footer></article>
+      <article class="o-card" data-search="雲端權限 申請中"><div class="o-card-title"><strong>雲端權限申請 CBS-ICP-2026-00006</strong><button>⋮</button></div><p>平台／系統：GCP</p><p>目前關卡：MIS 審核</p><footer><span class="o-tag gray">申請中</span><time>09/19</time><i>◷</i></footer></article>
+    </div></section>
+  </section>
+
+  <section class="o-list-view" id="listView" hidden><table><thead><tr><th><input type="checkbox"></th><th>工作類型</th><th>單號</th><th>狀態</th><th>申請人</th><th>目前關卡</th><th>期限</th><th>活動</th></tr></thead><tbody><tr><td><input type="checkbox"></td><td>請款單</td><td>CBS-PAY-2026-00124</td><td><span class="o-tag orange">待簽核</span></td><td>陳庭瑋 (T037)</td><td>部級主管</td><td>今日</td><td>◷ 1</td></tr><tr><td><input type="checkbox"></td><td>採購請購單</td><td>CBS-PUR-2026-00018</td><td><span class="o-tag orange">待簽核</span></td><td>羅弘奕 (B019)</td><td>採購單位</td><td>今日</td><td>◷</td></tr><tr><td><input type="checkbox"></td><td>AI 工具使用申請</td><td>CBS-IAI-2026-00002</td><td><span class="o-tag red">被退回</span></td><td>陳庭瑋 (T037)</td><td>—</td><td>09/22</td><td>◷</td></tr><tr><td><input type="checkbox"></td><td>雲端服務與資源申請</td><td>CBS-ICS-2026-00005</td><td><span class="o-tag blue">待執行</span></td><td>王曉明 (T021)</td><td>執行人員</td><td>09/25</td><td>◷ 1</td></tr></tbody></table></section>
+
+  <section class="o-calendar-view" id="calendarView" hidden><header><button>今天</button><button>‹</button><button>›</button><h2>2026 年 9 月</h2><div><button class="active">月</button><button>週</button><button>日</button></div></header><div class="calendar-grid"><b>一</b><b>二</b><b>三</b><b>四</b><b>五</b><b>六</b><b>日</b><span>21</span><span>22</span><span class="today">23<em>教師節／秋分の日</em><em>請款單簽核到期</em></span><span>24</span><span>25<em>VM 建立期限</em></span><span>26</span><span>27</span></div></section>
+
+  <aside class="native-note"><strong>原生限制</strong><p>公司公告、國定假日、Bibian 動態、員工指南與代理摘要會各自成為 Odoo 選單／資料模型；若要在首頁同時編排成入口網站，仍需開發 OWL Client Action。</p></aside>
+</main>
+<script src="../assets/js/overview-future-odoo-native.js"></script>
+</body></html>
+

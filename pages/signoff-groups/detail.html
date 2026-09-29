@@ -1,0 +1,16 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>簽核資格群組內容頁｜Bibian EIP Demo</title><link rel="stylesheet" href="../../assets/css/tokens.css"><link rel="stylesheet" href="../../assets/css/base.css"><link rel="stylesheet" href="../../assets/css/shell.css"><link rel="stylesheet" href="../../assets/css/eip-layout.css"><link rel="stylesheet" href="../../assets/css/claim-detail.css"><link rel="stylesheet" href="../../assets/css/signoff-group.css"></head><body class="eip-shared-layout" data-eip-root="../../" data-eip-module="organization" data-eip-sections="organization,employees,permission-groups,signoff-groups" data-eip-l2="signoff-groups" data-eip-l3="" data-eip-user="陳庭瑋 (T037)">
+<header class="eip-shell-bar demo-preview-bar"><a class="eip-shell-brand demo-preview-brand" href="../../index.html" aria-label="返回系統功能目錄"><span class="demo-back" aria-hidden="true">‹</span><b class="demo-badge">Demo</b><strong>Bibian EIP</strong></a><label class="demo-scenario">畫面情境<select id="sgPermSelect"><option value="full">查看編輯</option><option value="member">僅可異動成員</option></select></label></header><div id="eipAppHeader"></div>
+<header class="top"><b>▦　組織／員工</b><span class="user">網家跨境服務股份有限公司　陳庭瑋 (T037)</span></header>
+<main><div class="crumb">總覽　›　組織／員工　›　簽核資格群組管理</div><div class="toolbar"><button class="btn" type="button" onclick="location.href='list.html'+sgQ('?')">← 返回列表</button><button class="btn primary" type="button" onclick="saveGroup()">儲存</button></div>
+<div class="main">
+<section class="panel"><h2><span id="detailTitle">新增群組</span>（<b id="sgIdView">新增後由系統產生</b>）</h2><div class="body sg-demand-grid">
+<label><span class="label req">群組名稱</span><input class="control" id="sgName" placeholder="請輸入群組名稱，格式：公司代碼-群組名稱，例如：CBS-總經理"></label>
+<label><span class="label req">適用公司</span><select class="control" id="sgCompany"><option value="">請選擇適用公司</option><option>網家跨境服務股份有限公司</option><option>比比昂株式會社</option><option>空中補給股份有限公司</option></select><small class="field-note">每個群組屬於單一公司，成員僅能選擇帳號對應公司組織包含此公司的員工；各公司請分別建立群組</small></label>
+<label><span class="label">說明</span><input class="control" id="sgDesc" maxlength="30" placeholder="請輸入群組用途說明（最多 30 字）"></label>
+</div></section>
+
+<section class="panel"><h2>成員</h2><div class="body"><p class="field-note">此群組的成員，即為表單簽核設定中可指定此簽核資格的候選人；同一人可同時屬於多個簽核資格群組。</p><div class="table-scroll"><table class="detail-table sg-member-table"><thead><tr><th>帳號姓名</th><th>帳號暱稱</th><th>員工編號</th><th>部門</th><th>移除</th></tr></thead><tbody><tr class="sg-add-row"><td colspan="5"><div class="sg-add-inline"><div class="sg-search"><input class="control" id="sgMemberSearch" type="text" autocomplete="off" placeholder="輸入姓名或員編"><ul class="sg-suggest" id="sgSuggest" hidden></ul></div><button class="btn primary" type="button" id="sgAddMemberBtn">新增</button></div></td></tr></tbody><tbody id="sgMemberRows"></tbody></table></div></div></section>
+</div>
+</main>
+<div class="sg-toast" id="sgToast"></div>
+<script src="../../assets/js/employee-data.js"></script><script src="../../assets/js/signoff-group-data.js"></script><script src="../../assets/js/signoff-group.js"></script><div id="eipAppFooter"></div><script src="../../assets/js/eip-layout.js"></script></body></html>

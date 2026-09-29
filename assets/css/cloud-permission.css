@@ -1,0 +1,237 @@
+/* 雲端權限申請內容頁專用樣式：申請人資訊、申請需求、存取權限需求／權限使用者資訊（多列表格）、
+   執行紀錄與簽核意見彙整。比照 cloud-resource.css／purchase.css 既有作法，各表單獨立複製一份
+   必要規則，不跨表單互相引用共用檔案。 */
+.hidden{display:none}
+
+/* claim-detail.css 的 .panel／.audit-modal 等規則優先權會蓋掉瀏覽器對 [hidden] 屬性的預設
+   display:none（跟 purchase.css／memo.css／cloud-resource.css 遇到的既有問題相同），
+   這裡比照既有作法補上修正，確保 routePanel／各 modal／opinionSummary 等區塊能正確隱藏。 */
+[hidden]{display:none!important}
+
+/* claim-detail.css 的 .toolbar 只讓工具列裡的各個按鈕群組（div）彼此保持間距，
+   群組「內部」（例如 #editActions 裡的「儲存草稿」「送出簽核」兩顆按鈕）沒有預設 gap，
+   HTML 原始碼裡各按鈕之間又沒有空白字元，導致視覺上緊貼在一起。這是 cloud-resource.css
+   已經修正過的既有問題（該檔案只列了 #editActions／#approveActions／#executeActions，
+   這裡額外把 #doneActions／#viewActions 也一併補上，避免同樣的缺口）。 */
+.toolbar #editActions,.toolbar #approveActions,.toolbar #executeActions,.toolbar #doneActions,.toolbar #viewActions{display:flex;align-items:center;gap:10px}
+
+.cloud-form{max-width:none}
+
+/* 表頭：移除 Email 欄位後剩公司／申請人兩欄，比照雲端服務與資源申請內容頁的
+   .cloud-basic-grid 同列並排作法，改為兩欄並排；窄螢幕收合成單欄。 */
+.permission-head{position:relative}
+.permission-head .head-grid{display:grid;grid-template-columns:repeat(2,minmax(220px,1fr));gap:16px 24px}
+.permission-head .head-grid label{display:flex;flex-direction:column;gap:4px;min-width:0}
+.permission-head .head-grid .control{width:100%!important;max-width:none!important}
+@media(max-width:700px){.permission-head .head-grid{grid-template-columns:1fr}}
+
+/* 表頭標題列與「申請日期：送出簽核後由系統回寫」小灰字：樣式比照雲端服務與資源申請內容頁
+   的 .cloud-basic-title／#submitDate（該頁樣式定義在 cloud-resource.css，本頁未引入，
+   故在此複製一份必要規則）。 */
+.cloud-basic-title{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.cloud-basic-title>span{display:flex;align-items:center;gap:0}
+.cloud-basic-title #docNo{color:inherit;font-size:inherit}
+.cloud-basic-title>#submitDate{color:#667085;font-size:13px;font-weight:400;white-space:nowrap}
+@media(max-width:900px){.cloud-basic-title>#submitDate{white-space:normal;text-align:right}}
+@media(max-width:700px){.cloud-basic-title{align-items:flex-start;flex-direction:column}.cloud-basic-title>span{display:block}.cloud-basic-title>#submitDate{text-align:left}}
+
+/* 主欄／側欄雙欄版面：比照雲端服務與資源申請內容頁（cloud-resource.css）與簽呈單內容頁
+   （memo.css）既有的 .detail-grid 比例，左欄（.cloud-detail-main）放表單本體，右欄
+   （.cloud-detail-side）放查看性質的紀錄／彙整區塊；1200px 以下收合成單欄。
+   左欄內「雲端權限申請表」表頭面板改為 .cloud-detail-grid 內的成員（原本是 .cloud-form
+   直接子層、跟主欄／側欄同層並排在上方），故用 .cloud-detail-main 包住，內距與面板間距
+   都改由 .cloud-detail-main{gap:16px} 統一控制，取代原本的 .cloud-form>.panel。
+   比例再從 1.3fr／1fr 調整為 1.6fr／.9fr，左欄再加寬一些：右欄側欄的「權限使用者
+   資訊」表格改成 width:auto（見下方 .unit-panel .detail-table 規則）後，實際內容只需要
+   約 340px（兩個下拉選單＋刪除按鈕），不需要再分配跟左欄接近的寬度，多出來的空間讓給
+   左欄比較合理；右欄最小寬度同時從 320px 降到 300px。540px 左欄下限仍高於「存取權限
+   需求」表格本身需要的寬度（.detail-table{min-width:640px}＋.panel-body 內距 36px＋
+   邊框），因為收合斷點是 1200px，兩欄模式啟動時左欄實際寬度必定遠大於這個 540px 下限，
+   不會真的把表格壓到 640px 以下。 */
+.cloud-detail-grid{display:grid;grid-template-columns:minmax(540px,1.6fr) minmax(300px,.9fr);gap:16px;align-items:start}
+/* .cloud-detail-main／.cloud-detail-side 本身也是 display:grid，若不明講單欄的
+   grid-template-columns，瀏覽器預設的隱含欄寬（auto）會被欄內「最寬」子項目的最小內容
+   寬度撐開——本頁欄內同時有不需要太寬的表頭／申請需求資訊，也有明講 min-width:640px 的
+   「存取權限需求」表格，若不處理，前者會被迫跟著撐到 640px 以上，在窄螢幕（低於 700px
+   收合斷點）就會把整個左欄、甚至整個頁面撐出水平捲軸。這裡明講
+   grid-template-columns:minmax(0,1fr) 並在子項目補上 min-width:0，讓每個面板各自依實際
+   內容縮放，真正過寬的表格改由自己的 .table-scroll 內部橫向捲動，不會拖累整欄。 */
+.cloud-detail-grid>.cloud-detail-main{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;min-width:0}
+.cloud-detail-grid>.cloud-detail-main>.panel{margin-bottom:0;min-width:0}
+.cloud-detail-grid>.cloud-detail-side{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;min-width:0}
+.cloud-detail-grid>.cloud-detail-side>.panel{margin-bottom:0;min-width:0}
+@media(max-width:1200px){.cloud-detail-grid{grid-template-columns:1fr}}
+
+/* 申請需求：選項群組、使用環境（原本比照雲端服務與資源申請的兩欄模式，
+   使用者指示本頁先全部改單欄，此區塊維持單欄堆疊，供 executionSummary 等其他
+   仍使用 .cloud-stack 的區塊沿用） */
+.cloud-stack{display:grid;gap:18px}
+.cloud-stack>label{display:flex;flex-direction:column;gap:7px}
+.cloud-question{display:grid;gap:9px;padding-bottom:15px;border-bottom:1px dashed #d9e0e7}
+.cloud-question:last-child{border-bottom:0;padding-bottom:0}
+.cloud-choices{display:flex;align-items:center;flex-wrap:wrap;gap:18px}
+.cloud-choices label,.environment-list label{display:flex;align-items:center;gap:6px}
+.environment-list{display:grid;grid-template-columns:1fr;gap:10px}
+.inline-text{min-width:220px}
+.cloud-stack textarea.control{min-height:96px;width:100%!important;max-width:none!important;resize:vertical}
+
+/* 申請需求資訊面板：改用 .cloud-demand-grid，樣式比照雲端服務與資源申請內容頁同名區塊
+  （該頁樣式定義在 cloud-resource.css，本頁未引入，故在此複製一份必要規則）——每個欄位
+  獨佔一列，標題固定寬度在左、輸入內容在右，同一行呈現，取代 .cloud-stack 標題在上、
+  選項在下的排法。本頁欄位沒有 cloud-resource 的巢狀 .cloud-question-group，故只需
+  .cloud-demand-grid 的直接子選擇器。 */
+.cloud-demand-grid{display:grid!important;grid-template-columns:1fr!important;gap:14px!important}
+.cloud-demand-grid>.cloud-question,
+.cloud-demand-grid>label{
+  display:grid!important;
+  grid-template-columns:140px 1fr!important;
+  column-gap:24px!important;
+  row-gap:6px!important;
+  align-items:start!important;
+  padding:0 0 14px!important;
+  border:0!important;
+  border-bottom:1px solid #e4e8ed!important;
+  border-radius:0!important;
+  background:transparent!important;
+}
+.cloud-demand-grid>.cloud-question>.label,.cloud-demand-grid>label>.label{padding-top:6px;color:#344054;font-size:14px}
+.cloud-demand-grid .cloud-choices{min-height:34px;gap:10px 18px!important}
+.cloud-demand-grid .environment-list{display:grid!important;grid-template-columns:1fr!important;gap:8px!important}
+.cloud-demand-grid .cloud-choices>.inline-text{width:200px!important;min-width:0!important;max-width:200px!important;flex:0 0 auto!important}
+.cloud-demand-grid #plannedDate{width:160px!important;flex:0 0 auto}
+.cloud-demand-grid textarea.control{min-height:96px;width:100%!important;max-width:none!important;resize:vertical}
+@media(max-width:700px){
+  .cloud-demand-grid>.cloud-question,
+  .cloud-demand-grid>label{grid-template-columns:1fr!important}
+  .cloud-demand-grid #plannedDate{width:100%!important}
+}
+
+/* claim-detail.css 的 .control{width:100%} 也套用在 checkbox／radio 上，導致核取方塊被撐成
+   跟欄位一樣寬，把後面的文字擠開一大段空白（跟 cloud-resource.css 遇到的既有問題相同，
+   這裡比照它的既有修正做法，同樣把選擇限定在本表單的 .cloud-form 內）。 */
+.cloud-form input[type="checkbox"],
+.cloud-form input[type="radio"]{
+  width:16px!important;
+  min-width:16px!important;
+  max-width:16px!important;
+  height:16px!important;
+  min-height:16px!important;
+  padding:0!important;
+  margin:0!important;
+  flex:0 0 16px!important;
+}
+.cloud-form .cloud-choices label,
+.cloud-form .environment-list label{
+  width:auto!important;
+  min-width:0!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  white-space:nowrap!important;
+}
+.cloud-form .cloud-choices{
+  align-items:center!important;
+  flex-direction:row!important;
+}
+.cloud-form .environment-list .inline-text{
+  flex:1 1 220px;
+  width:auto!important;
+  max-width:none!important;
+}
+.cloud-form .cloud-question>.label{
+  width:auto!important;
+  white-space:nowrap!important;
+}
+@media(max-width:700px){
+  .cloud-form .cloud-choices{align-items:flex-start!important;flex-direction:row!important}
+  .cloud-form .environment-list label{white-space:normal!important}
+}
+
+/* 存取權限需求／權限使用者資訊：多列表格，樣式比照《採購請購單內容頁》「採購商品」表格
+   （該樣式定義在 purchase.css，本頁未引入，故在此複製一份必要規則，並補上「＋新增一列」
+   的顏色——purchase.css 裡 .mini／.link-button 都是同一組藍色連結樣式，本頁先前誤把
+   .mini 寫成深灰色，這裡一併修正）；＋新增一列／刪除為 Demo 示意按鈕，未綁定實際
+   新增／刪除邏輯，比照既有表單慣例。
+   這兩個面板的 HTML 用的是 <div class="panel-body"> 包住表格內容（沿用 purchase.css
+   的命名慣例），但 purchase.css 裡 .panel-body{padding:16px 18px} 這條規則本頁沒複製過來，
+   claim-detail.css 的共用面板內距是另一個 class 名稱 .body，涵蓋不到 .panel-body，導致這兩個
+   面板的表格內容完全沒有內距、直接貼齊面板圓角邊框。這裡補上跟 purchase.css 一致的內距。 */
+.panel-body{padding:16px 18px}
+.permission-table-note{margin:0 0 10px;color:#667085;font-size:13px;line-height:1.6}
+.table-scroll{overflow-x:auto}
+.detail-table{width:100%;min-width:640px;border-collapse:collapse}
+.detail-table th,.detail-table td{padding:9px;border-bottom:1px solid #e2e8f0;text-align:left;vertical-align:top}
+.detail-table th{background:#f5f7f9;color:#344054}
+.detail-table td:last-child{white-space:nowrap}
+/* 存取權限需求：移除項次欄位（跟三十三移除權限使用者資訊的項次欄一致），第一欄改為
+   「申請類型」；「新增／移除」改用下拉選單取代原本的兩顆單選按鈕，跟其他欄位一樣用
+   .control 呈現，不需要額外的 .apply-type 版面規則（已移除，含原本限定在 .detail-table
+   內的 radio 尺寸覆蓋規則），也不再需要原本 60px 固定寬度的項次欄規則（已移除，全頁
+   目前沒有任何 .detail-table 保留項次欄）。新增一條 .apply-type-select 讓下拉選單維持
+   跟「新增」「移除」文字相稱的窄寬度，不會被撐成跟系統資源名稱欄位一樣寬。 */
+.detail-table .apply-type-select{width:auto;min-width:84px}
+.mini,.link-button{border:0;background:transparent;color:#0969c7;font-weight:700;cursor:pointer}
+.mini{padding:6px;margin-top:10px}
+
+/* 權限使用者資訊：搬到右欄側欄、移除項次欄位，樣式比照《簽呈單內容頁》「會簽單位」面板
+   （.unit-panel，定義在 memo.css，本頁未引入，故複製必要規則）——面板標題字級縮小、
+   表格字級縮小，且不使用 .panel-body 內距，改讓表格貼齊面板左右邊、說明文字與
+   「＋新增一列」各自留白，比照會簽單位版面；第一欄不再是固定寬度的項次欄，改為
+   自動寬度。
+   重要修正：本表格沿用了共用的 .detail-table class，因此也繼承了
+   .detail-table{min-width:640px} 這條規則——這條 640px 下限是為「存取權限需求」
+   （5～6 欄的寬表格）在窄螢幕時保留可讀性而訂的，但右欄側欄（.cloud-detail-side）
+   寬度只有 320～450px 左右，遠小於 640px，導致這個表格在兩欄版面下持續橫向溢出，
+   把整個頁面撐寬、產生水平捲軸，這正是使用者回報「跑版」的根本原因。這裡針對
+   .unit-panel 內的 .detail-table 覆蓋回 min-width:0，讓表格改依實際內容（部門／
+   員工兩個下拉選單＋刪除按鈕）自然縮放，不再強制撐寬。 */
+.unit-panel .detail-table{min-width:0}
+.unit-panel h2{font-size:16px}
+.unit-panel .permission-table-note{margin:12px 16px 10px}
+.unit-panel .detail-table{font-size:12px}
+/* 表格改回 width:100% 貼滿側欄（取代先前讓表格縮到自然寬度的 width:auto 作法）。
+   原本縮到自然寬度是因為部門／員工都是窄的下拉選單，多出來的寬度沒地方放；現在
+   部門欄已經改成純文字（見下方 .dept-display），可以直接把側欄多出來的空間分給
+   部門欄顯示，不會再浪費。改用 table-layout:fixed，並固定「員工」「刪除」兩欄的
+   寬度，讓唯一沒有指定寬度的「部門」欄自動吃掉其餘所有空間——這樣不管側欄實際
+   渲染多寬（.9fr 在較寬螢幕下會超過部門／員工／刪除三欄原本合計的自然寬度），
+   多出來的空間都會落在部門文字的留白裡，而不是留在「刪除」按鈕後面一大段空白
+   （這正是使用者這次回報的問題）。 */
+.unit-panel .detail-table{width:100%;table-layout:fixed}
+/* table-layout:fixed 分配欄寬時，各欄實際渲染寬度是各自獨立四捨五入到整數像素，
+   加總後常會比容器寬度多出 1px（例如量測到 251.75+140+44=435.75px，四捨五入後
+   卻變成 437px，比容器的 436px 多 1px），導致繼承自 .table-scroll 的
+   overflow-x:auto 誤判為「內容過寬」而畫出一條幾乎看不出在捲什麼的橫向捲軸。
+   已用 Playwright 在 390～1920px 全寬度掃描確認：這張表格在任何寬度下都不會有
+   真正的內容溢位（部門欄一定有餘裕），這 1px 純粹是次像素捨入誤差，不是真的
+   放不下，因此把這個表格的捲動容器改回 overflow-x:hidden，蓋掉共用規則，
+   讓多出的 1px 直接被裁掉而不觸發捲軸。 */
+.unit-panel .table-scroll{overflow-x:hidden}
+/* 「員工」下拉選單原本用 .control 預設的 width:100%，會被撐成跟欄位一樣寬，而選項文字
+   （如「陳庭瑋(T037)」）其實不需要太寬，使用者反映這欄看起來過長；這裡改成 width:auto
+   讓選單依文字內容縮放，搭配下面表格欄寬 nth-child(2) 給一個夠用但不過寬的固定寬度。 */
+.unit-panel .employee-select{width:auto;max-width:100%}
+.unit-panel .detail-table th:nth-child(2),.unit-panel .detail-table td:nth-child(2){width:140px}
+/* 「刪除」欄原本給 44px，扣掉儲存格左右各 9px 內距（共 18px）後只剩 26px 放按鈕文字，
+   但「刪除」連結按鈕實際渲染寬度是 36px，比可用空間還寬，導致按鈕直接貼齊儲存格／
+   面板右邊界，完全沒有留白（使用者這次回報的問題）。比照「存取權限需求」表格（非
+   固定欄寬，欄寬會自動等於按鈕寬度＋左右各 9px 內距）量測到的留白比例，把欄寬改為
+   54px（=36px 按鈕＋左右各 9px 內距），讓「刪除」跟儲存格右邊界之間也留出對稱的
+   9px 空間，不再貼邊。 */
+.unit-panel .detail-table th:nth-child(3),.unit-panel .detail-table td:nth-child(3){width:54px}
+/* 部門欄改為依所選員工自動帶出的文字（不再是可選的下拉選單，見下方 JS
+   syncUnitDept()），未選擇員工時顯示「—」。使用者反映這欄既然是系統帶出、不可
+   編輯，不需要再做成跟下拉選單一樣的方框樣式，這裡改成單純文字，不畫邊框、不上
+   底色，跟表格其他純文字內容一致；欄寬則交給上方 table-layout:fixed 自動分配
+   （表格 width:100%，員工／刪除欄已固定寬度，部門欄拿到其餘所有空間）。 */
+.unit-panel .dept-display{display:flex;align-items:center;height:32px;width:100%;color:#344054;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.unit-panel .add-unit{display:block;margin:10px 14px 14px;padding:7px 12px;border:1px solid #c8d1db;border-radius:5px;background:#fff;font-weight:700;color:#164d80;cursor:pointer}
+
+/* 簽核意見彙整：只列出有填寫意見的關卡，皆無意見時改顯示提示文字
+  （比照《EIP_雲端服務與資源申請》ICS-015／《EIP_採購請購單》FPU-C26 的既有規則） */
+.opinion-list{display:grid;gap:0}
+.opinion-list article{padding:12px 15px;border-bottom:1px solid #e4e9ef}
+.opinion-list article:last-child{border-bottom:0}
+.opinion-list article>div{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:#526275;font-size:12px}
+.opinion-list article b{color:#202936;font-size:13px}
+.opinion-list article p{margin:7px 0 0;padding:8px 10px;border-radius:5px;background:#fff8df;color:#4d3b00;font-size:14px;font-weight:700;line-height:1.55}
+#opinionSummary #opinionEmpty{margin:0;padding:12px 15px}

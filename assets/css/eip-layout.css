@@ -1,0 +1,28 @@
+/* Shared EIP application frame. Keep feature-page styles outside this file. */
+.eip-app-header{position:relative;z-index:80}
+.eip-app-topbar{position:relative;display:flex;align-items:center;gap:22px;min-height:42px;padding:10px 20px;background:#1c3f66;color:#fff;font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif;font-size:15px}
+.eip-app-menu,.eip-app-nav-item,.eip-app-profile{position:relative;align-self:stretch;display:flex;align-items:center}
+.eip-app-grid,.eip-app-nav-trigger,.eip-app-profile-trigger{height:100%;padding:4px 2px;border:0;background:transparent;color:#fff;font:inherit;cursor:pointer}
+.eip-app-grid{display:flex;align-items:center}
+.eip-app-grid-icon{display:grid;width:18px;height:18px;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2px}
+.eip-app-grid-icon i{display:block;border-radius:1px;background:#fff}
+.eip-app-module{font-size:17px;font-weight:700;white-space:nowrap}
+.eip-app-sections{display:flex;align-items:center;gap:14px}
+.eip-app-nav-trigger,.eip-app-nav-link{display:flex;align-items:center;gap:5px;padding:4px 2px;color:#fff;font-size:13px;font-weight:400;text-decoration:none;white-space:nowrap}
+.eip-app-nav-link:hover,.eip-app-nav-link[aria-current="page"],.eip-app-nav-trigger:hover,.eip-app-nav-item:focus-within>.eip-app-nav-trigger{background:rgba(255,255,255,.1)}
+.eip-app-caret{color:rgba(255,255,255,.7);font-size:9px}
+.eip-app-profile{margin-left:auto}
+.eip-app-profile-trigger{font-size:13px}
+.eip-app-dropdown{position:absolute;z-index:200;top:100%;left:-2px;display:none;min-width:190px;border-radius:4px;overflow:hidden;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.eip-app-dropdown.align-right{right:-2px;left:auto;min-width:150px}
+.eip-app-dropdown a{display:block;padding:11px 18px;background:#fff;color:#2b2b2b;font-size:14px;font-weight:400;text-decoration:none;white-space:nowrap}
+.eip-app-dropdown a:hover,.eip-app-dropdown a.current{background:#eef0f2}
+.eip-app-menu:hover>.eip-app-dropdown,.eip-app-menu.open>.eip-app-dropdown,.eip-app-nav-item:hover>.eip-app-dropdown,.eip-app-nav-item.open>.eip-app-dropdown,.eip-app-profile:hover>.eip-app-dropdown,.eip-app-profile.open>.eip-app-dropdown{display:block}
+.eip-app-brandbar{display:flex;align-items:center;gap:14px;min-height:70px;padding:14px 28px;border-bottom:3px solid #f5a623;background:#fff}
+.eip-app-brand-logo{display:block;width:auto;height:40px;object-fit:contain}
+.eip-app-brand-name{color:#1e4976;font-size:20px;font-weight:700;white-space:nowrap}
+.eip-app-footer{padding:14px 20px;border-top:1px solid #dfe3e8;background:#f8f9fa;color:#808793;text-align:center;font-size:12px}
+/* During migration, keep the original page DOM for its feature scripts but let the shared frame own the visible header/footer. */
+.eip-shared-layout>.topbar,.eip-shared-layout>.header,.eip-shared-layout>.system-topbar,.eip-shared-layout>.brandbar,.eip-shared-layout>.top,.eip-shared-layout>#appShell>.topbar,.eip-shared-layout>#appShell>.header,.eip-shared-layout>#appShell>.site-footer,.eip-shared-layout>.footer{display:none!important}
+@media(max-width:900px){.eip-app-topbar{gap:12px;overflow:visible}.eip-app-sections{min-width:0;gap:10px;overflow-x:auto}.eip-app-profile{margin-left:auto}.eip-app-brandbar{min-height:58px;padding:10px 16px}.eip-app-brand-name{font-size:17px}}
+@media(max-width:700px){.eip-app-header{z-index:220}.eip-app-topbar{overflow:visible}.eip-app-menu{flex:0 0 auto}.eip-app-menu>.eip-app-dropdown{top:calc(100% + 1px);left:0;min-width:210px}.eip-app-module{font-size:15px}.eip-app-sections{flex:1}.eip-app-profile{display:none}.eip-app-brand-name{white-space:normal}}

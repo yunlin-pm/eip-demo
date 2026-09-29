@@ -1,0 +1,4484 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>比比昂企業內部管理系統 - Demo</title>
+<style>
+  :root {
+    --topbar-navy: #1c3f66;
+    --accent-orange: #f5a623;
+    --card-blue: #2f6fed;
+    --card-yellow: #f2b90c;
+    --card-red: #e2483d;
+    --text-dark: #2b2b2b;
+    --text-gray: #8a8f98;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f5f6f8;
+    color: var(--text-dark);
+  }
+
+  /* ===== Top thin navy bar ===== */
+  .topbar {
+    background: var(--topbar-navy);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    font-size: 15px;
+    position: relative;
+    z-index: 100;
+  }
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+  }
+  .grid-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 2px;
+  }
+  .grid-icon {
+    width: 18px;
+    height: 18px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .grid-icon span {
+    background: #fff;
+    border-radius: 1px;
+  }
+  .app-label {
+    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: default;
+  }
+  .submenu-group {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .finance-menu, .delegate-menu {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .remit-links {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .remit-link-label {
+    color: rgba(255,255,255,0.85);
+    font-size: 13px;
+    font-weight: 400;
+    cursor: pointer;
+    padding: 4px 2px;
+  }
+  .remit-link-label:hover {
+    color: #fff;
+  }
+  .remit-link-label.active {
+    color: #fff;
+    font-weight: 700;
+  }
+  .finance-menu-label, .delegate-menu-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 400;
+    cursor: pointer;
+    padding: 4px 2px;
+  }
+  .finance-menu-label .caret-mini, .delegate-menu-label .caret-mini {
+    font-size: 9px;
+    color: rgba(255,255,255,0.7);
+  }
+  .finance-dropdown, .delegate-dropdown {
+    position: absolute;
+    top: 38px;
+    left: -2px;
+    width: 220px;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    overflow: hidden;
+    z-index: 200;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease, visibility 0s linear 0.3s;
+  }
+  .finance-menu:hover .finance-dropdown, .delegate-menu:hover .delegate-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+  .submenu-collapsed {
+    display: none;
+  }
+  .submenu-collapsed-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    font-size: 13px;
+    color: #fff;
+    cursor: pointer;
+    padding: 4px 2px;
+  }
+  .submenu-collapsed-btn .caret {
+    font-size: 9px;
+    color: rgba(255,255,255,0.7);
+  }
+  .submenu-collapsed-icon {
+    font-size: 14px;
+    line-height: 1;
+  }
+  .dropdown.submenu-collapsed-dropdown {
+    top: 38px;
+    width: 230px;
+  }
+  .dropdown-group-label {
+    padding: 10px 18px 4px;
+    font-size: 11px;
+    color: #9aa0a8;
+    background: #fff;
+  }
+  .topbar-btn {
+    background: #35b46a;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 14px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  /* ===== Dropdown menu (shared) ===== */
+  .menu-wrap {
+    position: relative;
+  }
+  .dropdown {
+    display: none;
+    position: absolute;
+    top: 38px;
+    left: -2px;
+    width: 190px;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    overflow: hidden;
+    z-index: 200;
+  }
+  .dropdown.open { display: block; }
+  .dropdown-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 11px 18px;
+    font-size: 14px;
+    color: var(--text-dark);
+    background: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  .dropdown-item:hover,
+  .dropdown-item.current {
+    background: #eef0f2;
+  }
+  .dropdown-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 18px;
+    font-size: 13px;
+    color: var(--text-dark);
+  }
+  .dropdown-row .shortcut-key {
+    color: #9aa0a8;
+    font-size: 12px;
+  }
+  .dropdown-divider {
+    height: 1px;
+    background: #ececec;
+    margin: 0;
+  }
+
+  /* dropdown that hangs off a right-aligned trigger */
+  .dropdown.align-right {
+    left: auto;
+    right: -2px;
+  }
+
+  /* ===== Topbar profile trigger (Hi 王曉明 (A123)) ===== */
+  .profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    font-size: 13px;
+    color: #fff;
+    cursor: pointer;
+    padding: 4px 2px;
+  }
+  .profile-btn .caret {
+    font-size: 9px;
+    color: rgba(255,255,255,0.7);
+  }
+  .profile-dropdown {
+    top: 38px;
+    width: 150px;
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  /* ===== Header with logo ===== */
+  .header {
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px;
+    border-bottom: 3px solid var(--accent-orange);
+  }
+  .header-logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .header-logo img {
+    height: 40px;
+    display: block;
+  }
+  .header-logo .brand-text {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1e4976;
+    white-space: nowrap;
+    line-height: 1;
+  }
+
+  /* ===== Breadcrumb bar (below header's orange line) ===== */
+  .breadcrumb-bar {
+    background: #fff;
+    padding: 10px 28px;
+    font-size: 13px;
+    border-bottom: 1px solid #eceef1;
+  }
+  .crumb-item {
+    color: var(--text-gray);
+    cursor: pointer;
+  }
+  .crumb-item:hover {
+    color: var(--text-dark);
+    text-decoration: underline;
+  }
+  .crumb-item.active {
+    color: var(--text-dark);
+    font-weight: 600;
+    cursor: default;
+    text-decoration: none;
+  }
+  .crumb-sep {
+    color: #c3c7cd;
+    font-size: 12px;
+    margin: 0 8px;
+  }
+  .crumb-static {
+    color: var(--text-gray);
+    cursor: default;
+  }
+
+  /* ===== Topbar / Header RWD ===== */
+  @media (max-width: 900px) {
+    .topbar {
+      flex-wrap: wrap;
+      row-gap: 8px;
+    }
+    .topbar-left {
+      flex-wrap: wrap;
+      row-gap: 8px;
+    }
+    .topbar-right {
+      margin-left: auto;
+    }
+    .header {
+      padding: 14px 20px;
+      flex-wrap: wrap;
+      row-gap: 10px;
+    }
+    .breadcrumb-bar {
+      padding: 10px 20px;
+    }
+  }
+  @media (max-width: 640px) {
+    .topbar {
+      padding: 10px 14px;
+    }
+    .app-label {
+      font-size: 15px;
+    }
+    .header {
+      padding: 12px 16px;
+    }
+    .header-logo .brand-text {
+      font-size: 17px;
+    }
+    .header-logo img {
+      height: 32px;
+    }
+    .topbar-right {
+      gap: 12px;
+    }
+    .profile-btn {
+      font-size: 12px;
+    }
+    .breadcrumb-bar {
+      padding: 8px 16px;
+    }
+    .finance-menu,
+    .delegate-menu,
+    .remit-links {
+      display: none;
+    }
+    .submenu-collapsed {
+      display: block;
+    }
+  }
+
+  /* ===== Main content ===== */
+  .main {
+    padding: 32px 28px;
+  }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  .cards {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .card {
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 22px 28px;
+    min-width: 280px;
+    border-left: 4px solid transparent;
+  }
+  .card.approved { border-left-color: var(--card-blue); }
+  .card.pending { border-left-color: var(--card-yellow); }
+  .card.rejected { border-left-color: var(--card-red); }
+
+  .card-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    color: #fff;
+  }
+  .card.approved .card-icon { background: var(--card-blue); }
+  .card.pending .card-icon { background: var(--card-yellow); }
+  .card.rejected .card-icon { background: var(--card-red); }
+
+  .card-text .card-number {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--text-dark);
+  }
+  .card-text .card-label {
+    font-size: 13px;
+    color: var(--text-gray);
+    margin-top: 4px;
+  }
+  .card.clickable {
+    cursor: pointer;
+    transition: box-shadow 0.15s, transform 0.15s;
+  }
+  .card.clickable:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
+  }
+  .overview-section + .overview-section {
+    margin-top: 32px;
+  }
+  .overview-section .section-title {
+    margin-bottom: 16px;
+  }
+
+  /* ===== Filter / search bar (placeholder pages) ===== */
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #eef0f2;
+    color: var(--text-dark);
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 16px;
+  }
+  .filter-chip .x {
+    color: #9aa0a8;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #dcdfe3;
+    border-radius: 18px;
+    padding: 6px 14px;
+    background: #fff;
+    color: var(--text-gray);
+    font-size: 13px;
+    min-width: 220px;
+  }
+
+  .placeholder-note {
+    color: var(--text-gray);
+    font-size: 14px;
+    background: #fff;
+    border: 1px dashed #d7dae0;
+    border-radius: 6px;
+    padding: 40px;
+    text-align: center;
+  }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0 0 16px;
+  }
+  .list-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .list-title-row .section-title {
+    margin-bottom: 0;
+  }
+
+  .page-tabs {
+    display: flex;
+    gap: 28px;
+    border-bottom: 1px solid #e3e5e8;
+    margin-bottom: 18px;
+  }
+  .page-tab {
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text-gray);
+    padding: 0 2px 12px;
+    cursor: pointer;
+    position: relative;
+  }
+  .page-tab:hover {
+    color: var(--text-dark);
+  }
+  .page-tab.active {
+    color: var(--topbar-navy);
+    font-weight: 700;
+  }
+  .page-tab.active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background: var(--topbar-navy);
+  }
+
+  /* ===== Buttons ===== */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    padding: 8px 18px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .btn-primary {
+    background: var(--topbar-navy);
+    color: #fff;
+  }
+  .btn-primary:hover { background: #16324f; }
+  .btn-outline {
+    background: #fff;
+    color: var(--text-dark);
+    border-color: #d7dae0;
+  }
+  .btn-outline:hover { background: #f5f6f8; }
+  .btn-icon {
+    background: none;
+    border: none;
+    color: var(--text-gray);
+    cursor: pointer;
+    font-size: 15px;
+    padding: 4px;
+  }
+  .more-btn {
+    padding: 8px 12px;
+    font-size: 16px;
+    line-height: 1;
+    color: var(--text-gray);
+  }
+
+  /* ===== List page toolbar ===== */
+  .list-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .list-toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .list-toolbar-left .doc-type-label {
+    font-size: 15px;
+    color: var(--text-dark);
+  }
+
+  .search-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: #fff;
+    border: 1px solid #dcdfe3;
+    border-radius: 4px;
+    padding: 6px 10px;
+    flex: 1;
+    max-width: 640px;
+    min-width: 260px;
+  }
+  .search-row .search-icon {
+    color: #9aa0a8;
+    margin-right: 8px;
+    font-size: 13px;
+  }
+  .filter-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--topbar-navy);
+    color: #fff;
+    font-size: 13px;
+    padding: 5px 10px;
+    border-radius: 3px;
+    margin-right: 8px;
+    white-space: nowrap;
+  }
+  .filter-tag .x { cursor: pointer; opacity: 0.8; }
+  .search-row input {
+    border: none;
+    outline: none;
+    font-size: 13px;
+    flex: 1;
+    color: var(--text-dark);
+    font-family: inherit;
+  }
+  .search-row .caret-btn {
+    border-left: 1px solid #e3e5e8;
+    padding-left: 8px;
+    color: #9aa0a8;
+    cursor: pointer;
+    font-size: 11px;
+  }
+
+  .pagination {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-gray);
+    white-space: nowrap;
+  }
+  .pagination button {
+    background: none;
+    border: none;
+    color: var(--text-gray);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 4px;
+  }
+
+  /* ===== Bottom pager ===== */
+  .pager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  .pager-arrow {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #dcdfe3;
+    background: #fff;
+    color: #b7bcc4;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pager-arrow:hover {
+    color: var(--text-dark);
+    border-color: #b7bcc4;
+  }
+  .pager-page {
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--accent-orange);
+    color: var(--accent-orange);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  /* ===== List status / bulk action bar ===== */
+  .list-status-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: var(--text-gray);
+  }
+  .list-status-text b {
+    color: var(--text-dark);
+    font-weight: 700;
+  }
+  .list-status-actions {
+    display: flex;
+    gap: 8px;
+  }
+  .list-status-actions .btn:disabled {
+    color: #c3c7cd;
+    border-color: #e3e5e8;
+    background: #fff;
+    cursor: not-allowed;
+  }
+  #adminFormTable.hide-checkbox-col th:first-child,
+  #adminFormTable.hide-checkbox-col td:first-child {
+    display: none;
+  }
+
+  /* ===== Advanced filter panel ===== */
+  .caret-btn {
+    transition: transform 0.15s;
+  }
+  .caret-btn.open {
+    transform: rotate(180deg);
+  }
+  .advanced-filter-panel {
+    background: #fff;
+    border: 1px solid #e3e5e8;
+    border-radius: 6px;
+    padding: 20px 24px 16px;
+    margin-bottom: 16px;
+  }
+  .filter-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px 32px;
+  }
+  .filter-grid .form-field label {
+    width: 80px;
+  }
+  .filter-grid .form-field {
+    min-width: 0;
+  }
+  .filter-grid .form-field select,
+  .filter-grid .form-field input {
+    min-width: 0;
+  }
+  .filter-grid .form-field .multiselect-wrap {
+    min-width: 0;
+  }
+  .multiselect-wrap {
+    position: relative;
+    flex: 1;
+  }
+  .multiselect-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    border: 1px solid #dcdfe3;
+    border-radius: 4px;
+    padding: 7px 10px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--text-dark);
+    background: #fff;
+    cursor: pointer;
+    text-align: left;
+  }
+  .multiselect-trigger-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .multiselect-trigger .caret {
+    font-size: 9px;
+    color: #9aa0a8;
+    flex-shrink: 0;
+  }
+  .dropdown.multiselect-dropdown {
+    width: 100%;
+    padding: 6px 0;
+  }
+  .multiselect-dropdown .dropdown-checkbox-row,
+  .filter-grid .form-field .multiselect-dropdown .dropdown-checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    width: auto;
+    font-size: 13px;
+    color: var(--text-dark);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .dropdown-checkbox-row:hover {
+    background: #eef0f2;
+  }
+  .dropdown-checkbox-row input {
+    margin: 0;
+    flex-shrink: 0;
+  }
+  .date-range {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+  }
+  .date-range input {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid #dcdfe3;
+    border-radius: 4px;
+    padding: 7px 8px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--text-dark);
+  }
+  .date-range span {
+    color: var(--text-gray);
+    font-size: 13px;
+  }
+  .keyword-combo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+  }
+  .advanced-filter-panel .keyword-combo select {
+    flex: 0 0 130px;
+    min-width: 0;
+  }
+  .advanced-filter-panel .keyword-combo input {
+    flex: 1;
+    min-width: 0;
+  }
+  @media (max-width: 480px) {
+    .keyword-combo {
+      flex-wrap: wrap;
+    }
+    .advanced-filter-panel .keyword-combo select,
+    .advanced-filter-panel .keyword-combo input {
+      flex: 1 1 100%;
+    }
+  }
+  .filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #eceef1;
+  }
+
+  /* ===== Data table ===== */
+  .data-table-wrap {
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    overflow-x: auto;
+  }
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  table.data-table th {
+    text-align: left;
+    padding: 12px 16px;
+    color: var(--text-gray);
+    font-weight: 600;
+    border-bottom: 1px solid #eceef1;
+    white-space: nowrap;
+  }
+  table.data-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f2f3f5;
+    color: var(--text-dark);
+    white-space: nowrap;
+  }
+  table.data-table tr:last-child td { border-bottom: none; }
+  table.data-table tr:hover td { background: #f8f9fb; }
+  table.data-table .cell-right { text-align: right; }
+  table.data-table .doc-link {
+    color: #2f6fed;
+    cursor: pointer;
+  }
+  table.data-table .doc-link:hover { text-decoration: underline; }
+
+  .status-badge {
+    font-size: 13px;
+  }
+  .status-draft { color: #8a8f98; }
+  .status-applying { color: #2b2b2b; }
+  .status-signing { color: #d98a10; }
+  .status-approved { color: #35b46a; }
+  .status-rejected { color: #e2483d; }
+
+  /* ===== Detail / form page ===== */
+  .form-action-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .form-action-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .stepper {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    font-size: 13px;
+  }
+  .stepper .step {
+    padding: 8px 16px;
+    background: #e9ebee;
+    color: #9aa0a8;
+    position: relative;
+  }
+  .stepper .step.active {
+    background: var(--topbar-navy);
+    color: #fff;
+  }
+  .stepper .step:first-child { border-radius: 4px 0 0 4px; }
+  .stepper .step:last-child { border-radius: 0 4px 4px 0; }
+
+  .form-card {
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    padding: 28px 32px;
+  }
+  .breadcrumb {
+    font-size: 13px;
+    color: var(--text-gray);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .breadcrumb a {
+    color: var(--text-gray);
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .breadcrumb a:hover {
+    color: var(--topbar-navy);
+    text-decoration: underline;
+  }
+  .breadcrumb .sep {
+    color: #c3c7cd;
+    font-size: 12px;
+  }
+  .breadcrumb .crumb-current {
+    color: var(--text-gray);
+  }
+  .form-doc-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 24px;
+  }
+  .btn-sm {
+    padding: 5px 14px;
+    font-size: 12.5px;
+  }
+  .action-divider {
+    width: 1px;
+    height: 20px;
+    background: #d7dae0;
+    margin: 0 4px;
+  }
+  .icon-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--card-blue);
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .icon-link:hover {
+    color: #1a4fc4;
+    text-decoration: underline;
+  }
+  .doc-help-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--card-blue);
+    cursor: pointer;
+    text-decoration: none;
+    margin-top: 24px;
+  }
+  .doc-help-link:hover {
+    color: #1a4fc4;
+    text-decoration: underline;
+  }
+  .form-section-heading {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-dark);
+    border-bottom: 1px solid #eceef1;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    max-width: 900px;
+    gap: 0;
+    margin-bottom: 24px;
+  }
+  .form-grid-2col {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 1100px;
+    column-gap: 40px;
+  }
+  .form-field-full {
+    grid-column: 1 / -1;
+  }
+  .form-subsection-heading {
+    grid-column: 1 / -1;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-dark);
+    border-bottom: 1px solid #eceef1;
+    padding-bottom: 10px;
+    margin: 24px 0 20px;
+  }
+  .form-subsection-heading:first-child {
+    margin-top: 0;
+  }
+  .remit-detail-box {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 40px;
+    background: #f5f6f8;
+    border-radius: 6px;
+    padding: 14px 20px 6px;
+    margin: 4px 0 8px;
+  }
+  @media (max-width: 1100px) {
+    .filter-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 900px) {
+    .form-grid-2col,
+    .remit-detail-box {
+      grid-template-columns: 1fr;
+    }
+    .form-field {
+      flex-wrap: wrap;
+    }
+  }
+  @media (max-width: 640px) {
+    .filter-grid {
+      grid-template-columns: 1fr;
+    }
+    .filter-grid .form-field label {
+      width: auto;
+      min-width: 80px;
+    }
+    .filter-actions {
+      flex-wrap: wrap;
+    }
+  }
+  .form-field {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 8px 0;
+  }
+  .form-field label {
+    width: 110px;
+    flex-shrink: 0;
+    font-size: 13px;
+    color: var(--text-dark);
+  }
+  .form-field label .req {
+    color: #e2483d;
+    margin-right: 2px;
+  }
+  .form-field input[type="text"],
+  .form-field input[type="date"],
+  .form-field select {
+    flex: 1;
+    border: 1px solid #dcdfe3;
+    border-radius: 4px;
+    padding: 7px 10px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--text-dark);
+  }
+  .form-field .static-text {
+    font-size: 13px;
+    color: var(--text-dark);
+  }
+  .form-field-top {
+    align-items: flex-start;
+  }
+  .attachment-block {
+    flex: 1;
+  }
+
+  /* ===== 代理人設定(v0.41) ===== */
+  .delegate-signer-header {
+    margin-bottom: 20px;
+  }
+  .delegate-company-block {
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+  }
+  .delegate-company-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .delegate-company-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0;
+  }
+  .delegate-add-period-btn {
+    margin-top: 14px;
+  }
+  .delegate-company-block .form-field select {
+    flex: none;
+    width: 280px;
+  }
+  .delegate-empty-row td {
+    text-align: center;
+    color: var(--text-gray);
+    padding: 18px 0;
+  }
+
+  /* ===== 個人資料維護 ===== */
+  .profile-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  .profile-name {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0;
+  }
+  .profile-avatar {
+    width: 64px;
+    height: 64px;
+    background: #c0504d;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .profile-meta-row {
+    display: flex;
+    gap: 60px;
+    margin-bottom: 20px;
+  }
+  .profile-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+  }
+  .profile-meta-label {
+    color: var(--text-gray);
+  }
+  .profile-meta-link {
+    color: #1e6fd9;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .profile-meta-link:hover {
+    text-decoration: underline;
+  }
+  .profile-help-q {
+    display: inline-block;
+    font-size: 10px;
+    color: var(--text-gray);
+    vertical-align: super;
+    margin-left: 1px;
+  }
+  .profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 60px;
+    max-width: 1100px;
+  }
+  .profile-grid .form-field label {
+    width: 90px;
+  }
+  .profile-radio-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: auto !important;
+    flex-shrink: 0;
+    font-size: 13px;
+    color: var(--text-dark);
+  }
+  .lang-select-wrap {
+    flex: 1;
+    position: relative;
+  }
+  .lang-select-btn {
+    width: 100%;
+    text-align: left;
+    background: #fff;
+    border: 1px solid #dcdfe3;
+    border-radius: 4px;
+    padding: 7px 10px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--text-dark);
+    cursor: pointer;
+  }
+  .lang-dropdown {
+    top: 36px;
+    left: 0;
+    width: 100%;
+    min-width: 260px;
+  }
+  .attachment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .attachment-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #e3e5e8;
+    border-radius: 6px;
+    padding: 8px 12px;
+    max-width: 380px;
+  }
+  .attachment-icon {
+    background: #fdece9;
+    color: #e2483d;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 4px;
+    padding: 3px 6px;
+    flex-shrink: 0;
+  }
+  .attachment-name {
+    flex: 1;
+    font-size: 13px;
+    color: var(--text-dark);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .attachment-remove {
+    background: none;
+    border: none;
+    color: var(--text-gray);
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px 4px;
+  }
+  .attachment-remove:hover { color: #e2483d; }
+  .attachment-upload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff;
+    border: 1px solid #d7dae0;
+    border-radius: 4px;
+    padding: 7px 14px;
+    font-size: 13px;
+    color: var(--text-dark);
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .attachment-upload-btn:hover { background: #f5f6f8; }
+  .attachment-block .field-hint {
+    display: block;
+    margin-top: 10px;
+  }
+  .invoice-input-row {
+    display: flex;
+    gap: 8px;
+    max-width: 380px;
+    margin-bottom: 10px;
+  }
+  .invoice-input-row input[type="text"] {
+    flex: 1;
+    border: 1px solid #dcdfe3;
+    border-radius: 4px;
+    padding: 7px 10px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--text-dark);
+  }
+  .invoice-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .invoice-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #eef2f7;
+    border-radius: 4px;
+    padding: 5px 8px 5px 12px;
+    font-size: 13px;
+    color: var(--text-dark);
+  }
+  .invoice-remove {
+    background: none;
+    border: none;
+    color: var(--text-gray);
+    font-size: 15px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px;
+  }
+  .invoice-remove:hover { color: #e2483d; }
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(20,26,33,0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+  .modal-box {
+    background: #fff;
+    border-radius: 8px;
+    padding: 24px;
+    width: 420px;
+    max-width: 90vw;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  }
+  .modal-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 14px;
+  }
+  .modal-label {
+    display: block;
+    font-size: 13px;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+  }
+  .modal-label .req {
+    color: #e2483d;
+    margin-left: 2px;
+  }
+  .modal-desc {
+    font-size: 13px;
+    color: var(--text-gray);
+    background: #f5f6f8;
+    border-radius: 4px;
+    padding: 8px 10px;
+    margin-bottom: 12px;
+  }
+  .modal-body textarea {
+    width: 100%;
+    border: 1px solid #dcdfe3;
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--text-dark);
+    resize: vertical;
+    box-sizing: border-box;
+  }
+  .modal-error {
+    color: #e2483d;
+    font-size: 12px;
+    margin-top: 6px;
+  }
+  .field-error {
+    color: #e2483d;
+    font-size: 12px;
+  }
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+  }
+  .radio-group {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    font-size: 13px;
+  }
+  .radio-group label {
+    width: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .field-hint {
+    font-size: 12.5px;
+    color: var(--text-gray);
+    line-height: 1.6;
+  }
+
+  .note-box {
+    grid-column: 2 / 3;
+    background: #f5f6f8;
+    border-radius: 6px;
+    padding: 16px 18px;
+    font-size: 12.5px;
+    color: var(--text-gray);
+    line-height: 1.7;
+  }
+  .note-box .field-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .note-box .field-row label {
+    color: var(--text-dark);
+    white-space: nowrap;
+  }
+  .attach-btn {
+    background: #e9ebee;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 12.5px;
+    color: var(--text-dark);
+    cursor: pointer;
+  }
+
+  .detail-tabs {
+    display: flex;
+    gap: 24px;
+    border-bottom: 1px solid #eceef1;
+    margin-bottom: 4px;
+  }
+  .detail-tabs .detail-tab {
+    padding: 10px 2px;
+    font-size: 14px;
+    color: var(--text-gray);
+    cursor: pointer;
+  }
+  .detail-tabs .detail-tab.active {
+    color: var(--topbar-navy);
+    font-weight: 700;
+    border-bottom: 2px solid var(--topbar-navy);
+  }
+  table.detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+  table.detail-table th {
+    text-align: left;
+    padding: 10px 4px;
+    color: var(--text-gray);
+    font-weight: 600;
+    border-bottom: 1px solid #eceef1;
+  }
+  table.detail-table th.cell-right { text-align: right; }
+  table.detail-table td {
+    padding: 6px 4px;
+    vertical-align: middle;
+  }
+  table.detail-table td.cell-right { text-align: right; }
+  table.detail-table td.cell-action { text-align: center; width: 32px; }
+  .row-delete-btn {
+    background: none;
+    border: none;
+    color: #b7bcc4;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 6px;
+  }
+  .row-delete-btn:hover { color: #e2483d; }
+  .add-row-link {
+    color: #2f6fed;
+    font-size: 13px;
+    cursor: pointer;
+    display: inline-block;
+    padding: 10px 4px;
+  }
+  .form-total {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 16px;
+    border-top: 1px solid #eceef1;
+    padding-top: 18px;
+    margin-top: 18px;
+    font-size: 14px;
+  }
+  .form-total .amount {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+  .approval-route {
+    margin-top: 18px;
+    font-size: 13px;
+    color: var(--text-gray);
+  }
+  .approval-route b { color: var(--text-dark); }
+
+  /* ===== 簽核關卡 card ===== */
+  .approval-card {
+    background: #fff;
+    border: 1px solid #e3e5e8;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    margin-top: 20px;
+  }
+  .approval-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    cursor: pointer;
+  }
+  .approval-card-header span:first-child {
+    font-size: 15px;
+    font-weight: 700;
+    color: #2f6fed;
+  }
+  .approval-card-toggle {
+    color: var(--text-gray);
+    font-size: 12px;
+    transition: transform 0.15s;
+  }
+  .approval-card-toggle.closed {
+    transform: rotate(-90deg);
+  }
+  .approval-card-body {
+    border-top: 1px solid #eceef1;
+    padding: 4px 20px 18px;
+  }
+  .approval-card-body.collapsed {
+    display: none;
+  }
+  table.approval-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 10px;
+  }
+  table.approval-table th {
+    text-align: left;
+    color: var(--text-gray);
+    font-weight: 400;
+    padding: 8px 10px;
+    border-bottom: 1px solid #eceef1;
+  }
+  table.approval-table td {
+    padding: 10px;
+    border-bottom: 1px solid #eceef1;
+  }
+  table.approval-table .cell-center {
+    text-align: center;
+  }
+  table.approval-table tr:last-child td {
+    border-bottom: none;
+  }
+  table.approval-table tr.approval-row-approved {
+    background: #eaf7ec;
+  }
+  table.approval-table tr.approval-row-pending {
+    background: #fff8e8;
+  }
+  table.approval-table tr.approval-row-rejected {
+    background: #fbebea;
+  }
+  .approval-table .step-no {
+    color: var(--topbar-navy);
+    font-weight: 700;
+  }
+  .approval-route-line {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--text-gray);
+  }
+  .approval-route-line b { color: var(--text-dark); }
+
+  /* ===== 簽核歷程 ===== */
+  .history-section {
+    margin-top: 24px;
+  }
+  .history-item {
+    display: flex;
+    gap: 16px;
+    font-size: 13px;
+    padding: 6px 0;
+  }
+  .history-time {
+    color: var(--text-gray);
+    white-space: nowrap;
+    min-width: 130px;
+  }
+  .history-desc {
+    color: var(--text-dark);
+  }
+  .history-desc b { color: #35b46a; }
+
+  /* ===== Footer ===== */
+  .site-footer {
+    text-align: center;
+    font-size: 12px;
+    color: #9aa0a8;
+    padding: 24px 0 28px;
+  }
+
+  /* ===== Login screen(登出後顯示) ===== */
+  .login-screen {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #f8f9fa;
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
+  }
+  .login-screen.active {
+    display: flex;
+  }
+  .login-card {
+    width: 375px;
+    background: #fff;
+    border: 1px solid #e3e5e8;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    padding: 32px 32px 24px;
+    box-sizing: border-box;
+  }
+  .login-logo-block {
+    text-align: center;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eceef0;
+  }
+  .login-logo-block img {
+    height: 40px;
+    display: block;
+    margin: 0 auto 8px;
+  }
+  .login-logo-text {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1e4976;
+  }
+  .login-google-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #fff;
+    border: 1px solid #dcdfe3;
+    border-radius: 4px;
+    padding: 9px 12px;
+    font-size: 14px;
+    color: var(--text-dark);
+    cursor: pointer;
+    font-family: inherit;
+    box-sizing: border-box;
+  }
+  .login-google-btn:hover {
+    background: #f5f6f7;
+  }
+  .login-google-icon {
+    font-weight: 700;
+    color: #4285F4;
+  }
+  .login-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #9aa0a8;
+    font-size: 12px;
+    font-style: italic;
+    margin: 18px 0;
+  }
+  .login-divider::before, .login-divider::after {
+    content: '';
+    flex: 1;
+    border-top: 1px solid #eceef0;
+  }
+  .login-divider span {
+    padding: 0 10px;
+  }
+  .login-field {
+    margin-bottom: 14px;
+  }
+  .login-field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+  }
+  .login-field input {
+    width: 100%;
+    border: 1px solid #dcdfe3;
+    border-radius: 4px;
+    padding: 9px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    box-sizing: border-box;
+  }
+  .login-submit-btn {
+    width: 100%;
+    background: #1e4976;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    margin: 10px 0 14px;
+  }
+  .login-submit-btn:hover {
+    background: #16395c;
+  }
+  .login-reset-link {
+    display: block;
+    font-size: 13px;
+    color: #1e6fd9;
+    text-decoration: none;
+    margin-bottom: 4px;
+  }
+  .login-reset-link:hover {
+    text-decoration: underline;
+  }
+  .login-hr {
+    border-top: 1px solid #eceef0;
+    margin: 18px 0 14px;
+  }
+  .login-footer {
+    text-align: center;
+    font-size: 12px;
+    color: #9aa0a8;
+  }
+</style>
+<link rel="stylesheet" href="../assets/css/eip-layout.css"></head>
+<body class="eip-shared-layout" data-eip-root="../" data-eip-user="陳庭瑋 (T037)"><div id="eipAppHeader"></div>
+
+  <div id="appShell">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="menu-wrap">
+        <button class="grid-toggle" id="gridToggle" onclick="toggleDropdown('pageDropdown')">
+          <span class="grid-icon">
+            <span></span><span></span><span></span>
+            <span></span><span></span><span></span>
+            <span></span><span></span><span></span>
+          </span>
+        </button>
+        <div class="dropdown" id="pageDropdown">
+          <button class="dropdown-item" onclick="goToPage('overview')">總覽</button>
+          <button class="dropdown-item" onclick="goToPage('admin-form-list')">表單申請／簽核</button>
+          <button class="dropdown-item" onclick="goToPage('remit-vendor-list')">匯款資料維護</button>
+        </div>
+      </div>
+      <span class="app-label" id="topbarAppLabel">總覽</span>
+      <div class="submenu-group" id="topbarSubmenuGroup" style="display:none;">
+        <div class="finance-menu">
+          <span class="finance-menu-label">行政相關表單 <span class="caret-mini">&#9662;</span></span>
+          <div class="finance-dropdown">
+            <button class="dropdown-item" onclick="goToPage('admin-form-list')">請購單管理</button>
+          </div>
+        </div>
+        <div class="delegate-menu">
+          <span class="delegate-menu-label">代理人設定 <span class="caret-mini">&#9662;</span></span>
+          <div class="delegate-dropdown">
+            <button class="dropdown-item" onclick="goToPage('my-delegate')">我的代理人</button>
+            <button class="dropdown-item" onclick="goToPage('delegate-settings')">人員代理設定</button>
+          </div>
+        </div>
+        <div class="menu-wrap submenu-collapsed">
+          <button class="submenu-collapsed-btn" id="submenuCollapsedToggle" onclick="toggleDropdown('submenuCollapsedDropdown')">
+            <span class="submenu-collapsed-icon">&#9776;</span> 選單 <span class="caret">▼</span>
+          </button>
+          <div class="dropdown align-right submenu-collapsed-dropdown" id="submenuCollapsedDropdown">
+            <div class="dropdown-group-label">行政相關表單</div>
+            <button class="dropdown-item" onclick="goToPage('admin-form-list')">請購單管理</button>
+            <div class="dropdown-divider"></div>
+            <div class="dropdown-group-label">代理人設定</div>
+            <button class="dropdown-item" onclick="goToPage('my-delegate')">我的代理人</button>
+            <button class="dropdown-item" onclick="goToPage('delegate-settings')">人員代理設定</button>
+          </div>
+        </div>
+      </div>
+      <div class="submenu-group" id="topbarRemitGroup" style="display:none;">
+        <div class="remit-links">
+          <span class="remit-link-label" id="remitLinkVendor" onclick="goToPage('remit-vendor-list')">廠商匯款資料</span>
+          <span class="remit-link-label" id="remitLinkPayroll" onclick="goToPage('remit-payroll-list')">員工薪資帳戶資料</span>
+        </div>
+        <div class="menu-wrap submenu-collapsed">
+          <button class="submenu-collapsed-btn" id="remitCollapsedToggle" onclick="toggleDropdown('remitCollapsedDropdown')">
+            <span class="submenu-collapsed-icon">&#9776;</span> 選單 <span class="caret">▼</span>
+          </button>
+          <div class="dropdown align-right submenu-collapsed-dropdown" id="remitCollapsedDropdown">
+            <button class="dropdown-item" onclick="goToPage('remit-vendor-list')">廠商匯款資料</button>
+            <button class="dropdown-item" onclick="goToPage('remit-payroll-list')">員工薪資帳戶資料</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="menu-wrap">
+        <button class="profile-btn" id="profileToggle" onclick="toggleDropdown('profileDropdown')">
+          Hi 王曉明 (A123) <span class="caret">▼</span>
+        </button>
+        <div class="dropdown align-right profile-dropdown" id="profileDropdown">
+          <button class="dropdown-item" onclick="goToPage('profile')">個人資料維護</button>
+          <button class="dropdown-item" onclick="showLoginScreen()">登出</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="header">
+    <div class="header-logo">
+      <img src="data:image/png;base64,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" alt="Bibian">
+      <span class="brand-text">企業內部管理系統</span>
+    </div>
+  </div>
+
+  <div class="breadcrumb-bar" id="breadcrumbBar">
+    <span class="crumb-item active">總覽</span>
+  </div>
+
+  <div class="main">
+
+    <!-- 總覽 -->
+    <div class="page active" id="page-overview">
+      <div class="overview-section">
+        <h2 class="section-title">行政表單－我的申請</h2>
+        <div class="cards">
+          <div class="card clickable pending" onclick="goToOverviewFiltered('pending')">
+            <div class="card-icon">&#128276;</div>
+            <div class="card-text">
+              <div class="card-number" id="ovMyPendingCount">0</div>
+              <div class="card-label">簽核申請中</div>
+            </div>
+          </div>
+          <div class="card clickable rejected" onclick="goToOverviewFiltered('rejected')">
+            <div class="card-icon">&#9888;</div>
+            <div class="card-text">
+              <div class="card-number" id="ovMyRejectedCount">0</div>
+              <div class="card-label">退回待處理</div>
+            </div>
+          </div>
+          <div class="card clickable approved" onclick="goToOverviewFiltered('approved14')">
+            <div class="card-icon">&#10003;</div>
+            <div class="card-text">
+              <div class="card-number" id="ovMyApproved14Count">0</div>
+              <div class="card-label">近14天已核准</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="overview-section">
+        <h2 class="section-title">行政表單－簽核作業</h2>
+        <div class="cards">
+          <div class="card clickable pending" onclick="goToOverviewFiltered('toSign')">
+            <div class="card-icon">&#128276;</div>
+            <div class="card-text">
+              <div class="card-number" id="ovToSignCount">0</div>
+              <div class="card-label">待我簽核</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <a class="doc-help-link" href="https://docs.google.com/document/d/1VRnMWGTzgzyb_phILUizhEahOwNrIco1/edit" target="_blank" rel="noopener">&#128214; 比比昂企業內部管理系統—操作說明手冊</a>
+    </div>
+
+    <!-- 請購單管理列表 -->
+    <div class="page" id="page-admin-form-list">
+      <div class="list-title-row">
+        <h2 class="section-title">請購單管理</h2>
+        <button class="btn btn-primary" onclick="goToPage('admin-form-detail')">+ 新增</button>
+      </div>
+      <div class="page-tabs">
+        <button class="page-tab active" onclick="switchListTab(this)">我的申請單</button>
+        <button class="page-tab" onclick="switchListTab(this)">待簽核表單</button>
+        <button class="page-tab" onclick="switchListTab(this)">已簽核表單</button>
+        <button class="page-tab" onclick="switchListTab(this)">全部表單</button>
+      </div>
+      <div class="advanced-filter-panel" id="advancedFilterPanel">
+        <div class="filter-grid">
+          <div class="form-field">
+            <label>簽核狀態</label>
+            <div class="multiselect-wrap">
+              <button type="button" class="multiselect-trigger" id="statusFilterTrigger" onclick="toggleDropdown('statusFilterDropdown')">
+                <span class="multiselect-trigger-label">全部</span>
+                <span class="caret">▼</span>
+              </button>
+              <div class="dropdown multiselect-dropdown" id="statusFilterDropdown">
+                <label class="dropdown-checkbox-row"><input type="checkbox" value="草稿" onchange="updateStatusFilterLabel()"> 草稿</label>
+                <label class="dropdown-checkbox-row"><input type="checkbox" value="申請中" onchange="updateStatusFilterLabel()"> 申請中</label>
+                <label class="dropdown-checkbox-row"><input type="checkbox" value="簽核中" onchange="updateStatusFilterLabel()"> 簽核中</label>
+                <label class="dropdown-checkbox-row"><input type="checkbox" value="已核准" onchange="updateStatusFilterLabel()"> 已核准</label>
+                <label class="dropdown-checkbox-row"><input type="checkbox" value="已退回" onchange="updateStatusFilterLabel()"> 已退回</label>
+                <label class="dropdown-checkbox-row"><input type="checkbox" value="已完成" onchange="updateStatusFilterLabel()"> 已完成</label>
+              </div>
+            </div>
+          </div>
+          <div class="form-field">
+            <label>支出科目</label>
+            <select>
+              <option value="">全部</option>
+              <option>文具用品</option>
+              <option>水電費</option>
+              <option>交通費</option>
+              <option>交際費</option>
+              <option>保險費</option>
+              <option>修繕費</option>
+              <option>旅費 (不含海外出差)</option>
+              <option>書報雜誌</option>
+              <option>租金支出</option>
+              <option>訓練費</option>
+              <option>勞務費(委任顧問)</option>
+              <option>郵電費</option>
+              <option>運費</option>
+              <option>廣告費</option>
+              <option>薪資/獎金類</option>
+              <option>職工福利</option>
+              <option>代付款 (BBN)</option>
+              <option>雜項購置</option>
+              <option>其他費用</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>請款公司</label>
+            <select>
+              <option value="">全部</option>
+              <option>比比昂株式會社</option>
+              <option>網家跨境服務股份有限公司</option>
+              <option>空中補給股份有限公司</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>申請日期</label>
+            <div class="date-range">
+              <input type="text" placeholder="YYYYMMDD" maxlength="8">
+              <span>~</span>
+              <input type="text" placeholder="YYYYMMDD" maxlength="8">
+            </div>
+          </div>
+          <div class="form-field">
+            <label>核准日期</label>
+            <div class="date-range">
+              <input type="text" id="approvalDateStart" placeholder="YYYYMMDD" maxlength="8">
+              <span>~</span>
+              <input type="text" id="approvalDateEnd" placeholder="YYYYMMDD" maxlength="8">
+            </div>
+          </div>
+          <div class="form-field">
+            <label>關鍵字</label>
+            <div class="keyword-combo">
+              <select>
+                <option value="">全部</option>
+                <option>申請人姓名</option>
+                <option>申請人員編</option>
+                <option>請款單號</option>
+                <option>匯款戶名</option>
+              </select>
+              <input type="text" placeholder="申請人姓名／申請人員編／請款單號／匯款戶名">
+            </div>
+          </div>
+        </div>
+        <div class="filter-actions">
+          <button class="btn btn-outline btn-sm">清除</button>
+          <button class="btn btn-primary btn-sm">查詢</button>
+        </div>
+      </div>
+
+      <div class="list-status-bar">
+        <span class="list-status-text">查詢共 <b id="totalCount">15</b> 筆<span id="selectionCountText">,已勾選 <b id="selectedCount">0</b> 筆</span></span>
+        <div class="list-status-actions" id="bulkActions">
+          <button class="btn btn-outline btn-sm" disabled>撤回</button>
+          <button class="btn btn-outline btn-sm" disabled>刪除</button>
+        </div>
+      </div>
+
+      <div class="data-table-wrap">
+        <table class="data-table" id="adminFormTable">
+          <thead>
+            <tr>
+              <th style="width:28px;" id="selectAllTh"><input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll()"></th>
+              <th>簽核狀態</th>
+              <th>待簽核者</th>
+              <th style="width:70px;">操作</th>
+              <th>請款單號</th>
+              <th>請款公司</th>
+              <th>支出科目</th>
+              <th class="cell-right">請款金額</th>
+              <th>申請人</th>
+              <th>申請日期</th>
+              <th>核准日期</th>
+              <th style="width:40px;">列印</th>
+              <th style="width:40px;">複製</th>
+            </tr>
+          </thead>
+          <tbody id="admin-form-rows">
+            <tr>
+              <td><input type="checkbox" class="row-checkbox" onchange="updateSelectionBar()"></td>
+              <td><span class="status-badge status-draft">草稿</span></td>
+              <td class="pending-signer-cell"></td>
+              <td><button class="btn btn-outline btn-sm action-btn" onclick="openFormDetail(this)">編輯</button></td>
+              <td>尚未產生單號</td>
+              <td class="truncate-cell" title="網家跨境服務股份有限公司">網家跨境服務...</td>
+              <td>租金支出</td>
+              <td class="cell-right">NT$ 0</td>
+              <td class="applicant-cell">王曉明</td>
+              <td>2026年08月14日</td>
+              <td class="approval-date-cell">—</td>
+              <td><button class="btn-icon" title="列印此筆" onclick="printSingleForm(event)">&#128424;</button></td>
+              <td><button class="btn-icon" title="複製此筆" onclick="goToPage('admin-form-detail')">&#128203;</button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" class="row-checkbox" onchange="updateSelectionBar()"></td>
+              <td><span class="status-badge status-rejected">已退回</span></td>
+              <td class="pending-signer-cell"></td>
+              <td><button class="btn btn-outline btn-sm action-btn" onclick="openFormDetail(this)">編輯</button></td>
+              <td>CBS-PAY-2026-0033</td>
+              <td class="truncate-cell" title="網家跨境服務股份有限公司">網家跨境服務...</td>
+              <td>文具用品</td>
+              <td class="cell-right">NT$ 100</td>
+              <td class="applicant-cell">王曉明</td>
+              <td>2026年08月13日</td>
+              <td class="approval-date-cell">—</td>
+              <td><button class="btn-icon" title="列印此筆" onclick="printSingleForm(event)">&#128424;</button></td>
+              <td><button class="btn-icon" title="複製此筆" onclick="goToPage('admin-form-detail')">&#128203;</button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" class="row-checkbox" onchange="updateSelectionBar()"></td>
+              <td><span class="status-badge status-approved">已核准</span></td>
+              <td class="pending-signer-cell"></td>
+              <td><button class="btn btn-outline btn-sm action-btn" onclick="openFormDetail(this)">編輯</button></td>
+              <td>CBS-PAY-2026-0030</td>
+              <td class="truncate-cell" title="網家跨境服務股份有限公司">網家跨境服務...</td>
+              <td>郵資</td>
+              <td class="cell-right">NT$ 10,000,000</td>
+              <td class="applicant-cell">王曉明</td>
+              <td>2026年08月12日</td>
+              <td class="approval-date-cell" id="approvalDateSample1">—</td>
+              <td><button class="btn-icon" title="列印此筆" onclick="printSingleForm(event)">&#128424;</button></td>
+              <td><button class="btn-icon" title="複製此筆" onclick="goToPage('admin-form-detail')">&#128203;</button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" class="row-checkbox" onchange="updateSelectionBar()"></td>
+              <td><span class="status-badge status-rejected">已退回</span></td>
+              <td class="pending-signer-cell"></td>
+              <td><button class="btn btn-outline btn-sm action-btn" onclick="openFormDetail(this)">編輯</button></td>
+              <td>CBS-PAY-2026-0029</td>
+              <td class="truncate-cell" title="網家跨境服務股份有限公司">網家跨境服務...</td>
+              <td>郵電費</td>
+              <td class="cell-right">NT$ 68,000</td>
+              <td class="applicant-cell">王曉明</td>
+              <td>2026年08月12日</td>
+              <td class="approval-date-cell">—</td>
+              <td><button class="btn-icon" title="列印此筆" onclick="printSingleForm(event)">&#128424;</button></td>
+              <td><button class="btn-icon" title="複製此筆" onclick="goToPage('admin-form-detail')">&#128203;</button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" class="row-checkbox" onchange="updateSelectionBar()"></td>
+              <td><span class="status-badge status-rejected">已退回</span></td>
+              <td class="pending-signer-cell"></td>
+              <td><button class="btn btn-outline btn-sm action-btn" onclick="openFormDetail(this)">編輯</button></td>
+              <td>CBS-PAY-2026-0028</td>
+              <td class="truncate-cell" title="網家跨境服務股份有限公司">網家跨境服務...</td>
+              <td>旅費</td>
+              <td class="cell-right">NT$ 579</td>
+              <td class="applicant-cell">王曉明</td>
+              <td>2026年08月12日</td>
+              <td class="approval-date-cell">—</td>
+              <td><button class="btn-icon" title="列印此筆" onclick="printSingleForm(event)">&#128424;</button></td>
+              <td><button class="btn-icon" title="複製此筆" onclick="goToPage('admin-form-detail')">&#128203;</button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" class="row-checkbox" onchange="updateSelectionBar()"></td>
+              <td><span class="status-badge status-applying">申請中</span></td>
+              <td class="pending-signer-cell">王曉明</td>
+              <td><button class="btn btn-outline btn-sm action-btn" onclick="openFormDetail(this)">編輯</button></td>
+              <td>CBS-PAY-2026-0016</td>
+              <td class="truncate-cell" title="網家跨境服務股份有限公司">網家跨境服務...</td>
+              <td>修繕費</td>
+              <td class="cell-right">NT$ 2,300</td>
+              <td class="applicant-cell">王曉明</td>
+              <td>2026年08月03日</td>
+              <td class="approval-date-cell">—</td>
+              <td><button class="btn-icon" title="列印此筆" onclick="printSingleForm(event)">&#128424;</button></td>
+              <td><button class="btn-icon" title="複製此筆" onclick="goToPage('admin-form-detail')">&#128203;</button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" class="row-checkbox" onchange="updateSelectionBar()"></td>
+              <td><span class="status-badge status-applying">申請中</span></td>
+              <td class="pending-signer-cell">王曉明</td>
+              <td><button class="btn btn-outline btn-sm action-btn" onclick="openFormDetail(this)">編輯</button></td>
+              <td>CBS-PAY-2026-0015</td>
+              <td class="truncate-cell" title="網家跨境服務股份有限公司">網家跨境服務...</td>
+              <td>廣告費</td>
+              <td class="cell-right">NT$ 100</td>
+              <td class="applicant-cell">王曉明</td>
+              <td>2026年07月31日</td>
+              <td class="approval-date-cell">—</td>
+              <td><button class="btn-icon" title="列印此筆" onclick="printSingleForm(event)">&#128424;</button></td>
+              <td><button class="btn-icon" title="複製此筆" onclick="goToPage('admin-form-detail')">&#128203;</button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" class="row-checkbox" onchange="updateSelectionBar()"></td>
+              <td><span class="status-badge status-draft">草稿</span></td>
+              <td class="pending-signer-cell"></td>
+              <td><button class="btn btn-outline btn-sm action-btn" onclick="openFormDetail(this)">編輯</button></td>
+              <td>尚未產生單號</td>
+              <td class="truncate-cell" title="網家跨境服務股份有限公司">網家跨境服務...</td>
+              <td>保險費</td>
+              <td class="cell-right">NT$ 0</td>
+              <td class="applicant-cell">王曉明</td>
+              <td>2026年07月29日</td>
+              <td class="approval-date-cell">—</td>
+              <td><button class="btn-icon" title="列印此筆" onclick="printSingleForm(event)">&#128424;</button></td>
+              <td><button class="btn-icon" title="複製此筆" onclick="goToPage('admin-form-detail')">&#128203;</button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" class="row-checkbox" onchange="updateSelectionBar()"></td>
+              <td><span class="status-badge status-applying">申請中</span></td>
+              <td class="pending-signer-cell">王課長</td>
+              <td><button class="btn btn-outline btn-sm action-btn" onclick="openFormDetail(this)">編輯</button></td>
+              <td>CBS-PAY-2026-0014</td>
+              <td class="truncate-cell" title="網家跨境服務股份有限公司">網家跨境服務...</td>
+              <td>交際費</td>
+              <td class="cell-right">NT$ 100</td>
+              <td class="applicant-cell">王曉明</td>
+              <td>2026年07月29日</td>
+              <td class="approval-date-cell">—</td>
+              <td><button class="btn-icon" title="列印此筆" onclick="printSingleForm(event)">&#128424;</button></td>
+              <td><button class="btn-icon" title="複製此筆" onclick="goToPage('admin-form-detail')">&#128203;</button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" class="row-checkbox" onchange="updateSelectionBar()"></td>
+              <td><span class="status-badge status-applying">申請中</span></td>
+              <td class="pending-signer-cell">王課長</td>
+              <td><button class="btn btn-outline btn-sm action-btn" onclick="openFormDetail(this)">編輯</button></td>
+              <td>CBS-PAY-2026-0013</td>
+              <td class="truncate-cell" title="網家跨境服務股份有限公司">網家跨境服務...</td>
+              <td>職工福利</td>
+              <td class="cell-right">NT$ 100</td>
+              <td class="applicant-cell">王曉明</td>
+              <td>2026年07月29日</td>
+              <td class="approval-date-cell">—</td>
+              <td><button class="btn-icon" title="列印此筆" onclick="printSingleForm(event)">&#128424;</button></td>
+              <td><button class="btn-icon" title="複製此筆" onclick="goToPage('admin-form-detail')">&#128203;</button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" class="row-checkbox" onchange="updateSelectionBar()"></td>
+              <td><span class="status-badge status-applying">申請中</span></td>
+              <td class="pending-signer-cell">王課長</td>
+              <td><button class="btn btn-outline btn-sm action-btn" onclick="openFormDetail(this)">編輯</button></td>
+              <td>CBS-PAY-2026-0012</td>
+              <td class="truncate-cell" title="網家跨境服務股份有限公司">網家跨境服務...</td>
+              <td>交通費</td>
+              <td class="cell-right">NT$ 150</td>
+              <td class="applicant-cell">王曉明</td>
+              <td>2026年07月29日</td>
+              <td class="approval-date-cell">—</td>
+              <td><button class="btn-icon" title="列印此筆" onclick="printSingleForm(event)">&#128424;</button></td>
+              <td><button class="btn-icon" title="複製此筆" onclick="goToPage('admin-form-detail')">&#128203;</button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" class="row-checkbox" onchange="updateSelectionBar()"></td>
+              <td><span class="status-badge status-applying">申請中</span></td>
+              <td class="pending-signer-cell">王課長</td>
+              <td><button class="btn btn-outline btn-sm action-btn" onclick="openFormDetail(this)">編輯</button></td>
+              <td>CBS-PAY-2026-0006</td>
+              <td class="truncate-cell" title="網家跨境服務股份有限公司">網家跨境服務...</td>
+              <td>雜項費用</td>
+              <td class="cell-right">NT$ 100</td>
+              <td class="applicant-cell">王曉明</td>
+              <td>2026年07月27日</td>
+              <td class="approval-date-cell">—</td>
+              <td><button class="btn-icon" title="列印此筆" onclick="printSingleForm(event)">&#128424;</button></td>
+              <td><button class="btn-icon" title="複製此筆" onclick="goToPage('admin-form-detail')">&#128203;</button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" class="row-checkbox" onchange="updateSelectionBar()"></td>
+              <td><span class="status-badge status-applying">申請中</span></td>
+              <td class="pending-signer-cell">王課長</td>
+              <td><button class="btn btn-outline btn-sm action-btn" onclick="openFormDetail(this)">編輯</button></td>
+              <td>CBS-PAY-2026-0005</td>
+              <td class="truncate-cell" title="網家跨境服務股份有限公司">網家跨境服務...</td>
+              <td>租金支出</td>
+              <td class="cell-right">NT$ 150</td>
+              <td class="applicant-cell">王曉明</td>
+              <td>2026年07月27日</td>
+              <td class="approval-date-cell">—</td>
+              <td><button class="btn-icon" title="列印此筆" onclick="printSingleForm(event)">&#128424;</button></td>
+              <td><button class="btn-icon" title="複製此筆" onclick="goToPage('admin-form-detail')">&#128203;</button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" class="row-checkbox" onchange="updateSelectionBar()"></td>
+              <td><span class="status-badge status-approved">已核准</span></td>
+              <td class="pending-signer-cell"></td>
+              <td><button class="btn btn-outline btn-sm action-btn" onclick="openFormDetail(this)">編輯</button></td>
+              <td>CBS-PAY-2026-0004</td>
+              <td class="truncate-cell" title="網家跨境服務股份有限公司">網家跨境服務...</td>
+              <td>文具用品</td>
+              <td class="cell-right">NT$ 300</td>
+              <td class="applicant-cell">王曉明</td>
+              <td>2026年07月23日</td>
+              <td class="approval-date-cell" id="approvalDateSample2">—</td>
+              <td><button class="btn-icon" title="列印此筆" onclick="printSingleForm(event)">&#128424;</button></td>
+              <td><button class="btn-icon" title="複製此筆" onclick="goToPage('admin-form-detail')">&#128203;</button></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" class="row-checkbox" onchange="updateSelectionBar()"></td>
+              <td><span class="status-badge status-signing">簽核中</span></td>
+              <td class="pending-signer-cell">Carlson</td>
+              <td><button class="btn btn-outline btn-sm action-btn" onclick="openFormDetail(this)">編輯</button></td>
+              <td>CBS-PAY-2026-0003</td>
+              <td class="truncate-cell" title="網家跨境服務股份有限公司">網家跨境服務...</td>
+              <td>郵資</td>
+              <td class="cell-right">NT$ 200,000</td>
+              <td class="applicant-cell">王曉明</td>
+              <td>2026年07月23日</td>
+              <td class="approval-date-cell">—</td>
+              <td><button class="btn-icon" title="列印此筆" onclick="printSingleForm(event)">&#128424;</button></td>
+              <td><button class="btn-icon" title="複製此筆" onclick="goToPage('admin-form-detail')">&#128203;</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pager">
+        <button class="pager-arrow">&#8249;</button>
+        <span class="pager-page">1</span>
+        <button class="pager-arrow">&#8250;</button>
+      </div>
+    </div>
+
+    <!-- 新增請購單 (請款單詳細頁) -->
+    <div class="page" id="page-admin-form-detail">
+      <div class="form-action-bar">
+        <div class="form-action-bar-left" id="formActionBarDefault">
+          <button class="btn btn-outline" onclick="goToPage('admin-form-list')">返回</button>
+          <button class="btn btn-outline">儲存草稿</button>
+          <button class="btn btn-primary">送出簽核</button>
+          <span class="action-divider"></span>
+          <a class="icon-link">&#128424; 列印</a>
+          <a class="icon-link">&#128203; 複製</a>
+        </div>
+        <div class="form-action-bar-left" id="formActionBarSign" style="display:none;">
+          <button class="btn btn-outline" onclick="goToPage('admin-form-list')">返回</button>
+          <button class="btn btn-primary" onclick="openSignAction('approve')">核准本關</button>
+          <button class="btn btn-outline" onclick="openSignAction('reject-resign')">退回(重新簽核)</button>
+          <button class="btn btn-outline" onclick="openSignAction('reject-thislevel')">退回(僅本關重審)</button>
+        </div>
+        <div class="stepper" id="formStepper">
+          <span class="step active">草稿</span>
+          <span class="step">申請中</span>
+          <span class="step">簽核中</span>
+          <span class="step">已核准</span>
+          <span class="step">已完成</span>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-doc-title" id="formDocTitle">新增請購單</div>
+
+        <div class="form-grid form-grid-2col">
+            <div class="form-subsection-heading">基本資訊</div>
+            <div class="form-field">
+              <label><span class="req">*</span>申請人</label>
+              <span class="static-text" id="applicantNameText">王曉明 (A123)</span>
+            </div>
+            <div class="form-field">
+              <label><span class="req">*</span>申請人單位</label>
+              <span class="static-text" id="applicantUnitText">CBS營業本部 / CBS營業一課</span>
+            </div>
+            <div class="form-field">
+              <label><span class="req">*</span>申請日期</label>
+              <input type="date" id="applyDate" value="2026-08-14">
+            </div>
+            <div class="form-field">
+              <label><span class="req">*</span>請款公司</label>
+              <select>
+                <option>網家跨境服務股份有限公司</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label><span class="req">*</span>支出科目</label>
+              <select id="expenseCategory">
+                <option value="">請選擇支出科目</option>
+                <option>文具用品</option>
+                <option>水電費</option>
+                <option>交通費</option>
+                <option>交際費</option>
+                <option>保險費</option>
+                <option>修繕費</option>
+                <option>旅費 (不含海外出差)</option>
+                <option>書報雜誌</option>
+                <option>租金支出</option>
+                <option>訓練費</option>
+                <option>勞務費(委任顧問)</option>
+                <option>郵電費</option>
+                <option>運費</option>
+                <option>廣告費</option>
+                <option>薪資/獎金類</option>
+                <option>職工福利</option>
+                <option>代付款 (BBN)</option>
+                <option>雜項購置</option>
+                <option>其他費用</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label><span class="req">*</span>付款方式</label>
+              <select id="paymentMethod" onchange="updatePaymentMethodFields()">
+                <option value="">選擇付款方式</option>
+                <option>公司信用卡刷卡</option>
+                <option>匯款</option>
+              </select>
+            </div>
+
+            <div class="form-subsection-heading">付款資訊</div>
+            <div class="form-field" id="paymentTermsField" style="display:none;">
+              <label><span class="req">*</span>付款條件</label>
+              <select id="paymentTerms" onchange="updatePaymentTermsFields()">
+                <option value="">選擇付款條件</option>
+                <option>依最近付款日</option>
+                <option>月結30天</option>
+                <option>月結60天</option>
+                <option>指定匯款日</option>
+              </select>
+            </div>
+            <div class="form-field" id="specifiedDateField" style="display:none;">
+              <label><span class="req">*</span>指定匯款日</label>
+              <input type="date" id="specifiedDate">
+            </div>
+            <div class="form-field form-field-full">
+              <label><span class="req">*</span>匯款帳戶類型</label>
+              <div class="radio-group">
+                <label><input type="radio" name="payeeType" id="payeeCompany" checked onchange="updatePayeeFields()"> 公司行號或個人帳戶</label>
+                <label><input type="radio" name="payeeType" id="payeeSalary" onchange="updatePayeeFields()"> 員工薪資帳戶</label>
+              </div>
+            </div>
+            <div class="form-field form-field-full" id="remitPayeeSelectField">
+              <label><span class="req">*</span>選擇匯款對象</label>
+              <select id="remitPayeeSelect" onchange="updateRemitPayeeFields()">
+                <option value="">請選擇匯款對象</option>
+                <option value="誠品股份有限公司">誠品股份有限公司</option>
+                <option value="中華電信股份有限公司">中華電信股份有限公司</option>
+                <option value="__new__">＋ 新增匯款對象</option>
+              </select>
+            </div>
+            <div class="form-field form-field-full" id="remitNameSelectField" style="display:none;">
+              <label><span class="req">*</span>選擇匯款對象</label>
+              <select id="remitNameSelect">
+                <option value="">請選擇員工</option>
+                <option>王曉明(A123)</option>
+                <option>陳小華(A156)</option>
+                <option>王課長(A045)</option>
+                <option>王部長(A012)</option>
+                <option>李副總(A005)</option>
+              </select>
+            </div>
+            <div class="form-field-full remit-detail-box" id="remitDetailBox" style="display:none;">
+              <div class="form-field" id="remitAccountField">
+                <label><span class="req">*</span>匯款帳號</label>
+                <input type="text" id="remitAccount" inputmode="numeric" placeholder="請輸入匯款帳號(純數字)" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+              </div>
+              <div class="form-field" id="remitNameTextField">
+                <label><span class="req">*</span>匯款戶名</label>
+                <input type="text" id="remitNameText" placeholder="請輸入匯款戶名">
+              </div>
+              <div class="form-field" id="bankNameField">
+                <label><span class="req">*</span>銀行名稱/代碼</label>
+                <select id="bankName">
+                  <option value="">請選擇銀行</option>
+                  <option>004 台灣銀行</option>
+                  <option>005 土地銀行</option>
+                  <option>006 合作金庫商業銀行</option>
+                  <option>007 第一商業銀行</option>
+                  <option>008 華南商業銀行</option>
+                  <option>009 彰化商業銀行</option>
+                  <option>012 台北富邦商業銀行</option>
+                  <option>013 國泰世華商業銀行</option>
+                  <option>017 兆豐國際商業銀行</option>
+                  <option>050 台灣中小企業銀行</option>
+                  <option>700 中華郵政</option>
+                  <option>803 聯邦商業銀行</option>
+                  <option>805 遠東國際商業銀行</option>
+                  <option>806 元大商業銀行</option>
+                  <option>807 永豐商業銀行</option>
+                  <option>808 玉山商業銀行</option>
+                  <option>809 凱基商業銀行</option>
+                  <option>812 台新國際商業銀行</option>
+                  <option>822 中國信託商業銀行</option>
+                </select>
+              </div>
+              <div class="form-field" id="branchNameField">
+                <label><span class="req">*</span>分行名稱</label>
+                <select id="branchName">
+                  <option value="">請選擇分行</option>
+                  <option>營業部</option>
+                  <option>城東分行</option>
+                  <option>城中分行</option>
+                  <option>信義分行</option>
+                  <option>南京東路分行</option>
+                  <option>大安分行</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-field form-field-full">
+              <label><span class="req">*</span>手續費負擔方式</label>
+              <div class="radio-group">
+                <label><input type="radio" name="feeBearer" id="feeBearerCompany" checked> 公司負擔</label>
+                <label><input type="radio" name="feeBearer" id="feeBearerPayee"> 付款對象負擔</label>
+              </div>
+            </div>
+
+            <div class="form-subsection-heading">請款明細</div>
+            <table class="detail-table form-field-full">
+              <thead>
+                <tr>
+                  <th>摘要</th>
+                  <th class="cell-right">金額(含稅)</th>
+                  <th class="cell-action"></th>
+                </tr>
+              </thead>
+              <tbody id="detailRows"></tbody>
+            </table>
+            <span class="add-row-link form-edit-control form-field-full" onclick="addDetailRow()">+ 加入資料行</span>
+
+            <div class="form-total form-field-full">
+              <span>請款金額(含稅):</span>
+              <span class="amount" id="formTotalAmount">NT$ 0</span>
+            </div>
+
+            <div class="form-subsection-heading">憑證與附件</div>
+            <div class="form-field form-field-full form-field-top">
+              <label>發票號碼</label>
+              <div class="attachment-block">
+                <div class="invoice-input-row form-edit-control">
+                  <input type="text" id="invoiceInput" placeholder="請輸入發票號碼" onkeydown="if(event.key==='Enter'){event.preventDefault();addInvoiceNumber();}">
+                  <button type="button" class="btn btn-outline btn-sm" onclick="addInvoiceNumber()">＋ 新增</button>
+                </div>
+                <div class="invoice-list" id="invoiceList"></div>
+                <span class="field-hint">請款金額 5,000 元以上,需要填寫發票號碼(如為收據可免填)。</span>
+              </div>
+            </div>
+            <div class="form-field form-field-full form-field-top">
+              <label>表單附件</label>
+              <div class="attachment-block">
+                <div class="attachment-list" id="attachmentList">
+                  <div class="attachment-item">
+                    <span class="attachment-icon">PDF</span>
+                    <span class="attachment-name" title="AI 工具申購單_v1_20260813.pdf">AI 工具申購單_v1_20260813.pdf</span>
+                    <button type="button" class="attachment-remove form-edit-control" title="刪除" onclick="this.closest('.attachment-item').remove()">&times;</button>
+                  </div>
+                </div>
+                <input type="file" id="attachmentInput" multiple style="display:none;" onchange="handleAttachmentUpload(this)">
+                <button type="button" class="attachment-upload-btn form-edit-control" onclick="document.getElementById('attachmentInput').click()">&#128206; 選擇上傳附件</button>
+                <span class="field-hint">※ 如有需於簽核時一併審閱之資料,請於此處檢附。<br>※ 單據請確認載有公司全銜、統一編號,並加蓋對方之統一發票專用章或免用統一發票專用章。</span>
+              </div>
+            </div>
+        </div>
+
+      </div>
+
+      <div class="approval-card">
+        <div class="approval-card-header" onclick="toggleApprovalCard()">
+          <span>簽核關卡</span>
+          <span class="approval-card-toggle" id="approvalCardToggle">&#9662;</span>
+        </div>
+        <div class="approval-card-body" id="approvalCardBody">
+          <table class="approval-table">
+            <thead>
+              <tr>
+                <th style="width:50px;">序號</th>
+                <th>狀態</th>
+                <th>待簽核者</th>
+                <th>簽核者</th>
+                <th>簽核日期</th>
+                <th>意見</th>
+              </tr>
+            </thead>
+            <tbody id="approvalTableBody">
+              <tr class="approval-row-approved">
+                <td class="cell-center step-no">1</td>
+                <td><span class="status-badge status-approved">已核准</span></td>
+                <td>王課長</td>
+                <td>王課長</td>
+                <td>2026-07-27 23:52:36</td>
+                <td></td>
+              </tr>
+              <tr class="approval-row-approved">
+                <td class="cell-center step-no">2</td>
+                <td><span class="status-badge status-approved">已核准</span></td>
+                <td>王部長</td>
+                <td>王部長</td>
+                <td>2026-08-13 10:50:53</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="approval-route-line">簽核路線(完整):&nbsp;<b>① 直屬主管 → ② CBS副總經理(金額&ge;1萬) → ③ 集團總經理(金額&ge;10萬) → ④ 財務單位資料複核</b></div>
+          <div class="field-hint" style="margin-top:4px;">※ 金額未達門檻之關卡將自動略過,依序推送至下一關簽核。</div>
+        </div>
+      </div>
+
+      <div class="history-section">
+        <div class="form-section-heading">簽核歷程</div>
+        <div id="historyItems">
+        <div class="history-item">
+          <span class="history-time">2026-07-23 19:25</span>
+          <span class="history-desc">送出簽核</span>
+        </div>
+        <div class="history-item">
+          <span class="history-time">2026-07-27 23:52</span>
+          <span class="history-desc">核准(直屬主管)— 王課長</span>
+        </div>
+        <div class="history-item">
+          <span class="history-time">2026-08-13 10:50</span>
+          <span class="history-desc">核准(財務單位資料複核)— 王部長 <b>&#10003; 全簽通過(已核准)</b></span>
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 匯款資料管理列表 -->
+    <div class="page" id="page-remit-vendor-list">
+      <div class="list-title-row">
+        <h2 class="section-title">廠商匯款資料</h2>
+        <button class="btn btn-primary" onclick="goToPage('remit-vendor-detail', 'new')">+ 新增</button>
+      </div>
+      <div class="advanced-filter-panel" id="remitVendorFilterPanel">
+        <div class="filter-grid">
+          <div class="form-field">
+            <label>狀態</label>
+            <select>
+              <option value="">全部</option>
+              <option>使用中</option>
+              <option>停用</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>匯款對象名稱</label>
+            <input type="text" placeholder="輸入匯款對象名稱關鍵字查詢">
+          </div>
+          <div class="form-field">
+            <label>備註</label>
+            <input type="text" placeholder="輸入備註關鍵字查詢">
+          </div>
+        </div>
+        <div class="filter-actions">
+          <button class="btn btn-outline btn-sm">清除</button>
+          <button class="btn btn-primary btn-sm">查詢</button>
+        </div>
+      </div>
+
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>系統編號</th>
+              <th>狀態</th>
+              <th style="width:70px;">操作</th>
+              <th>匯款對象名稱</th>
+              <th>備註</th>
+            </tr>
+          </thead>
+          <tbody id="remit-vendor-rows">
+            <tr>
+              <td>RM-0001</td>
+              <td><span class="status-badge status-approved">使用中</span></td>
+              <td><button class="btn btn-outline btn-sm action-btn" onclick="goToPage('remit-vendor-detail', 'edit')">編輯</button></td>
+              <td>誠品股份有限公司</td>
+              <td class="truncate-cell" title="文具採購廠商">文具採購廠商</td>
+            </tr>
+            <tr>
+              <td>RM-0002</td>
+              <td><span class="status-badge status-draft">停用</span></td>
+              <td><button class="btn btn-outline btn-sm action-btn" onclick="goToPage('remit-vendor-detail', 'edit')">編輯</button></td>
+              <td>大苑子有限公司</td>
+              <td class="truncate-cell" title="已終止合作">已終止合作</td>
+            </tr>
+            <tr>
+              <td>RM-0003</td>
+              <td><span class="status-badge status-approved">使用中</span></td>
+              <td><button class="btn btn-outline btn-sm action-btn" onclick="goToPage('remit-vendor-detail', 'edit')">編輯</button></td>
+              <td>中華電信股份有限公司</td>
+              <td class="truncate-cell" title="電信費">電信費</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pager">
+        <button class="pager-arrow">&#8249;</button>
+        <span class="pager-page">1</span>
+        <button class="pager-arrow">&#8250;</button>
+      </div>
+    </div>
+
+    <!-- 新增／編輯廠商匯款資料 -->
+    <div class="page" id="page-remit-vendor-detail">
+      <div class="form-action-bar">
+        <div class="form-action-bar-left">
+          <button class="btn btn-outline" onclick="goToPage('remit-vendor-list')">返回</button>
+          <button class="btn btn-primary">儲存異動</button>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-doc-title" id="remitVendorDocTitle">新增廠商匯款資料</div>
+
+        <div class="form-grid">
+          <div>
+            <div class="form-field">
+              <label><span class="req">*</span>狀態</label>
+              <div class="radio-group">
+                <label><input type="radio" name="remitVendorStatus" id="remitVendorStatusActive" checked> 使用中</label>
+                <label><input type="radio" name="remitVendorStatus" id="remitVendorStatusInactive"> 停用</label>
+              </div>
+              <span class="field-hint">影響是否出現在申請表單選項中。</span>
+            </div>
+            <div class="form-field">
+              <label><span class="req">*</span>匯款對象名稱</label>
+              <input type="text" id="remitVendorTargetName" placeholder="請輸入匯款對象名稱">
+              <span class="field-hint">僅供人員辨識資料使用。</span>
+            </div>
+            <div class="form-field">
+              <label>統編</label>
+              <input type="text" id="remitVendorTaxId" placeholder="請輸入統一編號">
+            </div>
+            <div class="form-field">
+              <label><span class="req">*</span>匯款帳號</label>
+              <input type="text" id="remitVendorAccountNo" inputmode="numeric" placeholder="請輸入匯款帳號(純數字)" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+            </div>
+            <div class="form-field">
+              <label><span class="req">*</span>匯款戶名</label>
+              <input type="text" id="remitVendorAccountName" placeholder="請輸入匯款戶名">
+            </div>
+            <div class="form-field">
+              <label><span class="req">*</span>銀行名稱/代碼</label>
+              <select id="remitVendorBankName">
+                <option value="">請選擇銀行</option>
+                <option>004 台灣銀行</option>
+                <option>005 土地銀行</option>
+                <option>006 合作金庫商業銀行</option>
+                <option>007 第一商業銀行</option>
+                <option>008 華南商業銀行</option>
+                <option>009 彰化商業銀行</option>
+                <option>012 台北富邦商業銀行</option>
+                <option>013 國泰世華商業銀行</option>
+                <option>017 兆豐國際商業銀行</option>
+                <option>050 台灣中小企業銀行</option>
+                <option>700 中華郵政</option>
+                <option>803 聯邦商業銀行</option>
+                <option>805 遠東國際商業銀行</option>
+                <option>806 元大商業銀行</option>
+                <option>807 永豐商業銀行</option>
+                <option>808 玉山商業銀行</option>
+                <option>809 凱基商業銀行</option>
+                <option>812 台新國際商業銀行</option>
+                <option>822 中國信託商業銀行</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label><span class="req">*</span>分行名稱</label>
+              <select id="remitVendorBranchName">
+                <option value="">請選擇分行</option>
+                <option>營業部</option>
+                <option>城東分行</option>
+                <option>城中分行</option>
+                <option>信義分行</option>
+                <option>南京東路分行</option>
+                <option>大安分行</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>備註</label>
+              <input type="text" id="remitVendorNote" placeholder="請輸入備註">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 員工薪資帳戶資料(列表) -->
+    <div class="page" id="page-remit-payroll-list">
+      <div class="list-title-row">
+        <h2 class="section-title">員工薪資帳戶資料</h2>
+        <button class="btn btn-primary" onclick="goToPage('remit-payroll-detail', 'new')">+ 新增</button>
+      </div>
+      <div class="advanced-filter-panel" id="remitPayrollFilterPanel">
+        <div class="filter-grid">
+          <div class="form-field">
+            <label>狀態</label>
+            <select>
+              <option value="">全部</option>
+              <option>使用中</option>
+              <option>停用</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>匯款對象名稱</label>
+            <input type="text" placeholder="輸入匯款對象名稱關鍵字查詢">
+          </div>
+          <div class="form-field">
+            <label>備註</label>
+            <input type="text" placeholder="輸入備註關鍵字查詢">
+          </div>
+        </div>
+        <div class="filter-actions">
+          <button class="btn btn-outline btn-sm">清除</button>
+          <button class="btn btn-primary btn-sm">查詢</button>
+        </div>
+      </div>
+
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>系統編號</th>
+              <th>狀態</th>
+              <th style="width:70px;">操作</th>
+              <th>匯款對象名稱</th>
+              <th>備註</th>
+            </tr>
+          </thead>
+          <tbody id="remit-payroll-rows">
+            <tr>
+              <td>RM-0001</td>
+              <td><span class="status-badge status-approved">使用中</span></td>
+              <td><button class="btn btn-outline btn-sm action-btn" onclick="goToPage('remit-payroll-detail', 'edit')">編輯</button></td>
+              <td>王曉明(A123)</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>RM-0002</td>
+              <td><span class="status-badge status-approved">使用中</span></td>
+              <td><button class="btn btn-outline btn-sm action-btn" onclick="goToPage('remit-payroll-detail', 'edit')">編輯</button></td>
+              <td>王課長(A045)</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>RM-0003</td>
+              <td><span class="status-badge status-approved">使用中</span></td>
+              <td><button class="btn btn-outline btn-sm action-btn" onclick="goToPage('remit-payroll-detail', 'edit')">編輯</button></td>
+              <td>陳小華(A156)</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>RM-0004</td>
+              <td><span class="status-badge status-approved">使用中</span></td>
+              <td><button class="btn btn-outline btn-sm action-btn" onclick="goToPage('remit-payroll-detail', 'edit')">編輯</button></td>
+              <td>王部長(A012)</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>RM-0005</td>
+              <td><span class="status-badge status-approved">使用中</span></td>
+              <td><button class="btn btn-outline btn-sm action-btn" onclick="goToPage('remit-payroll-detail', 'edit')">編輯</button></td>
+              <td>李副總(A005)</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pager">
+        <button class="pager-arrow">&#8249;</button>
+        <span class="pager-page">1</span>
+        <button class="pager-arrow">&#8250;</button>
+      </div>
+    </div>
+
+    <!-- 新增／編輯員工薪資帳戶資料 -->
+    <div class="page" id="page-remit-payroll-detail">
+      <div class="form-action-bar">
+        <div class="form-action-bar-left">
+          <button class="btn btn-outline" onclick="goToPage('remit-payroll-list')">返回</button>
+          <button class="btn btn-primary">儲存異動</button>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-doc-title" id="remitPayrollDocTitle">新增員工薪資帳戶資料</div>
+
+        <div class="form-grid">
+          <div>
+            <div class="form-field">
+              <label><span class="req">*</span>狀態</label>
+              <div class="radio-group">
+                <label><input type="radio" name="remitPayrollStatus" id="remitPayrollStatusActive" checked> 使用中</label>
+                <label><input type="radio" name="remitPayrollStatus" id="remitPayrollStatusInactive"> 停用</label>
+              </div>
+              <span class="field-hint">影響是否出現在申請表單選項中。</span>
+            </div>
+            <div class="form-field">
+              <label><span class="req">*</span>匯款對象名稱</label>
+              <input type="text" id="remitPayrollTargetName" placeholder="請輸入匯款對象名稱">
+              <span class="field-hint">僅供人員辨識資料使用。</span>
+            </div>
+            <div class="form-field">
+              <label><span class="req">*</span>匯款帳號</label>
+              <input type="text" id="remitPayrollAccountNo" inputmode="numeric" placeholder="請輸入匯款帳號(純數字)" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+            </div>
+            <div class="form-field">
+              <label><span class="req">*</span>匯款戶名</label>
+              <input type="text" id="remitPayrollAccountName" placeholder="請輸入匯款戶名">
+            </div>
+            <div class="form-field">
+              <label><span class="req">*</span>銀行名稱/代碼</label>
+              <select id="remitPayrollBankName">
+                <option value="">請選擇銀行</option>
+                <option>004 台灣銀行</option>
+                <option>005 土地銀行</option>
+                <option>006 合作金庫商業銀行</option>
+                <option>007 第一商業銀行</option>
+                <option>008 華南商業銀行</option>
+                <option>009 彰化商業銀行</option>
+                <option>012 台北富邦商業銀行</option>
+                <option>013 國泰世華商業銀行</option>
+                <option>017 兆豐國際商業銀行</option>
+                <option>050 台灣中小企業銀行</option>
+                <option>700 中華郵政</option>
+                <option>803 聯邦商業銀行</option>
+                <option>805 遠東國際商業銀行</option>
+                <option>806 元大商業銀行</option>
+                <option>807 永豐商業銀行</option>
+                <option>808 玉山商業銀行</option>
+                <option>809 凱基商業銀行</option>
+                <option>812 台新國際商業銀行</option>
+                <option>822 中國信託商業銀行</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label><span class="req">*</span>分行名稱</label>
+              <select id="remitPayrollBranchName">
+                <option value="">請選擇分行</option>
+                <option>營業部</option>
+                <option>城東分行</option>
+                <option>城中分行</option>
+                <option>信義分行</option>
+                <option>南京東路分行</option>
+                <option>大安分行</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>備註</label>
+              <input type="text" id="remitPayrollNote" placeholder="請輸入備註">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 全部表單紀錄 (placeholder) -->
+    <div class="page" id="page-all-signed-forms">
+      <div class="filter-bar">
+        <span class="filter-chip">提出的 <span class="x">&times;</span></span>
+        <span class="search-box">&#128269; 搜尋...</span>
+      </div>
+      <div class="placeholder-note">全部表單紀錄頁面內容製作中,之後將依畫面截圖補上</div>
+    </div>
+
+    <!-- 我的代理人 -->
+    <div class="page" id="page-my-delegate">
+      <div class="list-title-row">
+        <h2 class="section-title">我的代理人</h2>
+      </div>
+      <div class="form-field delegate-signer-header">
+        <label>原簽核者</label>
+        <span class="static-text" id="myDelegateSignerName">王曉明 (A123)</span>
+      </div>
+
+      <div class="delegate-company-block">
+        <div class="delegate-company-header">
+          <h3 class="delegate-company-name">網家跨境服務股份有限公司</h3>
+        </div>
+        <div class="form-field">
+          <label>代理簽核者</label>
+          <select id="proxySelect-my-cbs" onchange="onCompanyProxyChange('網家跨境服務股份有限公司', this)">
+            <option value="">請選擇員工</option>
+          </select>
+        </div>
+        <span class="field-error" id="proxySelectError-my-cbs" style="display:none;">代理簽核者不可與原簽核者相同,請重新選擇</span>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width:60px;">狀態</th>
+                <th style="width:60px;">編輯</th>
+                <th>代理簽核期間</th>
+                <th>實際代理簽核者</th>
+                <th style="width:70px;">取消/刪除</th>
+              </tr>
+            </thead>
+            <tbody id="periods-my-cbs"></tbody>
+          </table>
+        </div>
+        <button class="btn btn-outline btn-sm delegate-add-period-btn" id="addPeriodBtn-my-cbs" onclick="openPeriodModal('網家跨境服務股份有限公司')">＋ 新增期間</button>
+      </div>
+
+      <div class="delegate-company-block">
+        <div class="delegate-company-header">
+          <h3 class="delegate-company-name">比比昂株式會社</h3>
+        </div>
+        <div class="form-field">
+          <label>代理簽核者</label>
+          <select id="proxySelect-my-bb" onchange="onCompanyProxyChange('比比昂株式會社', this)">
+            <option value="">請選擇員工</option>
+          </select>
+        </div>
+        <span class="field-error" id="proxySelectError-my-bb" style="display:none;">代理簽核者不可與原簽核者相同,請重新選擇</span>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width:60px;">狀態</th>
+                <th style="width:60px;">編輯</th>
+                <th>代理簽核期間</th>
+                <th>實際代理簽核者</th>
+                <th style="width:70px;">取消/刪除</th>
+              </tr>
+            </thead>
+            <tbody id="periods-my-bb"></tbody>
+          </table>
+        </div>
+        <button class="btn btn-outline btn-sm delegate-add-period-btn" id="addPeriodBtn-my-bb" onclick="openPeriodModal('比比昂株式會社')">＋ 新增期間</button>
+      </div>
+
+      <div class="delegate-company-block">
+        <div class="delegate-company-header">
+          <h3 class="delegate-company-name">空中補給股份有限公司</h3>
+        </div>
+        <div class="form-field">
+          <label>代理簽核者</label>
+          <select id="proxySelect-my-air" onchange="onCompanyProxyChange('空中補給股份有限公司', this)">
+            <option value="">請選擇員工</option>
+          </select>
+        </div>
+        <span class="field-error" id="proxySelectError-my-air" style="display:none;">代理簽核者不可與原簽核者相同,請重新選擇</span>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width:60px;">狀態</th>
+                <th style="width:60px;">編輯</th>
+                <th>代理簽核期間</th>
+                <th>實際代理簽核者</th>
+                <th style="width:70px;">取消/刪除</th>
+              </tr>
+            </thead>
+            <tbody id="periods-my-air"></tbody>
+          </table>
+        </div>
+        <button class="btn btn-outline btn-sm delegate-add-period-btn" id="addPeriodBtn-my-air" onclick="openPeriodModal('空中補給股份有限公司')">＋ 新增期間</button>
+      </div>
+    </div>
+
+    <!-- 人員代理設定(列表) -->
+    <div class="page" id="page-delegate-settings">
+      <div class="list-title-row">
+        <h2 class="section-title">人員代理設定</h2>
+        <button class="btn btn-primary" onclick="openAddSignerModal()">+ 新增</button>
+      </div>
+
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width:70px;">編輯</th>
+              <th>原簽核者</th>
+              <th>網家跨境服務股份有限公司</th>
+              <th>比比昂株式會社</th>
+              <th>空中補給股份有限公司</th>
+            </tr>
+          </thead>
+          <tbody id="delegate-settings-rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 人員代理設定(單一原簽核者之設定頁) -->
+    <div class="page" id="page-delegate-settings-detail">
+      <div class="form-action-bar">
+        <div class="form-action-bar-left">
+          <button class="btn btn-outline" onclick="goToPage('delegate-settings')">返回</button>
+        </div>
+      </div>
+
+      <div class="form-field delegate-signer-header">
+        <label>原簽核者</label>
+        <span class="static-text" id="settingsDetailSignerName">—</span>
+      </div>
+
+      <div class="delegate-company-block">
+        <div class="delegate-company-header">
+          <h3 class="delegate-company-name">網家跨境服務股份有限公司</h3>
+        </div>
+        <div class="form-field">
+          <label>代理簽核者</label>
+          <select id="proxySelect-settings-cbs" onchange="onCompanyProxyChange('網家跨境服務股份有限公司', this)">
+            <option value="">請選擇員工</option>
+          </select>
+        </div>
+        <span class="field-error" id="proxySelectError-settings-cbs" style="display:none;">代理簽核者不可與原簽核者相同,請重新選擇</span>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width:60px;">狀態</th>
+                <th style="width:60px;">編輯</th>
+                <th>代理簽核期間</th>
+                <th>實際代理簽核者</th>
+                <th style="width:70px;">取消/刪除</th>
+              </tr>
+            </thead>
+            <tbody id="periods-settings-cbs"></tbody>
+          </table>
+        </div>
+        <button class="btn btn-outline btn-sm delegate-add-period-btn" id="addPeriodBtn-settings-cbs" onclick="openPeriodModal('網家跨境服務股份有限公司')">＋ 新增期間</button>
+      </div>
+
+      <div class="delegate-company-block">
+        <div class="delegate-company-header">
+          <h3 class="delegate-company-name">比比昂株式會社</h3>
+        </div>
+        <div class="form-field">
+          <label>代理簽核者</label>
+          <select id="proxySelect-settings-bb" onchange="onCompanyProxyChange('比比昂株式會社', this)">
+            <option value="">請選擇員工</option>
+          </select>
+        </div>
+        <span class="field-error" id="proxySelectError-settings-bb" style="display:none;">代理簽核者不可與原簽核者相同,請重新選擇</span>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width:60px;">狀態</th>
+                <th style="width:60px;">編輯</th>
+                <th>代理簽核期間</th>
+                <th>實際代理簽核者</th>
+                <th style="width:70px;">取消/刪除</th>
+              </tr>
+            </thead>
+            <tbody id="periods-settings-bb"></tbody>
+          </table>
+        </div>
+        <button class="btn btn-outline btn-sm delegate-add-period-btn" id="addPeriodBtn-settings-bb" onclick="openPeriodModal('比比昂株式會社')">＋ 新增期間</button>
+      </div>
+
+      <div class="delegate-company-block">
+        <div class="delegate-company-header">
+          <h3 class="delegate-company-name">空中補給股份有限公司</h3>
+        </div>
+        <div class="form-field">
+          <label>代理簽核者</label>
+          <select id="proxySelect-settings-air" onchange="onCompanyProxyChange('空中補給股份有限公司', this)">
+            <option value="">請選擇員工</option>
+          </select>
+        </div>
+        <span class="field-error" id="proxySelectError-settings-air" style="display:none;">代理簽核者不可與原簽核者相同,請重新選擇</span>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width:60px;">狀態</th>
+                <th style="width:60px;">編輯</th>
+                <th>代理簽核期間</th>
+                <th>實際代理簽核者</th>
+                <th style="width:70px;">取消/刪除</th>
+              </tr>
+            </thead>
+            <tbody id="periods-settings-air"></tbody>
+          </table>
+        </div>
+        <button class="btn btn-outline btn-sm delegate-add-period-btn" id="addPeriodBtn-settings-air" onclick="openPeriodModal('空中補給股份有限公司')">＋ 新增期間</button>
+      </div>
+    </div>
+
+    <!-- 個人資料維護 -->
+    <div class="page" id="page-profile">
+      <div class="form-action-bar">
+        <div class="form-action-bar-left">
+          <button class="btn btn-outline">捨棄變更</button>
+          <button class="btn btn-primary">儲存資料</button>
+        </div>
+      </div>
+
+      <div class="profile-header">
+        <h2 class="profile-name">王曉明</h2>
+        <div class="profile-avatar">測</div>
+      </div>
+      <div class="profile-meta-row">
+        <div class="profile-meta-item">
+          <span class="profile-meta-label">通知Email</span>
+          <a class="profile-meta-link" href="javascript:void(0)">winnie.chen@japan-import.com.tw</a>
+        </div>
+        <div class="profile-meta-item">
+          <span class="profile-meta-label">上級主管</span>
+          <span class="static-text">王部長</span>
+        </div>
+      </div>
+
+      <div class="page-tabs">
+        <button class="page-tab active" onclick="switchProfileTab(this,'personal')">個人設定</button>
+        <button class="page-tab" onclick="switchProfileTab(this,'work')">工作資訊</button>
+      </div>
+
+      <div class="profile-tab-content active" id="profileTabPersonal">
+        <div class="profile-grid">
+          <div>
+            <div class="form-field">
+              <label><span class="req">*</span>通知<span class="profile-help-q">?</span></label>
+              <label class="profile-radio-label"><input type="radio" name="profileNotify" checked> 用信件處理</label>
+            </div>
+            <div class="form-field">
+              <label>通知Email</label>
+              <input type="text" value="winnie.chen@japan-import.com.tw">
+            </div>
+          </div>
+          <div>
+            <div class="form-field">
+              <label><span class="req">*</span>語言<span class="profile-help-q">?</span></label>
+              <div class="menu-wrap lang-select-wrap">
+                <button type="button" class="lang-select-btn" id="langSelectToggle" onclick="toggleDropdown('langDropdown')">Chinese (Traditional) / 繁體中文</button>
+                <div class="dropdown lang-dropdown" id="langDropdown">
+                  <button type="button" class="dropdown-item lang-option current" onclick="selectLang(this)">Chinese (Traditional) / 繁體中文</button>
+                  <button type="button" class="dropdown-item lang-option" onclick="selectLang(this)">English (US)</button>
+                  <button type="button" class="dropdown-item lang-option" onclick="selectLang(this)">Japanese / 日本語</button>
+                </div>
+              </div>
+            </div>
+            <div class="form-field">
+              <label><span class="req">*</span>時區<span class="profile-help-q">?</span></label>
+              <select>
+                <option>Asia/Taipei</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-tab-content" id="profileTabWork" style="display:none;">
+        <div class="form-section-heading">地點</div>
+        <div class="profile-grid">
+          <div>
+            <div class="form-field">
+              <label>部門</label>
+              <span class="static-text">CBS營業本部 / CBS營業一課</span>
+            </div>
+            <div class="form-field form-field-top">
+              <label>工作地址</label>
+              <span class="static-text">網家跨境服務股份有限公司<br>台灣</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section-heading">流程審批管理人</div>
+        <div class="profile-grid">
+          <div>
+            <div class="form-field">
+              <label>開支<span class="profile-help-q">?</span></label>
+              <span class="static-text"></span>
+            </div>
+            <div class="form-field">
+              <label>休假<span class="profile-help-q">?</span></label>
+              <span class="static-text">王部長</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="site-footer">Copyright &copy; PChome Bibian Inc. All Rights Reserved.</div>
+  </div>
+
+  <!-- 登入頁(登出後顯示) -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <div class="login-logo-block">
+        <img src="data:image/png;base64,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" alt="Bibian">
+        <div class="login-logo-text">企業內部管理系統</div>
+      </div>
+
+      <button type="button" class="login-google-btn">
+        <span class="login-google-icon">G</span> 使用 Google 登入
+      </button>
+
+      <div class="login-divider"><span>測試人員使用</span></div>
+
+      <div class="login-field">
+        <label>Email：</label>
+        <input type="text" placeholder="Email">
+      </div>
+      <div class="login-field">
+        <label>密碼：</label>
+        <input type="password" placeholder="密碼">
+      </div>
+
+      <button type="button" class="login-submit-btn" onclick="hideLoginScreen()">登入</button>
+      <a class="login-reset-link" href="javascript:void(0)">重設新密碼</a>
+
+      <div class="login-hr"></div>
+      <div class="login-footer">由 Odoo 驅動</div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="signModalOverlay" style="display:none;">
+    <div class="modal-box">
+      <div class="modal-title" id="signModalTitle">核准本關</div>
+      <div class="modal-body">
+        <div class="modal-desc" id="signModalDesc" style="display:none;"></div>
+        <label class="modal-label" id="signModalLabel">簽核意見(選填)</label>
+        <textarea id="signModalComment" rows="4" placeholder="請輸入簽核意見"></textarea>
+        <div class="modal-error" id="signModalError" style="display:none;">請輸入退回原因</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeSignModal()">取消</button>
+        <button class="btn btn-primary" onclick="confirmSignAction()">確認</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="delegateConfirmOverlay" style="display:none;">
+    <div class="modal-box">
+      <div class="modal-title" id="delegateConfirmTitle">取消代理期間</div>
+      <div class="modal-body">
+        <div class="modal-desc" id="delegateConfirmDesc">確定要取消這筆代理簽核期間嗎?取消後仍會保留於清單中,但不再生效。</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closePeriodActionModal()">返回</button>
+        <button class="btn btn-primary" id="delegateConfirmBtn" onclick="confirmPeriodAction()">確認取消</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="periodModalOverlay" style="display:none;">
+    <div class="modal-box">
+      <div class="modal-title" id="periodModalTitle">新增代理簽核期間</div>
+      <div class="modal-body">
+        <div class="modal-desc" id="periodModalProxyDesc">代理簽核者:—</div>
+        <div class="form-field">
+          <label><span class="req">*</span>代理簽核期間</label>
+          <div class="date-range">
+            <input type="text" id="periodModalStart" placeholder="YYYYMMDD" maxlength="8">
+            <span>~</span>
+            <input type="text" id="periodModalEnd" placeholder="YYYYMMDD" maxlength="8">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closePeriodModal()">返回</button>
+        <button class="btn btn-primary" id="periodModalConfirmBtn" onclick="confirmPeriodModal()">確認新增</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="addSignerModalOverlay" style="display:none;">
+    <div class="modal-box">
+      <div class="modal-title">新增人員代理設定</div>
+      <div class="modal-body">
+        <div class="form-field">
+          <label><span class="req">*</span>原簽核者</label>
+          <select id="addSignerSelect">
+            <option value="">請選擇員工</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeAddSignerModal()">返回</button>
+        <button class="btn btn-primary" onclick="confirmAddSigner()">確認</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  function toggleDropdown(id) {
+    var dd = document.getElementById(id);
+    var isOpen = dd.classList.contains('open');
+    document.querySelectorAll('.dropdown.open').forEach(function(d) { d.classList.remove('open'); });
+    if (!isOpen) dd.classList.add('open');
+  }
+
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.menu-wrap') && !e.target.closest('.multiselect-wrap')) {
+      document.querySelectorAll('.dropdown.open').forEach(function(d) { d.classList.remove('open'); });
+    }
+  });
+
+  function selectLang(el) {
+    document.getElementById('langSelectToggle').textContent = el.textContent.trim();
+    el.parentElement.querySelectorAll('.lang-option').forEach(function(o) { o.classList.remove('current'); });
+    el.classList.add('current');
+    document.querySelectorAll('.dropdown.open').forEach(function(d) { d.classList.remove('open'); });
+  }
+
+  function switchProfileTab(el, tab) {
+    el.parentElement.querySelectorAll('.page-tab').forEach(function(t) { t.classList.remove('active'); });
+    el.classList.add('active');
+    document.getElementById('profileTabPersonal').style.display = (tab === 'personal') ? '' : 'none';
+    document.getElementById('profileTabWork').style.display = (tab === 'work') ? '' : 'none';
+  }
+
+  function showLoginScreen() {
+    document.querySelectorAll('.dropdown.open').forEach(function(d) { d.classList.remove('open'); });
+    document.getElementById('appShell').style.display = 'none';
+    document.getElementById('loginScreen').classList.add('active');
+  }
+
+  function hideLoginScreen() {
+    document.getElementById('loginScreen').classList.remove('active');
+    document.getElementById('appShell').style.display = '';
+    goToPage('overview');
+  }
+
+  function goToPage(id, mode) {
+    var routeMap = {
+      'remit-vendor-list': '../pages/remittance/vendor-list.html',
+      'remit-vendor-detail': '../pages/remittance/vendor-detail.html',
+      'remit-payroll-list': '../pages/remittance/payroll-list.html',
+      'remit-payroll-detail': '../pages/remittance/payroll-detail.html'
+    };
+    var currentRoute = new URLSearchParams(window.location.search).get('page');
+    if (window.self !== window.top && routeMap[id] && id !== currentRoute) {
+      var targetUrl = routeMap[id];
+      if (id.indexOf('-detail') > -1) targetUrl += '?mode=' + encodeURIComponent(mode || 'new');
+      window.top.location.href = targetUrl;
+      return;
+    }
+    document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+    document.getElementById('page-' + id).classList.add('active');
+
+    var crumbBar = document.getElementById('breadcrumbBar');
+    var sep = '<span class="crumb-sep">&gt;</span>';
+    var home = '<span class="crumb-item" onclick="goToPage(\'overview\')">總覽</span>';
+    var appLevel = '<span class="crumb-static">表單申請／簽核</span>';
+    var financeLevel = '<span class="crumb-static">行政相關表單</span>';
+    var delegateLevel = '<span class="crumb-static">代理人設定</span>';
+    var remitLevel = '<span class="crumb-static">匯款資料維護</span>';
+    var appLabelEl = document.getElementById('topbarAppLabel');
+    var submenuGroupEl = document.getElementById('topbarSubmenuGroup');
+    var remitGroupEl = document.getElementById('topbarRemitGroup');
+    var isRemitPage = (id === 'remit-vendor-list' || id === 'remit-vendor-detail' || id === 'remit-payroll-list' || id === 'remit-payroll-detail');
+    if (id === 'overview' || id === 'profile') {
+      appLabelEl.textContent = id === 'overview' ? '總覽' : '';
+      submenuGroupEl.style.display = 'none';
+      remitGroupEl.style.display = 'none';
+    } else if (isRemitPage) {
+      appLabelEl.textContent = '匯款資料維護';
+      submenuGroupEl.style.display = 'none';
+      remitGroupEl.style.display = '';
+      var isVendor = (id === 'remit-vendor-list' || id === 'remit-vendor-detail');
+      document.getElementById('remitLinkVendor').classList.toggle('active', isVendor);
+      document.getElementById('remitLinkPayroll').classList.toggle('active', !isVendor);
+    } else {
+      appLabelEl.textContent = '表單申請／簽核';
+      submenuGroupEl.style.display = '';
+      remitGroupEl.style.display = 'none';
+    }
+
+    if (id === 'overview') {
+      crumbBar.innerHTML = '<span class="crumb-item active">總覽</span>';
+    } else if (id === 'profile') {
+      crumbBar.innerHTML = home + sep + '<span class="crumb-item active">個人資料頁</span>';
+    } else if (id === 'admin-form-list') {
+      crumbBar.innerHTML = home + sep + appLevel + sep + financeLevel + sep +
+        '<span class="crumb-item active">請購單管理</span>';
+    } else if (id === 'admin-form-detail') {
+      var lastCrumbText = (mode === 'sign') ? '簽核請購單' : '新增請購單';
+      crumbBar.innerHTML = home + sep + appLevel + sep + financeLevel + sep +
+        '<span class="crumb-item" onclick="goToPage(\'admin-form-list\')">請購單管理</span>' + sep +
+        '<span class="crumb-item active">' + lastCrumbText + '</span>';
+    } else if (id === 'all-signed-forms') {
+      crumbBar.innerHTML = home + sep + appLevel + sep +
+        '<span class="crumb-item active">全部表單紀錄</span>';
+    } else if (id === 'my-delegate') {
+      crumbBar.innerHTML = home + sep + appLevel + sep + delegateLevel + sep +
+        '<span class="crumb-item active">我的代理人</span>';
+    } else if (id === 'delegate-settings') {
+      crumbBar.innerHTML = home + sep + appLevel + sep + delegateLevel + sep +
+        '<span class="crumb-item active">人員代理設定</span>';
+    } else if (id === 'delegate-settings-detail') {
+      var settingsSignerName = activeDelegateContext ? formatSignerDisplay(activeDelegateContext.signerKey) : '';
+      crumbBar.innerHTML = home + sep + appLevel + sep + delegateLevel + sep +
+        '<span class="crumb-item" onclick="goToPage(\'delegate-settings\')">人員代理設定</span>' + sep +
+        '<span class="crumb-item active">' + settingsSignerName + ' 代理設定</span>';
+    } else if (id === 'remit-vendor-list') {
+      crumbBar.innerHTML = home + sep + remitLevel + sep + '<span class="crumb-item active">廠商匯款資料</span>';
+    } else if (id === 'remit-vendor-detail') {
+      var remitVendorCrumbText = (mode === 'edit') ? '編輯廠商匯款資料' : '新增廠商匯款資料';
+      crumbBar.innerHTML = home + sep + remitLevel + sep +
+        '<span class="crumb-item" onclick="goToPage(\'remit-vendor-list\')">廠商匯款資料</span>' + sep +
+        '<span class="crumb-item active">' + remitVendorCrumbText + '</span>';
+    } else if (id === 'remit-payroll-list') {
+      crumbBar.innerHTML = home + sep + remitLevel + sep + '<span class="crumb-item active">員工薪資帳戶資料</span>';
+    } else if (id === 'remit-payroll-detail') {
+      var remitPayrollCrumbText = (mode === 'edit') ? '編輯員工薪資帳戶資料' : '新增員工薪資帳戶資料';
+      crumbBar.innerHTML = home + sep + remitLevel + sep +
+        '<span class="crumb-item" onclick="goToPage(\'remit-payroll-list\')">員工薪資帳戶資料</span>' + sep +
+        '<span class="crumb-item active">' + remitPayrollCrumbText + '</span>';
+    }
+
+    if (id === 'admin-form-list' && document.getElementById('totalCount')) {
+      updateSelectionBar();
+    }
+
+    if (id === 'admin-form-detail') {
+      setupFormDetailMode(mode);
+    }
+
+    if (id === 'remit-vendor-detail') {
+      setupRemitVendorDetailMode(mode);
+    }
+
+    if (id === 'remit-payroll-detail') {
+      setupRemitPayrollDetailMode(mode);
+    }
+
+    if (id === 'my-delegate') {
+      activeDelegateContext = { prefix: 'my', signerKey: SELF_SIGNER_KEY };
+      renderDelegateDetail();
+    }
+
+    if (id === 'delegate-settings') {
+      renderSettingsList();
+    }
+
+    if (id === 'delegate-settings-detail') {
+      renderDelegateDetail();
+    }
+
+    document.querySelectorAll('.dropdown.open').forEach(function(d) { d.classList.remove('open'); });
+  }
+
+  function openFormDetail(btn) {
+    // 操作按鈕文字即代表該筆當下的動作(編輯/簽核/查看),
+    // 「全部表單」Tab 為每列各自標示動作文字(詳見 switchListTab),
+    // 其餘三個 Tab 則沿用原本「整個 Tab 統一動作文字」的 Demo 簡化邏輯,
+    // 故統一改由按鈕自身文字判斷是否進入簽核模式,不再仰賴目前作用中的 Tab。
+    var actionLabel = btn ? btn.textContent.trim() : '';
+    if (actionLabel === '簽核') {
+      goToPage('admin-form-detail', 'sign');
+    } else {
+      goToPage('admin-form-detail');
+    }
+  }
+
+  function setStepperActive(stepLabel) {
+    document.querySelectorAll('#formStepper .step').forEach(function(s) {
+      s.classList.toggle('active', s.textContent.trim() === stepLabel);
+    });
+  }
+
+  function setupFormDetailMode(mode) {
+    var isSign = (mode === 'sign');
+    document.getElementById('formDocTitle').textContent = isSign ? '簽核請購單 (CBS-PAY-2026-0033)' : '新增請購單';
+    document.getElementById('formActionBarDefault').style.display = isSign ? 'none' : 'flex';
+    document.getElementById('formActionBarSign').style.display = isSign ? 'flex' : 'none';
+
+    if (isSign) {
+      loadSignSampleData();
+      setApprovalPending();
+    } else {
+      resetFormToNew();
+      resetApprovalDefault();
+    }
+
+    var card = document.querySelector('#page-admin-form-detail .form-card');
+    card.querySelectorAll('input, select, textarea').forEach(function(el) { el.disabled = isSign; });
+    card.querySelectorAll('.form-edit-control').forEach(function(el) {
+      el.style.display = isSign ? 'none' : '';
+    });
+
+    setStepperActive(isSign ? '簽核中' : '草稿');
+  }
+
+  function loadSignSampleData() {
+    document.getElementById('applicantNameText').textContent = '王小明 (A101)';
+    document.getElementById('applicantUnitText').textContent = 'CBS營業本部 / CBS營業一課';
+    document.getElementById('applyDate').value = '2026-08-13';
+    document.getElementById('expenseCategory').value = '文具用品';
+    document.getElementById('paymentMethod').value = '匯款';
+    updatePaymentMethodFields();
+    document.getElementById('paymentTerms').value = '月結30天';
+    updatePaymentTermsFields();
+    document.getElementById('payeeCompany').checked = true;
+    updatePayeeFields();
+    document.getElementById('remitPayeeSelect').value = '__new__';
+    document.getElementById('remitDetailBox').style.display = 'grid';
+    document.getElementById('remitAccount').value = maskAccountNumber('1234567890123');
+    document.getElementById('remitNameText').value = '王小明';
+    document.getElementById('bankName').value = '822 中國信託商業銀行';
+    document.getElementById('branchName').value = '城東分行';
+    document.getElementById('feeBearerCompany').checked = true;
+
+    var invoiceList = document.getElementById('invoiceList');
+    invoiceList.innerHTML = '';
+    var invoiceItem = document.createElement('span');
+    invoiceItem.className = 'invoice-item';
+    invoiceItem.innerHTML = '24121106 <button type="button" class="invoice-remove form-edit-control" title="刪除" onclick="this.closest(\'.invoice-item\').remove()">&times;</button>';
+    invoiceList.appendChild(invoiceItem);
+
+    var tbody = document.getElementById('detailRows');
+    tbody.innerHTML = '';
+    addDetailRow('文具用品採購', '100');
+    document.getElementById('formTotalAmount').textContent = 'NT$ 100';
+  }
+
+  function resetFormToNew() {
+    document.getElementById('applicantNameText').textContent = '王曉明 (A123)';
+    document.getElementById('applicantUnitText').textContent = 'CBS營業本部 / CBS營業一課';
+    document.getElementById('applyDate').value = '2026-08-14';
+    document.getElementById('expenseCategory').value = '';
+    document.getElementById('paymentMethod').value = '';
+    updatePaymentMethodFields();
+    document.getElementById('payeeCompany').checked = true;
+    updatePayeeFields();
+    document.getElementById('feeBearerCompany').checked = true;
+    document.getElementById('invoiceList').innerHTML = '';
+    document.getElementById('detailRows').innerHTML = '';
+    document.getElementById('formTotalAmount').textContent = 'NT$ 0';
+  }
+
+  function setupRemitVendorDetailMode(mode) {
+    var isEdit = (mode === 'edit');
+    document.getElementById('remitVendorDocTitle').textContent = isEdit ? '編輯廠商匯款資料' : '新增廠商匯款資料';
+    if (isEdit) {
+      loadRemitVendorSampleData();
+    } else {
+      resetRemitVendorForm();
+    }
+  }
+
+  function loadRemitVendorSampleData() {
+    document.getElementById('remitVendorStatusActive').checked = true;
+    document.getElementById('remitVendorTargetName').value = '誠品股份有限公司';
+    document.getElementById('remitVendorTaxId').value = '12345678';
+    document.getElementById('remitVendorAccountNo').value = '1234567890123';
+    document.getElementById('remitVendorAccountName').value = '誠品股份有限公司';
+    document.getElementById('remitVendorBankName').value = '822 中國信託商業銀行';
+    document.getElementById('remitVendorBranchName').value = '城東分行';
+    document.getElementById('remitVendorNote').value = '文具採購廠商';
+  }
+
+  function resetRemitVendorForm() {
+    document.getElementById('remitVendorStatusActive').checked = true;
+    document.getElementById('remitVendorTargetName').value = '';
+    document.getElementById('remitVendorTaxId').value = '';
+    document.getElementById('remitVendorAccountNo').value = '';
+    document.getElementById('remitVendorAccountName').value = '';
+    document.getElementById('remitVendorBankName').value = '';
+    document.getElementById('remitVendorBranchName').value = '';
+    document.getElementById('remitVendorNote').value = '';
+  }
+
+  function setupRemitPayrollDetailMode(mode) {
+    var isEdit = (mode === 'edit');
+    document.getElementById('remitPayrollDocTitle').textContent = isEdit ? '編輯員工薪資帳戶資料' : '新增員工薪資帳戶資料';
+    if (isEdit) {
+      loadRemitPayrollSampleData();
+    } else {
+      resetRemitPayrollForm();
+    }
+  }
+
+  function loadRemitPayrollSampleData() {
+    document.getElementById('remitPayrollStatusActive').checked = true;
+    document.getElementById('remitPayrollTargetName').value = '王曉明(A123)';
+    document.getElementById('remitPayrollAccountNo').value = '1234567890123';
+    document.getElementById('remitPayrollAccountName').value = '王曉明';
+    document.getElementById('remitPayrollBankName').value = '822 中國信託商業銀行';
+    document.getElementById('remitPayrollBranchName').value = '城東分行';
+    document.getElementById('remitPayrollNote').value = '';
+  }
+
+  function resetRemitPayrollForm() {
+    document.getElementById('remitPayrollStatusActive').checked = true;
+    document.getElementById('remitPayrollTargetName').value = '';
+    document.getElementById('remitPayrollAccountNo').value = '';
+    document.getElementById('remitPayrollAccountName').value = '';
+    document.getElementById('remitPayrollBankName').value = '';
+    document.getElementById('remitPayrollBranchName').value = '';
+    document.getElementById('remitPayrollNote').value = '';
+  }
+
+  var SELF_SIGNER_KEY = '王曉明(A123)';
+
+  var DELEGATE_COMPANIES = ['網家跨境服務股份有限公司', '比比昂株式會社', '空中補給股份有限公司'];
+
+  var DELEGATE_COMPANY_KEY = {
+    '網家跨境服務股份有限公司': 'cbs',
+    '比比昂株式會社': 'bb',
+    '空中補給股份有限公司': 'air'
+  };
+
+  var DELEGATE_COMPANY_EMPLOYEES = {
+    '比比昂株式會社': ['王曉明(A123)', '王課長(A045)', '陳小華(A156)'],
+    '網家跨境服務股份有限公司': ['王部長(A012)', '李副總(A005)'],
+    '空中補給股份有限公司': ['林經理(A067)', '張專員(A089)']
+  };
+
+  // 樣本資料:每位原簽核者 → 每家公司 → 代理簽核期間陣列(每筆各自記錄代理簽核者)
+  // 期間日期以「今天」動態計算(today ± N 天),確保無論何時瀏覽 Demo,狀態與「目前代理人」皆正確示範
+  var DELEGATE_PERIOD_DATA = {};
+  var periodIdCounter = 0;
+  var DELEGATE_SETTINGS_SIGNERS = [];
+  // 公司區塊「代理簽核者」下拉選單目前選值:每位原簽核者 → 每家公司 → 代理簽核者
+  // 僅代表「新增期間時要套用的代理人」,新增期間時會將此值快照存入該筆期間紀錄,之後變更下拉選單不會回溯修改既有期間
+  var DELEGATE_COMPANY_PROXY_SELECTION = {};
+
+  function nextPeriodId() {
+    periodIdCounter += 1;
+    return 'p' + periodIdCounter;
+  }
+
+  function initDelegateSampleData() {
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    DELEGATE_PERIOD_DATA[SELF_SIGNER_KEY] = {
+      '網家跨境服務股份有限公司': [
+        { id: nextPeriodId(), proxy: '王部長(A012)', start: toISODate(addDays(today, 10)), end: toISODate(addDays(today, 40)), status: '有效' }
+      ],
+      '比比昂株式會社': [
+        { id: nextPeriodId(), proxy: '王課長(A045)', start: toISODate(addDays(today, -30)), end: toISODate(addDays(today, 60)), status: '有效' },
+        { id: nextPeriodId(), proxy: '陳小華(A156)', start: toISODate(addDays(today, -90)), end: toISODate(addDays(today, -40)), status: '取消' }
+      ],
+      '空中補給股份有限公司': [
+        { id: nextPeriodId(), proxy: '張專員(A089)', start: toISODate(addDays(today, -5)), end: toISODate(addDays(today, 25)), status: '有效' }
+      ]
+    };
+
+    DELEGATE_PERIOD_DATA['王課長(A045)'] = {
+      '比比昂株式會社': [
+        { id: nextPeriodId(), proxy: '陳小華(A156)', start: toISODate(addDays(today, -10)), end: toISODate(addDays(today, 50)), status: '有效' }
+      ]
+    };
+    DELEGATE_PERIOD_DATA['李副總(A005)'] = {
+      '網家跨境服務股份有限公司': [
+        { id: nextPeriodId(), proxy: '王部長(A012)', start: toISODate(addDays(today, -5)), end: toISODate(addDays(today, 55)), status: '有效' }
+      ]
+    };
+    DELEGATE_PERIOD_DATA['林經理(A067)'] = {
+      '空中補給股份有限公司': [
+        { id: nextPeriodId(), proxy: '張專員(A089)', start: toISODate(addDays(today, 15)), end: toISODate(addDays(today, 45)), status: '有效' }
+      ]
+    };
+
+    DELEGATE_SETTINGS_SIGNERS = ['王課長(A045)', '李副總(A005)', '林經理(A067)'];
+
+    var allSigners = [SELF_SIGNER_KEY].concat(DELEGATE_SETTINGS_SIGNERS);
+    allSigners.forEach(function(signerKey) {
+      DELEGATE_COMPANIES.forEach(function(company) {
+        setCompanyProxySelection(signerKey, company, defaultCompanyProxy(signerKey, company));
+      });
+    });
+  }
+
+  function defaultCompanyProxy(signerKey, company) {
+    var current = computeCurrentProxy(signerKey, company);
+    if (current) return current;
+    var periods = (DELEGATE_PERIOD_DATA[signerKey] && DELEGATE_PERIOD_DATA[signerKey][company]) || [];
+    if (periods.length > 0) return periods[periods.length - 1].proxy;
+    return '';
+  }
+
+  function getCompanyProxySelection(signerKey, company) {
+    return (DELEGATE_COMPANY_PROXY_SELECTION[signerKey] && DELEGATE_COMPANY_PROXY_SELECTION[signerKey][company]) || '';
+  }
+
+  function setCompanyProxySelection(signerKey, company, proxy) {
+    if (!DELEGATE_COMPANY_PROXY_SELECTION[signerKey]) DELEGATE_COMPANY_PROXY_SELECTION[signerKey] = {};
+    DELEGATE_COMPANY_PROXY_SELECTION[signerKey][company] = proxy;
+  }
+
+  function formatSignerDisplay(key) {
+    return key.indexOf(' (') !== -1 ? key : key.replace('(', ' (');
+  }
+
+  function normalizeName(str) {
+    return (str || '').replace(/\s/g, '');
+  }
+
+  function formatPeriodRangeDisplay(startISO, endISO) {
+    return startISO.replace(/-/g, '/') + ' ~ ' + endISO.replace(/-/g, '/');
+  }
+
+  function yyyymmddToISO(str) {
+    if (!str || str.length !== 8) return null;
+    return str.slice(0, 4) + '-' + str.slice(4, 6) + '-' + str.slice(6, 8);
+  }
+
+  function isoToYYYYMMDD(iso) {
+    return iso ? iso.replace(/-/g, '') : '';
+  }
+
+  function getAllEmployeeKeys() {
+    var seen = {};
+    var list = [];
+    DELEGATE_COMPANIES.forEach(function(c) {
+      (DELEGATE_COMPANY_EMPLOYEES[c] || []).forEach(function(e) {
+        if (!seen[e]) { seen[e] = true; list.push(e); }
+      });
+    });
+    return list;
+  }
+
+  function computeCurrentProxy(signerKey, company) {
+    var periods = (DELEGATE_PERIOD_DATA[signerKey] && DELEGATE_PERIOD_DATA[signerKey][company]) || [];
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    for (var i = 0; i < periods.length; i++) {
+      var p = periods[i];
+      if (p.status !== '有效') continue;
+      var start = new Date(p.start);
+      var end = new Date(p.end);
+      if (today >= start && today <= end) return p.proxy;
+    }
+    return null;
+  }
+
+  function findPeriod(signerKey, company, periodId) {
+    var arr = (DELEGATE_PERIOD_DATA[signerKey] && DELEGATE_PERIOD_DATA[signerKey][company]) || [];
+    for (var i = 0; i < arr.length; i++) {
+      if (arr[i].id === periodId) return arr[i];
+    }
+    return null;
+  }
+
+  // 目前作用中的代理人設定頁上下文:{ prefix: 'my' | 'settings', signerKey }
+  var activeDelegateContext = null;
+
+  function renderDelegateDetail() {
+    var ctx = activeDelegateContext;
+    if (!ctx) return;
+    var nameElId = ctx.prefix === 'my' ? 'myDelegateSignerName' : 'settingsDetailSignerName';
+    var nameEl = document.getElementById(nameElId);
+    if (nameEl) nameEl.textContent = formatSignerDisplay(ctx.signerKey);
+    DELEGATE_COMPANIES.forEach(function(company) {
+      renderCompanyBlock(company);
+    });
+  }
+
+  function renderCompanyBlock(company) {
+    var ctx = activeDelegateContext;
+    if (!ctx) return;
+    var key = DELEGATE_COMPANY_KEY[company];
+    var elSuffix = ctx.prefix + '-' + key;
+
+    var proxySelect = document.getElementById('proxySelect-' + elSuffix);
+    if (proxySelect) {
+      var employees = DELEGATE_COMPANY_EMPLOYEES[company] || [];
+      var optHtml = '<option value="">請選擇員工</option>';
+      employees.forEach(function(name) {
+        optHtml += '<option value="' + name + '">' + name + '</option>';
+      });
+      proxySelect.innerHTML = optHtml;
+      proxySelect.value = getCompanyProxySelection(ctx.signerKey, company);
+    }
+    var proxyErrorEl = document.getElementById('proxySelectError-' + elSuffix);
+    if (proxyErrorEl) proxyErrorEl.style.display = 'none';
+    updateAddPeriodBtnState(company);
+
+    var tbody = document.getElementById('periods-' + elSuffix);
+    if (!tbody) return;
+    var periods = (DELEGATE_PERIOD_DATA[ctx.signerKey] && DELEGATE_PERIOD_DATA[ctx.signerKey][company]) || [];
+    if (periods.length === 0) {
+      tbody.innerHTML = '<tr class="delegate-empty-row"><td colspan="5">尚無代理簽核期間資料</td></tr>';
+      return;
+    }
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    var html = '';
+    periods.forEach(function(p) {
+      var isActive = (p.status === '有效');
+      var statusBadge = isActive
+        ? '<span class="status-badge status-approved">有效</span>'
+        : '<span class="status-badge status-draft">取消</span>';
+      var editBtn = isActive
+        ? '<button class="btn btn-outline btn-sm" onclick="openPeriodModal(\'' + company + '\', \'' + p.id + '\')">編輯</button>'
+        : '';
+      var actionBtn = '';
+      if (isActive) {
+        var start = new Date(p.start);
+        if (today >= start) {
+          actionBtn = '<button class="btn btn-outline btn-sm" onclick="openPeriodActionModal(\'' + company + '\', \'' + p.id + '\', \'cancel\')">取消</button>';
+        } else {
+          actionBtn = '<button class="btn btn-outline btn-sm" onclick="openPeriodActionModal(\'' + company + '\', \'' + p.id + '\', \'delete\')">刪除</button>';
+        }
+      }
+      html += '<tr>' +
+        '<td>' + statusBadge + '</td>' +
+        '<td>' + editBtn + '</td>' +
+        '<td>' + formatPeriodRangeDisplay(p.start, p.end) + '</td>' +
+        '<td>' + p.proxy + '</td>' +
+        '<td>' + actionBtn + '</td>' +
+        '</tr>';
+    });
+    tbody.innerHTML = html;
+  }
+
+  function onCompanyProxyChange(company, selectEl) {
+    var ctx = activeDelegateContext;
+    if (!ctx) return;
+    var key = DELEGATE_COMPANY_KEY[company];
+    var elSuffix = ctx.prefix + '-' + key;
+    var errorEl = document.getElementById('proxySelectError-' + elSuffix);
+    var value = selectEl.value;
+
+    if (value && normalizeName(value) === normalizeName(ctx.signerKey)) {
+      selectEl.value = '';
+      if (errorEl) errorEl.style.display = '';
+      setCompanyProxySelection(ctx.signerKey, company, '');
+      updateAddPeriodBtnState(company);
+      return;
+    }
+    if (errorEl) errorEl.style.display = 'none';
+    setCompanyProxySelection(ctx.signerKey, company, value);
+    updateAddPeriodBtnState(company);
+  }
+
+  function updateAddPeriodBtnState(company) {
+    var ctx = activeDelegateContext;
+    if (!ctx) return;
+    var key = DELEGATE_COMPANY_KEY[company];
+    var elSuffix = ctx.prefix + '-' + key;
+    var btn = document.getElementById('addPeriodBtn-' + elSuffix);
+    if (btn) btn.disabled = !getCompanyProxySelection(ctx.signerKey, company);
+  }
+
+  function openSettingsDetailPage(signerKey) {
+    activeDelegateContext = { prefix: 'settings', signerKey: signerKey };
+    goToPage('delegate-settings-detail');
+  }
+
+  function renderSettingsList() {
+    var tbody = document.getElementById('delegate-settings-rows');
+    if (!tbody) return;
+    if (DELEGATE_SETTINGS_SIGNERS.length === 0) {
+      tbody.innerHTML = '<tr class="delegate-empty-row"><td colspan="5">尚無人員代理設定資料</td></tr>';
+      return;
+    }
+    var html = '';
+    DELEGATE_SETTINGS_SIGNERS.forEach(function(signerKey) {
+      html += '<tr>' +
+        '<td><button class="btn btn-outline btn-sm" onclick="openSettingsDetailPage(\'' + signerKey + '\')">編輯</button></td>' +
+        '<td>' + formatSignerDisplay(signerKey) + '</td>';
+      DELEGATE_COMPANIES.forEach(function(company) {
+        var current = computeCurrentProxy(signerKey, company);
+        html += '<td>' + (current || '—') + '</td>';
+      });
+      html += '</tr>';
+    });
+    tbody.innerHTML = html;
+  }
+
+  function openAddSignerModal() {
+    populateAddSignerSelect();
+    document.getElementById('addSignerModalOverlay').style.display = 'flex';
+  }
+
+  function closeAddSignerModal() {
+    document.getElementById('addSignerModalOverlay').style.display = 'none';
+  }
+
+  function populateAddSignerSelect() {
+    var select = document.getElementById('addSignerSelect');
+    var candidates = getAllEmployeeKeys().filter(function(k) {
+      return k !== SELF_SIGNER_KEY && DELEGATE_SETTINGS_SIGNERS.indexOf(k) === -1;
+    });
+    var html = '<option value="">請選擇員工</option>';
+    candidates.forEach(function(k) {
+      html += '<option value="' + k + '">' + formatSignerDisplay(k) + '</option>';
+    });
+    select.innerHTML = html;
+  }
+
+  function confirmAddSigner() {
+    var signerKey = document.getElementById('addSignerSelect').value;
+    if (!signerKey) return;
+    if (DELEGATE_SETTINGS_SIGNERS.indexOf(signerKey) === -1) {
+      DELEGATE_SETTINGS_SIGNERS.push(signerKey);
+    }
+    if (!DELEGATE_PERIOD_DATA[signerKey]) DELEGATE_PERIOD_DATA[signerKey] = {};
+    closeAddSignerModal();
+    openSettingsDetailPage(signerKey);
+  }
+
+  // 新增／編輯代理簽核期間彈窗
+  var periodModalContext = null; // { company, periodId }
+
+  function openPeriodModal(company, periodId) {
+    var ctx = activeDelegateContext;
+    if (!ctx) return;
+    var key = DELEGATE_COMPANY_KEY[company];
+    var elSuffix = ctx.prefix + '-' + key;
+    var isEdit = !!periodId;
+    var displayProxy = '';
+    var p = null;
+
+    if (isEdit) {
+      p = findPeriod(ctx.signerKey, company, periodId);
+      if (!p) return;
+      displayProxy = p.proxy;
+    } else {
+      var proxySelect = document.getElementById('proxySelect-' + elSuffix);
+      displayProxy = proxySelect ? proxySelect.value : '';
+      if (!displayProxy) return; // 保護:未選定代理簽核者時「+新增期間」按鈕應為disabled
+    }
+
+    periodModalContext = { company: company, periodId: periodId || null };
+    document.getElementById('periodModalTitle').textContent = isEdit ? '編輯代理簽核期間' : '新增代理簽核期間';
+    document.getElementById('periodModalConfirmBtn').textContent = isEdit ? '確認修改' : '確認新增';
+    document.getElementById('periodModalProxyDesc').textContent = '代理簽核者:' + displayProxy;
+
+    if (isEdit) {
+      document.getElementById('periodModalStart').value = isoToYYYYMMDD(p.start);
+      document.getElementById('periodModalEnd').value = isoToYYYYMMDD(p.end);
+    } else {
+      document.getElementById('periodModalStart').value = '';
+      document.getElementById('periodModalEnd').value = '';
+    }
+    document.getElementById('periodModalOverlay').style.display = 'flex';
+  }
+
+  function closePeriodModal() {
+    document.getElementById('periodModalOverlay').style.display = 'none';
+    periodModalContext = null;
+  }
+
+  function confirmPeriodModal() {
+    var ctx = activeDelegateContext;
+    if (!ctx || !periodModalContext) return;
+    var company = periodModalContext.company;
+    var key = DELEGATE_COMPANY_KEY[company];
+    var elSuffix = ctx.prefix + '-' + key;
+    var startRaw = document.getElementById('periodModalStart').value;
+    var endRaw = document.getElementById('periodModalEnd').value;
+
+    if (!startRaw || !endRaw) { return; }
+    var startISO = yyyymmddToISO(startRaw);
+    var endISO = yyyymmddToISO(endRaw);
+    if (!startISO || !endISO) { return; }
+
+    if (!DELEGATE_PERIOD_DATA[ctx.signerKey]) DELEGATE_PERIOD_DATA[ctx.signerKey] = {};
+    if (!DELEGATE_PERIOD_DATA[ctx.signerKey][company]) DELEGATE_PERIOD_DATA[ctx.signerKey][company] = [];
+    var arr = DELEGATE_PERIOD_DATA[ctx.signerKey][company];
+
+    if (periodModalContext.periodId) {
+      var existing = null;
+      for (var i = 0; i < arr.length; i++) { if (arr[i].id === periodModalContext.periodId) { existing = arr[i]; break; } }
+      if (existing) {
+        existing.start = startISO;
+        existing.end = endISO;
+      }
+    } else {
+      var proxySelect = document.getElementById('proxySelect-' + elSuffix);
+      var proxy = proxySelect ? proxySelect.value : '';
+      if (!proxy) { closePeriodModal(); return; }
+      arr.push({ id: nextPeriodId(), proxy: proxy, start: startISO, end: endISO, status: '有效' });
+    }
+
+    closePeriodModal();
+    renderCompanyBlock(company);
+  }
+
+  // 取消／刪除代理簽核期間確認彈窗(共用 delegateConfirmOverlay)
+  var periodActionContext = null; // { company, periodId, type }
+
+  function openPeriodActionModal(company, periodId, type) {
+    periodActionContext = { company: company, periodId: periodId, type: type };
+    var title = document.getElementById('delegateConfirmTitle');
+    var desc = document.getElementById('delegateConfirmDesc');
+    var confirmBtn = document.getElementById('delegateConfirmBtn');
+    if (type === 'cancel') {
+      title.textContent = '取消代理期間';
+      desc.textContent = '確定要取消這筆代理簽核期間嗎?取消後仍會保留於清單中,但不再生效。';
+      confirmBtn.textContent = '確認取消';
+    } else {
+      title.textContent = '刪除代理期間';
+      desc.textContent = '確定要刪除這筆代理簽核期間嗎?刪除後將無法復原。';
+      confirmBtn.textContent = '確認刪除';
+    }
+    document.getElementById('delegateConfirmOverlay').style.display = 'flex';
+  }
+
+  function closePeriodActionModal() {
+    document.getElementById('delegateConfirmOverlay').style.display = 'none';
+    periodActionContext = null;
+  }
+
+  function confirmPeriodAction() {
+    var ctx = activeDelegateContext;
+    if (!ctx || !periodActionContext) { closePeriodActionModal(); return; }
+    var company = periodActionContext.company;
+    var arr = (DELEGATE_PERIOD_DATA[ctx.signerKey] && DELEGATE_PERIOD_DATA[ctx.signerKey][company]) || [];
+    if (periodActionContext.type === 'cancel') {
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i].id === periodActionContext.periodId) { arr[i].status = '取消'; break; }
+      }
+    } else if (periodActionContext.type === 'delete') {
+      DELEGATE_PERIOD_DATA[ctx.signerKey][company] = arr.filter(function(x) { return x.id !== periodActionContext.periodId; });
+    }
+    document.getElementById('delegateConfirmOverlay').style.display = 'none';
+    periodActionContext = null;
+    renderCompanyBlock(company);
+  }
+
+  function setApprovalPending() {
+    document.getElementById('approvalTableBody').innerHTML =
+      '<tr class="approval-row-approved">' +
+        '<td class="cell-center step-no">1</td>' +
+        '<td><span class="status-badge status-approved">已核准</span></td>' +
+        '<td>王課長</td><td>王課長</td><td>2026-08-13 09:20:11</td><td></td>' +
+      '</tr>' +
+      '<tr>' +
+        '<td class="cell-center step-no">2</td>' +
+        '<td><span class="status-badge status-applying">待簽核</span></td>' +
+        '<td>王部長</td><td></td><td></td><td></td>' +
+      '</tr>';
+    document.getElementById('historyItems').innerHTML =
+      '<div class="history-item"><span class="history-time">2026-08-13 09:00</span><span class="history-desc">送出簽核</span></div>' +
+      '<div class="history-item"><span class="history-time">2026-08-13 09:20</span><span class="history-desc">核准(直屬主管)— 王課長</span></div>';
+  }
+
+  function resetApprovalDefault() {
+    document.getElementById('approvalTableBody').innerHTML =
+      '<tr class="approval-row-approved">' +
+        '<td class="cell-center step-no">1</td>' +
+        '<td><span class="status-badge status-approved">已核准</span></td>' +
+        '<td>王課長</td><td>王課長</td><td>2026-07-27 23:52:36</td><td></td>' +
+      '</tr>' +
+      '<tr class="approval-row-approved">' +
+        '<td class="cell-center step-no">2</td>' +
+        '<td><span class="status-badge status-approved">已核准</span></td>' +
+        '<td>王部長</td><td>王部長</td><td>2026-08-13 10:50:53</td><td></td>' +
+      '</tr>';
+    document.getElementById('historyItems').innerHTML =
+      '<div class="history-item"><span class="history-time">2026-07-23 19:25</span><span class="history-desc">送出簽核</span></div>' +
+      '<div class="history-item"><span class="history-time">2026-07-27 23:52</span><span class="history-desc">核准(直屬主管)— 王課長</span></div>' +
+      '<div class="history-item"><span class="history-time">2026-08-13 10:50</span><span class="history-desc">核准(財務單位資料複核)— 王部長 <b>&#10003; 全簽通過(已核准)</b></span></div>';
+  }
+
+  var pendingSignAction = null;
+
+  function openSignAction(action) {
+    pendingSignAction = action;
+    var titles = {
+      'approve': '核准本關',
+      'reject-resign': '退回(重新簽核)',
+      'reject-thislevel': '退回(僅本關重審)'
+    };
+    var labels = {
+      'approve': '簽核意見(選填)',
+      'reject-resign': '退回原因 <span class="req">*</span>',
+      'reject-thislevel': '退回原因 <span class="req">*</span>'
+    };
+    var descriptions = {
+      'approve': '',
+      'reject-resign': '申請人修正並重新送出後,將由第一關重新進行簽核。',
+      'reject-thislevel': '申請人修正並重新送出後,將直接送回本關重審,無須重新經過前序簽核關卡。'
+    };
+    document.getElementById('signModalTitle').textContent = titles[action];
+    document.getElementById('signModalLabel').innerHTML = labels[action];
+    var descEl = document.getElementById('signModalDesc');
+    descEl.textContent = descriptions[action];
+    descEl.style.display = descriptions[action] ? 'block' : 'none';
+    document.getElementById('signModalComment').value = '';
+    document.getElementById('signModalError').style.display = 'none';
+    document.getElementById('signModalOverlay').style.display = 'flex';
+  }
+
+  function closeSignModal() {
+    document.getElementById('signModalOverlay').style.display = 'none';
+    pendingSignAction = null;
+  }
+
+  function confirmSignAction() {
+    var comment = document.getElementById('signModalComment').value.trim();
+    var errorEl = document.getElementById('signModalError');
+    if (pendingSignAction !== 'approve' && !comment) {
+      errorEl.style.display = 'block';
+      return;
+    }
+    errorEl.style.display = 'none';
+    closeSignModal();
+    goToPage('admin-form-list');
+  }
+
+  function addDetailRow(summary, amount) {
+    var tbody = document.getElementById('detailRows');
+    var tr = document.createElement('tr');
+    var summaryVal = summary ? ' value="' + summary + '"' : '';
+    var amountVal = amount ? ' value="' + amount + '"' : '';
+    tr.innerHTML = '<td><input type="text" placeholder="摘要"' + summaryVal + ' style="width:100%;border:1px solid #dcdfe3;border-radius:4px;padding:6px 8px;font-size:13px;font-family:inherit;"></td>' +
+      '<td class="cell-right"><input type="text" placeholder="0"' + amountVal + ' style="width:120px;text-align:right;border:1px solid #dcdfe3;border-radius:4px;padding:6px 8px;font-size:13px;font-family:inherit;"></td>' +
+      '<td class="cell-action"><button type="button" class="row-delete-btn form-edit-control" title="刪除此列" onclick="this.closest(\'tr\').remove()">&times;</button></td>';
+    tbody.appendChild(tr);
+  }
+
+  var REMIT_COMPANY_DATA = {
+    '誠品股份有限公司': { account: '1234567890123', name: '誠品股份有限公司', bank: '822 中國信託商業銀行', branch: '城東分行' },
+    '中華電信股份有限公司': { account: '9876543210987', name: '中華電信股份有限公司', bank: '004 台灣銀行', branch: '營業部' }
+  };
+
+  // 匯款帳號遮碼:僅顯示後五碼,其餘以「•」遮蔽;僅套用於既有匯款對象帶入之唯讀顯示,
+  // 使用者透過「＋新增匯款對象」手動輸入時仍為明碼(輸入當下需可核對正確性)
+  function maskAccountNumber(acc) {
+    if (!acc) return '';
+    var digits = String(acc);
+    if (digits.length <= 5) return digits;
+    return '•'.repeat(digits.length - 5) + digits.slice(-5);
+  }
+
+  function updatePayeeFields() {
+    var company = document.getElementById('payeeCompany').checked;
+    document.getElementById('remitPayeeSelectField').style.display = company ? 'flex' : 'none';
+    document.getElementById('remitNameSelectField').style.display = company ? 'none' : 'flex';
+    document.getElementById('remitNameSelect').value = '';
+    document.getElementById('remitPayeeSelect').value = '';
+    updateRemitPayeeFields();
+  }
+
+  function updateRemitPayeeFields() {
+    var val = document.getElementById('remitPayeeSelect').value;
+    var box = document.getElementById('remitDetailBox');
+    if (!val) {
+      box.style.display = 'none';
+      document.getElementById('remitAccount').value = '';
+      document.getElementById('remitNameText').value = '';
+      document.getElementById('bankName').value = '';
+      document.getElementById('branchName').value = '';
+      return;
+    }
+    box.style.display = 'grid';
+    var isNew = (val === '__new__');
+    var data = REMIT_COMPANY_DATA[val];
+    document.getElementById('remitAccount').value = isNew ? '' : (data ? maskAccountNumber(data.account) : '');
+    document.getElementById('remitNameText').value = isNew ? '' : (data ? data.name : '');
+    document.getElementById('bankName').value = isNew ? '' : (data ? data.bank : '');
+    document.getElementById('branchName').value = isNew ? '' : (data ? data.branch : '');
+    document.getElementById('remitAccount').disabled = !isNew;
+    document.getElementById('remitNameText').disabled = !isNew;
+    document.getElementById('bankName').disabled = !isNew;
+    document.getElementById('branchName').disabled = !isNew;
+  }
+
+  function addInvoiceNumber() {
+    var input = document.getElementById('invoiceInput');
+    var val = input.value.trim();
+    if (!val) return;
+    var list = document.getElementById('invoiceList');
+    var item = document.createElement('span');
+    item.className = 'invoice-item';
+    item.innerHTML = val + ' <button type="button" class="invoice-remove" title="刪除" onclick="this.closest(\'.invoice-item\').remove()">&times;</button>';
+    list.appendChild(item);
+    input.value = '';
+    input.focus();
+  }
+
+  function handleAttachmentUpload(input) {
+    var list = document.getElementById('attachmentList');
+    Array.from(input.files).forEach(function(file) {
+      var ext = file.name.includes('.') ? file.name.split('.').pop().toUpperCase() : '檔';
+      var item = document.createElement('div');
+      item.className = 'attachment-item';
+      item.innerHTML = '<span class="attachment-icon">' + ext + '</span>' +
+        '<span class="attachment-name" title="' + file.name + '">' + file.name + '</span>' +
+        '<button type="button" class="attachment-remove" title="刪除" onclick="this.closest(\'.attachment-item\').remove()">&times;</button>';
+      list.appendChild(item);
+    });
+    input.value = '';
+  }
+
+  function updatePaymentMethodFields() {
+    var method = document.getElementById('paymentMethod').value;
+    var termsField = document.getElementById('paymentTermsField');
+    if (method === '匯款') {
+      termsField.style.display = 'flex';
+    } else {
+      termsField.style.display = 'none';
+      document.getElementById('paymentTerms').value = '';
+      updatePaymentTermsFields();
+    }
+  }
+
+  function updatePaymentTermsFields() {
+    var terms = document.getElementById('paymentTerms').value;
+    var dateField = document.getElementById('specifiedDateField');
+    dateField.style.display = (terms === '指定匯款日') ? 'flex' : 'none';
+  }
+
+  function toggleApprovalCard() {
+    var body = document.getElementById('approvalCardBody');
+    var toggle = document.getElementById('approvalCardToggle');
+    body.classList.toggle('collapsed');
+    toggle.classList.toggle('closed');
+  }
+
+  // 「全部表單」Tab 每列動作文字依該列實際狀態個別判斷(而非整個 Tab 統一文字):
+  // 待簽核者為登入者本人且單據仍在進行中 => 簽核;草稿/已退回(登入者可繼續編輯) => 編輯;其餘(已核准、待其他人簽核中) => 查看。
+  function getRowActionLabel(row) {
+    var loginUser = '王曉明';
+    var statusEl = row.querySelector('.status-badge');
+    var status = statusEl ? statusEl.textContent.trim() : '';
+    var pendingEl = row.querySelector('.pending-signer-cell');
+    var pendingSigner = pendingEl ? pendingEl.textContent.trim() : '';
+    if (pendingSigner === loginUser && (status === '申請中' || status === '簽核中')) return '簽核';
+    if (status === '草稿' || status === '已退回') return '編輯';
+    return '查看';
+  }
+
+  // 「待簽核表單」「已簽核表單」Tab 不提供批次操作(撤回/刪除僅適用於自己申請的表單),
+  // 故隱藏勾選框欄位、狀態列「已勾選 N 筆」文字與批次操作按鈕;
+  // 「我的申請單」「全部表單」Tab 維持原有勾選與批次操作功能。
+  function updateBulkActionVisibility(label) {
+    var hide = (label === '待簽核表單' || label === '已簽核表單');
+    var table = document.getElementById('adminFormTable');
+    if (table) table.classList.toggle('hide-checkbox-col', hide);
+    var selectionCountText = document.getElementById('selectionCountText');
+    if (selectionCountText) selectionCountText.style.display = hide ? 'none' : '';
+    var bulkActions = document.getElementById('bulkActions');
+    if (bulkActions) bulkActions.style.display = hide ? 'none' : '';
+  }
+
+  function switchListTab(el) {
+    el.parentElement.querySelectorAll('.page-tab').forEach(function(t) { t.classList.remove('active'); });
+    el.classList.add('active');
+
+    var label = el.textContent.trim();
+    updateBulkActionVisibility(label);
+    if (label === '全部表單') {
+      document.querySelectorAll('#admin-form-rows tr').forEach(function(row) {
+        var btn = row.querySelector('.action-btn');
+        if (btn) btn.textContent = getRowActionLabel(row);
+      });
+      return;
+    }
+    var actionText = '編輯';
+    if (label === '待簽核表單') actionText = '簽核';
+    else if (label === '已簽核表單') actionText = '查看';
+    document.querySelectorAll('#admin-form-rows .action-btn').forEach(function(btn) { btn.textContent = actionText; });
+  }
+
+  function switchListTabByLabel(label) {
+    var tabs = document.querySelectorAll('#page-admin-form-list .page-tab');
+    for (var i = 0; i < tabs.length; i++) {
+      if (tabs[i].textContent.trim() === label) {
+        switchListTab(tabs[i]);
+        return;
+      }
+    }
+  }
+
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+  function formatDateChinese(d) {
+    return d.getFullYear() + '年' + pad2(d.getMonth() + 1) + '月' + pad2(d.getDate()) + '日';
+  }
+
+  function toYYYYMMDD(d) {
+    return '' + d.getFullYear() + pad2(d.getMonth() + 1) + pad2(d.getDate());
+  }
+
+  function toISODate(d) {
+    return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+  }
+
+  function addDays(d, days) {
+    var r = new Date(d);
+    r.setDate(r.getDate() + days);
+    return r;
+  }
+
+  function initApprovalDateSamples() {
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    var within14 = addDays(today, -5);
+    var outside14 = addDays(today, -25);
+    var el1 = document.getElementById('approvalDateSample1');
+    if (el1) {
+      el1.textContent = formatDateChinese(within14);
+      el1.setAttribute('data-date', toISODate(within14));
+    }
+    var el2 = document.getElementById('approvalDateSample2');
+    if (el2) {
+      el2.textContent = formatDateChinese(outside14);
+      el2.setAttribute('data-date', toISODate(outside14));
+    }
+  }
+
+  function loadOverviewStats() {
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    var windowStart = addDays(today, -13);
+    var loginUser = '王曉明';
+
+    var myPending = 0, myRejected = 0, myApproved14 = 0, toSign = 0;
+
+    document.querySelectorAll('#admin-form-rows tr').forEach(function(row) {
+      var statusEl = row.querySelector('.status-badge');
+      if (!statusEl) return;
+      var status = statusEl.textContent.trim();
+      var applicantEl = row.querySelector('.applicant-cell');
+      var applicant = applicantEl ? applicantEl.textContent.trim() : '';
+      var pendingEl = row.querySelector('.pending-signer-cell');
+      var pendingSigner = pendingEl ? pendingEl.textContent.trim() : '';
+      var approvalCell = row.querySelector('.approval-date-cell');
+      var approvalDateStr = approvalCell ? approvalCell.getAttribute('data-date') : null;
+
+      if (applicant === loginUser) {
+        if (status === '申請中' || status === '簽核中') myPending++;
+        if (status === '已退回') myRejected++;
+        if (status === '已核准' && approvalDateStr) {
+          var approvalDate = new Date(approvalDateStr);
+          if (approvalDate >= windowStart && approvalDate <= today) myApproved14++;
+        }
+      }
+      if (pendingSigner === loginUser && (status === '申請中' || status === '簽核中')) {
+        toSign++;
+      }
+    });
+
+    document.getElementById('ovMyPendingCount').textContent = myPending;
+    document.getElementById('ovMyRejectedCount').textContent = myRejected;
+    document.getElementById('ovMyApproved14Count').textContent = myApproved14;
+    document.getElementById('ovToSignCount').textContent = toSign;
+  }
+
+  function setStatusFilterChecked(values) {
+    document.querySelectorAll('#statusFilterDropdown input[type=checkbox]').forEach(function(cb) {
+      cb.checked = values.indexOf(cb.value) !== -1;
+    });
+    updateStatusFilterLabel();
+  }
+
+  function updateStatusFilterLabel() {
+    var trigger = document.getElementById('statusFilterTrigger');
+    if (!trigger) return;
+    var label = trigger.querySelector('.multiselect-trigger-label');
+    var checked = Array.prototype.slice.call(document.querySelectorAll('#statusFilterDropdown input[type=checkbox]:checked'));
+    if (checked.length === 0) {
+      label.textContent = '全部';
+    } else if (checked.length <= 2) {
+      label.textContent = checked.map(function(cb) { return cb.value; }).join('、');
+    } else {
+      label.textContent = checked.length + ' 項已選';
+    }
+  }
+
+  function goToOverviewFiltered(kind) {
+    goToPage('admin-form-list');
+
+    var startInput = document.getElementById('approvalDateStart');
+    var endInput = document.getElementById('approvalDateEnd');
+    startInput.value = '';
+    endInput.value = '';
+
+    if (kind === 'pending') {
+      switchListTabByLabel('我的申請單');
+      setStatusFilterChecked(['申請中', '簽核中']);
+    } else if (kind === 'rejected') {
+      switchListTabByLabel('我的申請單');
+      setStatusFilterChecked(['已退回']);
+    } else if (kind === 'approved14') {
+      switchListTabByLabel('我的申請單');
+      setStatusFilterChecked(['已核准']);
+      var today = new Date();
+      today.setHours(0, 0, 0, 0);
+      var windowStart = addDays(today, -13);
+      startInput.value = toYYYYMMDD(windowStart);
+      endInput.value = toYYYYMMDD(today);
+    } else if (kind === 'toSign') {
+      switchListTabByLabel('待簽核表單');
+      setStatusFilterChecked([]);
+    }
+  }
+
+  function toggleSelectAll() {
+    var all = document.getElementById('selectAllCheckbox').checked;
+    document.querySelectorAll('.row-checkbox').forEach(function(cb) { cb.checked = all; });
+    updateSelectionBar();
+  }
+
+  function printSingleForm(event) {
+    if (event) event.stopPropagation();
+    // ==[Demo 簡化]== 單筆列印目前僅為畫面呈現,尚未定義實際動作與 API
+  }
+
+  function updateSelectionBar() {
+    var boxes = document.querySelectorAll('.row-checkbox');
+    var checked = document.querySelectorAll('.row-checkbox:checked');
+    document.getElementById('totalCount').textContent = boxes.length;
+    document.getElementById('selectedCount').textContent = checked.length;
+    document.querySelectorAll('#bulkActions .btn').forEach(function(btn) { btn.disabled = checked.length === 0; });
+
+    var selectAll = document.getElementById('selectAllCheckbox');
+    if (selectAll) {
+      selectAll.checked = boxes.length > 0 && checked.length === boxes.length;
+    }
+  }
+
+  initApprovalDateSamples();
+  loadOverviewStats();
+  initDelegateSampleData();
+</script>
+
+
+<script id="eip-route-bootstrap">
+document.addEventListener('DOMContentLoaded', function () {
+  var params = new URLSearchParams(window.location.search);
+  var page = params.get('page') || 'overview';
+  var mode = params.get('mode') || undefined;
+  if (typeof window.goToPage === 'function') window.goToPage(page, mode); if (params.get('action') === 'login' && typeof window.showLoginScreen === 'function') window.showLoginScreen();
+});
+</script>
+<div id="eipAppFooter"></div>
+<script>
+(function(){
+  var page=new URLSearchParams(location.search).get('page')||'overview';
+  var body=document.body;
+  if(page.indexOf('remit-')===0){
+    body.dataset.eipModule='remittance';
+    body.dataset.eipSections='vendor,payroll';
+    body.dataset.eipL2=page.indexOf('payroll')>=0?'payroll':'vendor';
+  }else if(page==='delegate-settings'||page==='my-delegate'){
+    body.dataset.eipModule='forms';body.dataset.eipSections='admin,info,delegate';body.dataset.eipL2='delegate';body.dataset.eipL3=page==='delegate-settings'?'delegate-settings':'my-delegate';
+  }else if(page==='all-signed-forms'){
+    body.dataset.eipModule='forms';body.dataset.eipSections='admin,info,delegate';
+  }else{
+    body.dataset.eipModule='overview';
+  }
+})();
+</script>
+<script src="../assets/js/eip-layout.js"></script></body></html>

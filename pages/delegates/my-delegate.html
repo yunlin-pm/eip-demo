@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>我的代理人｜Bibian EIP Demo</title>
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/shell.css">
+  <link rel="stylesheet" href="../../assets/css/eip-layout.css">
+  <link rel="stylesheet" href="../../assets/css/claim-detail.css">
+  <link rel="stylesheet" href="../../assets/css/delegate.css">
+</head>
+<body class="eip-shared-layout delegate-detail-page" data-eip-root="../../" data-eip-module="forms" data-eip-sections="admin,info,delegate" data-eip-l2="delegate" data-eip-l3="my-delegate" data-eip-user="陳庭瑋 (T037)">
+<header class="eip-shell-bar demo-preview-bar"><a class="eip-shell-brand demo-preview-brand" href="../../index.html" aria-label="返回系統功能目錄"><span class="demo-back" aria-hidden="true">‹</span><b class="demo-badge">Demo</b><strong>Bibian EIP</strong></a></header>
+<div id="eipAppHeader"></div>
+<header class="top"><b>▦　表單申請／簽核</b><span class="user">網家跨境服務股份有限公司　陳庭瑋 (T037)</span></header>
+<main>
+  <div class="crumb">總覽　›　表單申請／簽核　›　代理人設定　›　我的代理人</div>
+  <div class="delegate-title-row"><div><h1>我的代理人</h1><p>設定本人於指定期間的代理簽核者。</p></div></div>
+  <section class="panel delegate-owner"><h2>原簽核者</h2><div class="body"><strong>陳庭瑋 (T037)</strong></div></section>
+  <div id="delegateCompanyBlocks"></div>
+</main>
+
+<div class="audit-modal" id="periodModal" hidden>
+  <div class="audit-backdrop" data-close-period></div>
+  <section class="audit-dialog delegate-period-dialog" role="dialog" aria-modal="true" aria-labelledby="periodModalTitle">
+    <header><h2 id="periodModalTitle">新增代理期間</h2><button class="audit-close" type="button" data-close-period aria-label="關閉">×</button></header>
+    <div class="audit-content">
+      <p class="period-company" id="periodCompany"></p>
+      <div class="period-grid">
+        <label><span class="label req">代理簽核者</span><select class="control" id="periodProxy"></select></label>
+        <label><span class="label req">開始日期</span><input class="control" id="periodStart" type="date"></label>
+        <label><span class="label req">結束日期</span><input class="control" id="periodEnd" type="date"></label>
+      </div>
+      <p class="field-error" id="periodError" hidden></p>
+    </div>
+    <footer><button class="btn" type="button" data-close-period>取消</button><button class="btn primary" type="button" id="confirmPeriod">確認</button></footer>
+  </section>
+</div>
+<div class="delegate-toast" id="delegateToast"></div>
+<script src="../../assets/js/delegate.js"></script>
+<div id="eipAppFooter"></div><script src="../../assets/js/eip-layout.js"></script>
+</body>
+</html>

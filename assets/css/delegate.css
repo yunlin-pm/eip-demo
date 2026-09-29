@@ -1,0 +1,31 @@
+[hidden]{display:none!important}
+.delegate-detail-page main{max-width:1480px;margin:0 auto;padding:18px 22px 40px}
+.delegate-title-row{display:flex;align-items:flex-end;justify-content:space-between;margin:10px 0 16px}
+.delegate-title-row h1{margin:0;color:#16243b;font-size:26px}
+.delegate-title-row p{margin:6px 0 0;color:#667085;font-size:14px}
+.delegate-owner .body{padding:15px 18px;color:#16243b}
+.delegate-company{margin:0 0 16px}
+.delegate-company>h2{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.delegate-company-name{min-width:0}
+.delegate-company .body{padding:14px 18px 18px}
+.delegate-current{display:grid;grid-template-columns:150px minmax(240px,420px);gap:14px;align-items:center;margin-bottom:14px}
+.delegate-current .label{margin:0}
+.delegate-table{width:100%;border-collapse:collapse}
+.delegate-table th,.delegate-table td{padding:10px 12px;border-bottom:1px solid #e2e8f0;text-align:left;vertical-align:middle}
+.delegate-table th{background:#f4f7fa;color:#344054;font-size:13px}
+.delegate-table td{color:#344054;font-size:14px}
+.delegate-table .empty{text-align:center;color:#98a2b3}
+.delegate-actions{display:flex;gap:8px;flex-wrap:wrap}
+.status-badge{display:inline-flex;padding:3px 9px;border-radius:12px;font-size:12px;font-weight:800}
+.status-badge.active{background:#e4f4e8;color:#146c35}
+.status-badge.scheduled{background:#e7f1fb;color:#164d80}
+.status-badge.cancelled{background:#eef1f4;color:#667085}
+.delegate-period-dialog{width:min(760px,100%)}
+.delegate-period-dialog footer{display:flex;justify-content:flex-end;gap:8px;padding:14px 18px;border-top:1px solid #d8e0e8}
+.period-company{margin:0 0 14px;color:#164d80;font-weight:800}
+.period-grid{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:14px}
+.period-grid label{display:grid;gap:5px}
+.field-error{margin:10px 0 0;color:#c6283d;font-size:13px}
+.delegate-toast{position:fixed;right:24px;bottom:24px;z-index:80;transform:translateY(20px);padding:11px 15px;border-radius:7px;background:#16243b;color:#fff;opacity:0;pointer-events:none;transition:.18s}
+.delegate-toast.show{transform:none;opacity:1}
+@media(max-width:800px){.delegate-detail-page main{padding:14px 12px 30px}.delegate-current{grid-template-columns:1fr;gap:6px}.period-grid{grid-template-columns:1fr}.delegate-table{min-width:760px}.delegate-company .table-scroll{overflow-x:auto}.delegate-company>h2{align-items:flex-start;flex-direction:column}.delegate-company>h2 .btn{width:100%}}

@@ -1,0 +1,31 @@
+/* 系統權限群組管理模組：疊加在共用 claim-list.css / claim-detail.css 骨架上的頁面專屬樣式（架構比照 organization.css / employee.css）。 */
+[hidden]{display:none!important}
+.field-note{display:block;margin-top:6px;color:#617286;font-size:13px;line-height:1.4}
+
+/* 新增／編輯面板：欄位獨佔一列，標題固定寬度在左、輸入內容在右，比照 organization.css
+   的 .org-demand-grid 既有樣式（該樣式定義在對方檔案，本頁未引入，故在此複製一份必要規則）。 */
+.pg-demand-grid{display:grid;grid-template-columns:1fr;gap:14px}
+.pg-demand-grid>label{display:grid;grid-template-columns:140px 1fr;column-gap:24px;row-gap:6px;align-items:start;padding:0 0 14px;border-bottom:1px solid #e4e8ed}
+.pg-demand-grid>label:last-child{border-bottom:0;padding-bottom:0}
+.pg-demand-grid>label>.label{padding-top:6px;color:#344054;font-size:14px}
+.pg-demand-grid>label>.field-note{grid-column:2}
+.pg-demand-grid textarea.control{min-height:72px;resize:vertical;font:inherit}
+@media(max-width:700px){.pg-demand-grid>label{grid-template-columns:1fr}.pg-demand-grid>label>.field-note{grid-column:1}}
+
+/* 權限內容／成員：可新增列的表格，比照 employee.css 的 .detail-table／.mini／
+   .link-button 既有樣式（同上，複製必要規則）。 */
+.detail-table{width:100%;border-collapse:collapse}
+.detail-table th,.detail-table td{padding:9px;border-bottom:1px solid #e2e8f0;text-align:left;vertical-align:top}
+.detail-table th{background:#f5f7f9;color:#344054}
+.detail-table td:last-child{white-space:nowrap}
+.mini,.link-button{border:0;background:transparent;color:#0969c7;font-weight:700;cursor:pointer;font:inherit}
+.mini{padding:6px;margin-top:10px}
+.link-button{padding:4px}
+.table-scroll{overflow-x:auto}
+.detail-table td.empty{text-align:center;color:#667085}
+
+.permission-group-list .filters{border-top:1px solid var(--line)}
+.permission-group-list table{min-width:1400px}
+
+.pg-toast{position:fixed;right:24px;bottom:24px;display:none;padding:12px 18px;border-radius:4px;background:#223548;color:#fff;box-shadow:0 8px 25px rgba(0,0,0,.22);z-index:60}
+.pg-toast.show{display:block}

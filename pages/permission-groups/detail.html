@@ -1,0 +1,17 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>系統權限群組內容頁｜Bibian EIP Demo</title><link rel="stylesheet" href="../../assets/css/tokens.css"><link rel="stylesheet" href="../../assets/css/base.css"><link rel="stylesheet" href="../../assets/css/shell.css"><link rel="stylesheet" href="../../assets/css/eip-layout.css"><link rel="stylesheet" href="../../assets/css/claim-detail.css"><link rel="stylesheet" href="../../assets/css/permission-matrix.css"><link rel="stylesheet" href="../../assets/css/permission-group.css"></head><body class="eip-shared-layout" data-eip-root="../../" data-eip-module="organization" data-eip-sections="organization,employees,permission-groups,signoff-groups" data-eip-l2="permission-groups" data-eip-l3="" data-eip-user="陳庭瑋 (T037)">
+<header class="eip-shell-bar demo-preview-bar"><a class="eip-shell-brand demo-preview-brand" href="../../index.html" aria-label="返回系統功能目錄"><span class="demo-back" aria-hidden="true">‹</span><b class="demo-badge">Demo</b><strong>Bibian EIP</strong></a></header><div id="eipAppHeader"></div>
+<header class="top"><b>▦　組織／員工</b><span class="user">網家跨境服務股份有限公司　陳庭瑋 (T037)</span></header>
+<main><div class="crumb">總覽　›　組織／員工　›　系統權限群組管理</div><div class="toolbar"><button class="btn" type="button" onclick="location.href='list.html'">← 返回列表</button><button class="btn primary" type="button" onclick="saveGroup()">儲存</button></div>
+<div class="main">
+<section class="panel"><h2><span id="detailTitle">新增群組</span>（<b id="pgIdView">新增後由系統產生</b>）</h2><div class="body pg-demand-grid">
+<label><span class="label req">群組名稱</span><input class="control" id="pgName" placeholder="請輸入群組名稱，例如：行政人員"></label>
+<label><span class="label">說明</span><input class="control" id="pgDesc" maxlength="30" placeholder="請輸入群組用途說明（最多 30 字）"></label>
+</div></section>
+
+<section class="panel"><h2>權限內容</h2><div class="body"><p class="field-note">設定此群組的成員在系統裡能操作的功能範圍；帳號指定此群組後，即自動取得下列權限。逐項勾選各功能的操作權限。</p><p class="pm-legend"><b>灰色打勾</b>＝所有內部帳號預設具有，不可取消。</p><div id="pgPermMatrix"></div></div></section>
+
+<section class="panel"><h2>成員</h2><div class="body"><div class="table-scroll"><table class="detail-table"><thead><tr><th>帳號系統編號</th><th>員工編號</th><th>帳號姓名</th><th>帳號暱稱</th><th>登入帳號</th><th>部門</th></tr></thead><tbody id="pgMemberRows"></tbody></table></div><p class="field-note">成員僅供查看（只列啟用中的帳號）；帳號屬於哪個群組，請至「<a href="../employees/list.html">員工管理</a>」的系統權限設定指定。</p></div></section>
+</div>
+</main>
+<div class="pg-toast" id="pgToast"></div>
+<script src="../../assets/js/employee-data.js"></script><script src="../../assets/js/permission-matrix.js"></script><script src="../../assets/js/permission-group.js"></script><div id="eipAppFooter"></div><script src="../../assets/js/eip-layout.js"></script></body></html>

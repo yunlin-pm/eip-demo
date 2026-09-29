@@ -1,0 +1,59 @@
+[hidden]{display:none!important}.purchase-detail{max-width:1440px;margin:auto;padding:18px 24px 94px}body.eip-list-page main{padding:20px 28px 32px}.title-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.toolbar{position:sticky;top:0;z-index:3;display:flex;align-items:center;justify-content:flex-start;gap:8px;margin-bottom:0;padding:10px 0;background:var(--bg)}.title-row h1{margin:0;font-size:26px}.toolbar>div{display:flex;gap:10px}.panel{overflow:hidden;margin-bottom:16px;border:1px solid #d7e0e8;border-radius:9px;background:#fff}.panel>h2{display:flex;align-items:center;justify-content:space-between;margin:0;padding:13px 18px;border-bottom:1px solid #d7e0e8;font-size:17px}.panel>h2 small{color:#667085;font-size:13px;font-weight:400}.panel-body{padding:16px 18px}.content-grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:16px;align-items:start}.head-grid{display:grid;grid-template-columns:1.2fr 1.2fr .8fr;gap:14px 18px}.head-grid label:nth-child(4){grid-column:1/3}.label{display:block;margin-bottom:6px;color:#344054;font-size:14px;font-weight:700}.req:before{content:'* ';color:#d92d20}.control{width:100%;min-height:40px;padding:8px 10px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;font:inherit}.field-note{display:block;margin-top:4px;color:#667085}.purpose{display:flex;align-items:center;gap:12px 24px;flex-wrap:wrap}.purpose label{white-space:nowrap}.purpose>.control{width:min(360px,100%)}.table-scroll{overflow-x:auto}.detail-table{width:100%;min-width:760px;border-collapse:collapse}.detail-table th,.detail-table td{padding:9px;border-bottom:1px solid #e2e8f0;text-align:left}.detail-table th{background:#f5f7f9;color:#344054}.detail-table th:first-child{width:60px}.quote-table th:nth-child(5){min-width:280px}.mini,.upload-btn,.link-button{border:0;background:transparent;color:#0969c7;font-weight:700;cursor:pointer}.mini{margin-top:10px;padding:6px}.attachment-area{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.file-card{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid #d7e0e8;border-radius:7px}.file-thumb{display:grid;width:38px;height:38px;place-items:center;border-radius:5px;background:#eef4fb;color:#164d80;font-size:12px;font-weight:800}.file-meta{display:grid}.file-meta small{color:#667085}.file-action{border:0;background:transparent;color:#0969c7;font-size:18px}.summary .panel-body{display:grid;gap:0}.summary .panel-body>div{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #edf0f3}.summary span{color:#667085}.route-panel h2 button{font-size:14px}.route-body{display:grid;grid-template-columns:repeat(5,minmax(180px,1fr));gap:8px;padding:12px;overflow-x:auto}.route-body article{display:grid;gap:5px;padding:11px;border-top:4px solid #98a2b3;border-radius:6px;background:#f4f6f8}.route-body article.done{border-color:#1f9d55;background:#edf8f1}.route-body article.current{border-color:#e5a000;background:#fff8e5}.route-body span,.route-body small{color:#667085}.opinion-list article{padding:13px 15px;border-bottom:1px solid #e5e7eb}.opinion-list article>div{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.opinion-list span{color:#667085}.opinion-list em{margin-left:auto;padding:2px 8px;border-radius:10px;background:#e4f4e8;color:#146c35;font-size:12px;font-style:normal;font-weight:800}.opinion-list p{margin:8px 0 0;padding:10px;border-left:4px solid #f2b84b;background:#fff9e8;color:#303b49;font-size:15px;font-weight:700;line-height:1.55}.opinion-list p.muted{border-left-color:#d0d5dd;background:#f7f8fa;color:#98a2b3;font-size:13px;font-weight:400}.filters .wide{grid-column:span 2}.keyword,.range{display:flex;gap:6px;align-items:center}.keyword select{width:145px}.table-wrap{overflow-x:auto}.table-wrap table{width:100%;min-width:1380px;border-collapse:collapse}.table-wrap th,.table-wrap td{padding:10px 9px;border-bottom:1px solid #d9e0e7;text-align:left;white-space:nowrap}.table-wrap th{background:#f5f7f9}.decision-modal{position:fixed;inset:0;z-index:500;display:grid;place-items:center;padding:18px}.decision-modal[hidden]{display:none}.decision-backdrop{position:absolute;inset:0;background:#10182899}.decision-modal>section{position:relative;width:min(760px,100%);border-radius:8px;background:#fff;box-shadow:0 24px 64px #10182855}.decision-modal header,.decision-modal footer{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #d7e0e8}.decision-modal footer{justify-content:flex-start;border-top:1px solid #d7e0e8;border-bottom:0}.decision-modal header h2{margin:0;font-size:20px}.decision-modal header button{border:0;background:none;font-size:28px}.decision-body{padding:24px 28px}.decision-body textarea{width:100%;min-height:100px;padding:12px;border:0;border-bottom:1px solid #164d80;font:inherit}.decision-body p{color:#d92d20;font-weight:700}.approve{border-color:#168a45!important;background:#168a45!important;color:#fff!important}.reject{border-color:#d9364b!important;background:#d9364b!important;color:#fff!important}.return-current{border-color:#f6a800!important;background:#f6a800!important;color:#241800!important}.pager{display:flex;justify-content:center;gap:10px;padding:18px}
+@media(max-width:1000px){.content-grid{grid-template-columns:1fr}.head-grid{grid-template-columns:1fr 1fr}.head-grid label:nth-child(4){grid-column:auto}.filters{grid-template-columns:1fr 1fr}.route-body{grid-template-columns:repeat(2,minmax(240px,1fr))}}
+@media(max-width:700px){.purchase-detail{padding:10px 10px 84px}body.eip-list-page main{padding:12px 10px 24px}.title-row{align-items:stretch;flex-direction:column}.toolbar{align-items:stretch;flex-direction:column}.toolbar>div{display:grid;grid-template-columns:1fr 1fr}.head-grid,.filters{grid-template-columns:1fr}.filters .wide{grid-column:auto}.keyword{align-items:stretch;flex-direction:column}.keyword select{width:100%}.tabs,.table-wrap{display:none}.route-body{grid-template-columns:1fr}.content-side{order:-1}.decision-modal{padding:10px}}
+
+
+
+/* Purchase fields extend the approved claim-detail structure; shared geometry stays unchanged. */
+.form-head{position:relative}
+.form-head .head-grid{display:grid;grid-template-columns:1.2fr 1.2fr .8fr;gap:10px 18px}
+.form-head .head-grid label:nth-child(4){grid-column:auto}
+.form-head .head-grid .full{grid-column:span 2}
+.purchase-detail .total-block{margin-top:16px}
+.purchase-detail #quoteApprovalHint{text-align:left}
+.purchase-detail .quote-attachment{margin-top:16px}
+.editor{overflow:hidden;border:1px solid #b9c5d1;border-radius:4px;background:#fff}
+.editor-toolbar{display:flex;gap:4px;padding:6px 8px;border-bottom:1px solid #d7dee7;background:#f3f5f7}
+.editor-toolbar button{min-width:32px;height:30px;padding:0 8px;border:1px solid #c8d1db;border-radius:4px;background:#fff;color:#344054;cursor:pointer}
+.rich-editor.control{min-height:180px;height:auto!important;padding:12px!important;border:0;border-radius:0;line-height:1.65;overflow-y:auto;max-width:none}
+.rich-editor:empty:before{content:attr(data-placeholder);color:#98a2b3}
+.rich-editor ul{margin:6px 0;padding-left:24px}
+.readonly .rich-editor{background:#f3f5f7}
+.editor-toolbar .editor-select-label,.editor-toolbar .editor-color-label{display:inline-flex;align-items:center;gap:5px;margin:0;padding:0 7px;border-left:1px solid #d8e0e8;color:#47586a;font-size:13px}
+.editor-toolbar select{height:30px;border:1px solid #c7d2de;border-radius:4px;background:#fff}
+.editor-toolbar input[type=color]{width:32px;height:28px;padding:2px;border:1px solid #c7d2de;border-radius:4px;background:#fff}
+.content-grid:has(>.content-side[hidden]){grid-template-columns:1fr}
+.content-main{display:grid;gap:16px}
+.content-main>.panel{margin-bottom:0}
+.content-side{display:grid;gap:16px;align-content:start}
+.content-side>.panel{margin-bottom:0}
+.purchase-detail>.v2-route-wide{margin:0 0 16px!important}
+@media(max-width:1050px){.form-head .head-grid{grid-template-columns:repeat(2,minmax(220px,1fr))}.form-head .head-grid label:nth-child(4){grid-column:auto}}
+@media(max-width:700px){.form-head .head-grid{grid-template-columns:1fr}.form-head .head-grid .full{grid-column:auto}.purchase-detail>.v2-route-wide{margin-bottom:12px!important}}
+
+/* Exact shared input geometry: claim detail 32px; claim list filters 34px. */
+.purchase-detail input.control,.purchase-detail select.control{height:32px!important;min-height:32px!important;max-width:360px;padding:0 8px!important}
+.purchase-detail textarea.control{height:auto!important;min-height:64px!important;padding:8px 10px!important}
+@media(max-width:700px){.purchase-detail input.control,.purchase-detail select.control{height:44px!important;min-height:44px!important;max-width:none}.purchase-detail textarea.control{min-height:76px!important}}
+
+/* 詢價表格讓文字欄位優先使用空間，金額欄位維持足夠輸入寬度。 */
+.purchase-detail .quote-table{min-width:900px;table-layout:fixed}
+.purchase-detail .quote-table th:first-child{width:64px;white-space:nowrap}
+.purchase-detail .quote-table th:nth-child(2){width:22%}
+.purchase-detail .quote-table th:nth-child(3),.purchase-detail .quote-table th:nth-child(4){width:180px}
+.purchase-detail .quote-table th:nth-child(5){min-width:0;width:auto}
+.purchase-detail .quote-table th:last-child{width:70px}
+.purchase-detail .quote-table td:nth-child(2) input.control{max-width:none!important}
+.purchase-detail .quote-table td:last-child .link-button{white-space:nowrap}
+.purchase-detail .quote-table td:nth-child(5) textarea.control{display:block;width:100%;max-width:none!important;box-sizing:border-box;resize:vertical}
+.purchase-detail .quote-table .currency-field{width:100%;max-width:162px}
+.purchase-detail .currency-total{width:min(220px,100%)}
+
+/* 採購金額固定顯示新台幣前綴，欄位仍只儲存數值。 */
+.purchase-detail .currency-field{display:flex;align-items:center;min-width:0;max-width:360px;height:32px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;overflow:hidden}
+.purchase-detail .currency-field>span{flex:none;padding:0 10px;color:#344054;white-space:nowrap;font-weight:700}
+.purchase-detail .currency-field>input.control{flex:1;min-width:0;max-width:none!important;height:30px!important;min-height:30px!important;border:0;border-left:1px solid #e2e8f0;border-radius:0;box-shadow:none}
+.purchase-detail .currency-field:focus-within{border-color:#164d80}
+.purchase-detail .currency-note{margin:0 0 10px;color:#667085;font-size:13px;line-height:1.5}
+.purchase-detail .editor+.currency-note{margin:7px 0 0}
+@media(max-width:700px){.purchase-detail .currency-field{height:44px;max-width:none}.purchase-detail .currency-field>input.control{height:42px!important;min-height:42px!important}}
