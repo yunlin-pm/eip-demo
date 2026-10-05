@@ -64,7 +64,7 @@ function toggleStatus(id){
     return;
   }
   openDeactivate('確認停用帳號',
-    `<p class="confirm-text">提醒您，停用帳號不會轉移該帳號有未完成簽核、代理及執行的工作。<br>確認工作已處理完成，要停用帳號？</p>`,
+    `<p class="confirm-text">此人可能有待簽單據。停用帳號不會轉移該帳號有未完成簽核、代理及執行的工作，請先確認工作已處理完成，或請他先設定代理人代為簽核。<br>確認要停用帳號？</p>`,
     `<button class="btn" type="button" data-close-deactivate>取消</button><button class="btn primary" type="button" id="deactivateOk">確認停用</button>`);
   document.getElementById('deactivateOk').addEventListener('click',()=>{
     e.status='停用';closeDeactivate();renderEmployees();showToast(`帳號 ${e.id} 已停用`);
@@ -145,6 +145,9 @@ function initDetail(){
     document.getElementById('empName').value=e.name;
     document.getElementById('empCode').value=e.code;
     document.getElementById('empLogin').value=e.login;
+    // 登入帳號建立後不可修改（RD 不接受重新綁定 Google 身分）；輸入錯誤時停用此帳號再以正確帳號新建。
+    document.getElementById('empLogin').disabled=true;
+    document.getElementById('empLoginNote').textContent='※ 登入帳號建立後不可修改；若輸入錯誤，請停用此帳號後以正確的登入帳號新建';
     document.getElementById('empEmail').value=e.email;
     document.getElementById('empNickname').value=e.nickname;
     document.getElementById('empLocale').value=e.locale;
@@ -197,9 +200,9 @@ function saveEmployee(){
     }
   }
   // 唯一性檢查：登入帳號全系統不可重複（不分大小寫）；員工編號在同一公司內不可重複（依此帳號的每一家對應公司檢查；帳號至少有一筆對應公司組織）。
-  // 比對範圍含已停用的帳號，編輯時排除自己。
+  // 只比對啟用中的帳號（已停用帳號不占用登入帳號與員工編號），編輯時排除自己。
   const selfId=new URLSearchParams(location.search).get('id');
-  const others=employees.filter(x=>x.id!==selfId);
+  const others=employees.filter(x=>x.id!==selfId&&x.status==='啟用');
   const login=document.getElementById('empLogin').value.trim().toLowerCase();
   if(others.some(x=>x.login.toLowerCase()===login)){showToast('登入帳號已被其他帳號使用');return}
   const code=document.getElementById('empCode').value.trim().toLowerCase();

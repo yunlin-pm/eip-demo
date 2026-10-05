@@ -41,3 +41,29 @@ function syncClaimTopTools() {
 role.addEventListener('change', syncClaimTopTools);
 syncClaimTopTools();
 
+
+// Interactive claim detail rows.
+const claimDetailRows=document.querySelector('#claimDetailRows'),addClaimDetail=document.querySelector('#addClaimDetail');
+function parseClaimAmount(value){return Number(String(value||'').replace(/[^0-9]/g,''))||0}
+function formatClaimAmount(input){const amount=parseClaimAmount(input.value);input.value=amount?amount.toLocaleString('en-US'):''}
+function refreshClaimTotal(){
+  const total=[...claimDetailRows.querySelectorAll('.detail-amount')].reduce((sum,input)=>sum+parseClaimAmount(input.value),0);
+  claimTotal.dataset.amount=String(total);claimTotal.textContent=`NT$ ${total.toLocaleString('en-US')}`;
+  const summaryTotal=document.querySelector('.v2-summary .info>div:last-child b');if(summaryTotal)summaryTotal.textContent=`NT$ ${total.toLocaleString('en-US')}`;
+  approvalLevelHint.classList.toggle('require-approval',total>=10000);
+  approvalLevelHint.textContent=total>=100000?'目前金額需依序經副總經理、總經理批示。':total>=10000?'目前金額需簽核至副總經理。':'目前金額未達加簽門檻，無須副總經理及總經理批示。';
+}
+function bindClaimDetailRow(row){
+  const amount=row.querySelector('.detail-amount');
+  amount.addEventListener('input',refreshClaimTotal);
+  amount.addEventListener('blur',()=>{formatClaimAmount(amount);refreshClaimTotal()});
+  row.querySelector('.detail-remove').onclick=()=>{if(claimDetailRows.rows.length===1){row.querySelector('.detail-summary').value='';amount.value='';refreshClaimTotal();return}row.remove();refreshClaimTotal()};
+}
+[...claimDetailRows.rows].forEach(bindClaimDetailRow);
+addClaimDetail.onclick=()=>{
+  const row=document.createElement('tr');
+  row.innerHTML='<td><input class="control detail-summary" placeholder="請輸入摘要"></td><td class="money"><div class="currency-input"><span>NT$</span><input class="control detail-amount" inputmode="numeric" placeholder="0" aria-label="金額（含稅）"></div></td><td class="detail-action-col"><button class="detail-remove" type="button" aria-label="刪除明細" title="刪除">🗑</button></td>';
+  claimDetailRows.appendChild(row);bindClaimDetailRow(row);row.querySelector('.detail-summary').focus();
+};
+refreshClaimTotal();
+

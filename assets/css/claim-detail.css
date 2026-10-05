@@ -35,3 +35,22 @@
 .approval-action-confirm.reject{background:#e63248;border-color:#e63248;color:#fff}
 .approval-action-cancel{background:#e2e6eb}
 @media(max-width:700px){.approval-action-modal{padding:10px}.approval-action-body{padding:20px 18px}.approval-action-dialog>footer{padding:14px 16px}.approval-action-dialog>footer .btn{flex:1}}
+
+/* Editable claim detail rows. */
+.claim-detail-table{table-layout:fixed}
+.claim-detail-table th:first-child{width:auto}
+.claim-detail-table th.money{width:260px}
+.claim-detail-table .detail-action-col{width:62px;text-align:center}
+.claim-detail-table td{vertical-align:middle}
+.claim-detail-table .control{width:100%;min-height:40px}
+.currency-input{display:flex;align-items:center;min-height:40px;border:1px solid #b9c5d1;border-radius:5px;background:#fff;overflow:hidden}
+.currency-input>span{align-self:stretch;display:flex;align-items:center;padding:0 11px;border-right:1px solid #d7dee7;background:#f5f7f9;color:#344054;font-weight:800;white-space:nowrap}
+.currency-input .control{border:0;border-radius:0;text-align:right}
+.currency-input .control:focus{outline:2px solid #7fb3e1;outline-offset:-2px}
+.detail-remove{white-space:nowrap}
+@media(max-width:700px){.claim-detail-table th.money{width:170px}.claim-detail-table .detail-action-col{width:50px}.currency-input>span{padding:0 7px}.claim-detail-table .control{min-height:42px}}
+
+.claim-detail-table tr::after{display:none!important;content:none!important}
+
+.detail-remove{display:inline-grid;place-items:center;width:34px;height:34px;padding:0;border:0;border-radius:5px;background:transparent;color:#d9364b;font-size:18px;line-height:1;cursor:pointer}
+.detail-remove:hover,.detail-remove:focus-visible{background:#fff1f2;outline:none}

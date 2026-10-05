@@ -32,7 +32,8 @@ function renderGroups(){
 function clearFilters(){document.getElementById('keywordField').value='all';document.getElementById('keyword').value='';document.getElementById('companyFilter').value='';renderGroups()}
 function deleteGroup(id){showToast(`Demo：${id} 刪除前須先確認無帳號使用此群組`)}
 // 成員以「輸入姓名或員編」搜尋後加入；成員列顯示帳號姓名、帳號暱稱、員工編號、部門（該群組適用公司下的完整部門路徑）。
-function sgEmpByCode(code,company){return employees.find(e=>e.code===code&&(!company||e.orgs.some(o=>o.company===company)))||employees.find(e=>e.code===code)}
+// 已停用帳號不占用員工編號，同編號可能有停用與啟用兩筆，優先取啟用中的帳號。
+function sgEmpByCode(code,company){const list=employees.filter(e=>e.code===code).sort((a,b)=>(a.status==='啟用'?0:1)-(b.status==='啟用'?0:1));return list.find(e=>!company||e.orgs.some(o=>o.company===company))||list[0]}
 function sgDeptOf(e,company){const o=e.orgs.find(x=>x.company===company);return o?o.path:'—'}
 function sgLabelCode(label){const m=/\(([^)]+)\)\s*$/.exec(label);return m?m[1]:label}
 function sgMemberCodes(){return Array.from(document.querySelectorAll('#sgMemberRows tr')).map(tr=>tr.dataset.code)}
@@ -133,6 +134,10 @@ function saveGroup(){
     const company=document.getElementById('sgCompany').value;
     if(signoffGroups.some(x=>x.name===name&&x.company===company&&x.id!==editId)){showToast('此適用公司下已有相同名稱的群組');return}
   }
+  // 儲存時群組至少要有一位有效成員（啟用中、帳號對應公司組織含群組適用公司）；移除最後一位或換公司後成員全被移除，都要補人才能儲存。
+  const grpCompany=document.getElementById('sgCompany').value;
+  const validCount=sgMemberCodes().filter(c=>{const e=sgEmpByCode(c,grpCompany);return e&&e.status==='啟用'&&e.orgs.some(o=>o.company===grpCompany)}).length;
+  if(validCount<1){showToast('群組至少要有一位有效成員，請先新增成員');return}
   showToast(sgMemberOnly?'Demo：群組成員已儲存':'Demo：群組資料已儲存')
 }
 document.addEventListener('DOMContentLoaded',()=>{
