@@ -22,3 +22,8 @@
   .mobile-card-action strong{color:#17639d;font-size:14px}
   .mobile-card-action b{font-size:22px;line-height:1}
 }
+
+/* 頁尾連結列：問題回報與操作說明手冊並排，層級低於各區塊標題。 */
+.help-links{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-top:24px}
+.help-sep{color:#b5bfca;font-size:13px}
+.help-links .doc-help-link{margin-top:0}

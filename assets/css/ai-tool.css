@@ -283,3 +283,12 @@
 #benefitPanel>.body{padding-top:9px!important}
 #benefitRequirement{margin:0 0 1px;line-height:1.45}
 
+
+/* AI 工具帳號列：唯讀 Email（或共用帳號輸入框）＋「申請多人共用帳號」勾選。 */
+.ai-account-line{display:flex;align-items:center;flex-wrap:wrap;gap:8px 24px;min-height:34px}
+.ai-account-line .ai-account-input{width:320px;max-width:100%}
+.ai-account-line .ai-account-input[hidden],.ai-account-line .readonly-value[hidden]{display:none!important}
+.ai-shared-toggle{display:inline-flex;align-items:center;gap:6px;color:#344054;font-size:14px;cursor:pointer}
+.ai-shared-toggle input{margin:0}
+.label-note{color:#667085;font-size:12.5px;font-weight:400}
+.ai-account-line .readonly-value{width:320px;max-width:100%;background:#f5f7fa;color:#344054}

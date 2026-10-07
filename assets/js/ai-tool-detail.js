@@ -1,6 +1,29 @@
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],params=new URLSearchParams(location.search),mode=$('#mode'),form=$('#form'),routePanel=$('#routePanel'),routeBody=$('#routeBody'),routeToggle=$('#routeToggle'),historyModal=$('#historyModal'),returnAlert=$('#returnAlert'),roundSummary=$('#roundSummary'),roundBadge=$('#roundBadge'),executionModal=$('#executionModal'),executionPanel=$('#executionPanel'),executionSummary=$('#executionSummary'),editExecutionBtn=$('#editExecutionBtn'),copyBtn=$('#copyBtn'),editPrintBtn=$('#editPrintBtn'),viewActions=$('#viewActions'),opinionSummary=$('#opinionSummary');
 const people={T037:{id:'T037',unit:'總經理室／後勤支援部／人事總務課',email:'t037@cbs-gss.com.tw'},T021:{id:'T021',unit:'營運本部／客戶服務部',email:'t021@cbs-gss.com.tw'},T038:{id:'T038',unit:'技術本部／資訊部／SRE',email:'t038@cbs-gss.com.tw'}};
 function fillPersonInfo(){const p=people[$('#applicant').value];if(!p)return;$('#applicantUnit').textContent=p.unit;$('#applicantEmailNote').textContent=p.email}
+/* AI 工具帳號：預設唯讀，帶入申請人的公司 Email（切換申請人時更新）；勾選「申請多人共用帳號」後改為可自行輸入（必填），
+   此時切換申請人不覆蓋已輸入的帳號；取消勾選則清除輸入並恢復申請人的公司 Email。 */
+/* 共用帳號必填，且須為 Email 格式（與員工管理的 Email 檢核同一訊息）。 */
+const ACCOUNT_EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+function validateAccount(){
+  const el=$('#aiAccountInput');
+  if(el.hidden){el.setCustomValidity('');return}
+  const v=el.value.trim();
+  el.setCustomValidity(!v?'請輸入 AI 工具帳號':ACCOUNT_EMAIL_RE.test(v)?'':'請輸入正確的 Email 格式');
+}
+function syncSharedAccount(){
+  const shared=$('#sharedAccount').checked;
+  $('#applicantEmailNote').hidden=shared;
+  $('#aiAccountInput').hidden=!shared;
+  $('#aiAccountInput').required=shared;
+  if(!shared)$('#aiAccountInput').value='';
+  else requestAnimationFrame(()=>$('#aiAccountInput').focus());
+  validateAccount();
+}
+$('#sharedAccount').addEventListener('change',syncSharedAccount);
+$('#aiAccountInput').addEventListener('input',validateAccount);
+/* 目前的 AI 工具帳號文字；共用帳號於執行紀錄視窗與列印加註「（多人共用帳號）」，讓執行人員知道要開通給多人使用。 */
+function currentAiAccount(){const shared=$('#sharedAccount').checked,v=(shared?$('#aiAccountInput').value:$('#applicantEmailNote').textContent).trim();return v?(shared?v+'（多人共用帳號）':v):''}
 $('#applicant').onchange=fillPersonInfo;
 
 /* 新臺幣換算暫以 1 USD = NT$31 計算，實際匯率作法待確認。 */
@@ -130,7 +153,7 @@ function syncCancelDate(force=true){
 $('#executionDateInput').addEventListener('change',()=>syncCancelDate(true));
 function openExecutionModal(prefill){
   const checkedPlan=$('.plan-option:checked');
-  $('#executionAiAccount').textContent=$('#applicantEmailNote').textContent.trim()||'—';
+  $('#executionAiAccount').textContent=currentAiAccount()||'—';
   $('#executionPlan').textContent=checkedPlan?.value==='other'?`其他（${$('#planOtherNote').value.trim()||'未填寫'}）`:checkedPlan?.dataset.label||'—';
   $('#executionDuration').textContent=`${$('#duration').value||'—'} 個月`;
   $('#executorInput').value=loginUser;
@@ -156,7 +179,7 @@ $('#executionConfirm').onclick=()=>{
 };
 document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!historyModal.hidden)historyModal.hidden=true;if(!executionModal.hidden)executionModal.hidden=true});
 routeToggle.onclick=()=>{const opening=routeBody.classList.contains('route-collapsed');routeBody.classList.toggle('route-collapsed');routeToggle.textContent=opening?'收合':'查看'};
-$('#submitBtn').onclick=e=>{e.preventDefault();if(!form.reportValidity())return;$('#docNo').textContent='CBS-IAI-2026-00007';$('#submitDate').textContent='申請日期：'+new Date().toLocaleDateString('zh-TW');alert('已送出簽核，系統已回寫申請日期與申請單號。')};
+$('#submitBtn').onclick=e=>{e.preventDefault();validateAccount();if(!form.reportValidity())return;$('#docNo').textContent='CBS-IAI-2026-00007';$('#submitDate').textContent='申請日期：'+new Date().toLocaleDateString('zh-TW');alert('已送出簽核，系統已回寫申請日期與申請單號。')};
 if(params.get('copy')){mode.value='new';applyMode();$('#docNo').textContent='尚未產生單號';$('#submitDate').textContent='申請日期：送出簽核後由系統回寫'}
 
 /* 內容頁列印：比照《雲端服務與資源申請》cloud-resource-detail.js 的 buildPrintView() 既有作法，
@@ -191,7 +214,7 @@ function buildPrintView(){
   $('#printApplicantName').textContent=$('#applicant').selectedOptions[0].text.trim();
   $('#printApplyDate').textContent=$('#submitDate').textContent.replace(/^申請日期：/,'');
   $('#printApplicantUnit').textContent=textOrDash($('#applicantUnit'));
-  $('#printAiAccount').textContent=textOrDash($('#applicantEmailNote'));
+  $('#printAiAccount').textContent=currentAiAccount()||'—';
   $('#printApplyItem').textContent=radioLabelText('applyItem');
   $('#printPlan').textContent=planText();
   const isStop=selectedApplyItem()==='stop';

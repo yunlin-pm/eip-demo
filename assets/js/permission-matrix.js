@@ -4,6 +4,12 @@
    右側依功能提供可勾選的操作權限（查看編輯、可代他人申請）。
    「所有內部帳號預設具有」的權限（locked）畫面上一律打勾並鎖定、不可取消，對應 RD 的內部使用者基本群組。 */
 const PERM_ACTIONS=[{key:'view',label:'查看編輯'},{key:'proxy',label:'可代他人申請'}];
+// 執行管理權限：核准後負責執行（開通、設定、回報完成）的人；只有「資訊相關表單－所有表單」提供，排在「可代他人申請」之後的第三、第四欄。
+// hint＝名稱後的「i」圖示說明，滑鼠移上去（手機點選）顯示涵蓋的表單。勾選後可使用對應表單的「執行管理」頁籤、收到「等待執行」通知並回報執行完成。
+const PERM_EXEC_ACTIONS=[
+  {key:'sre-exec',label:'SRE 執行管理',hint:'涵蓋「雲端服務與資源申請、雲端權限申請、系統連線申請」執行功能'},
+  {key:'ai-exec',label:'AI 工具執行管理',hint:'涵蓋「AI 工具使用申請」執行功能'}
+];
 // 第二個操作欄位預設是「可代他人申請」；功能若提供 member（僅可異動成員，例如簽核資格群組管理），則第二欄改放它。
 const PERM_MEMBER_ACTION={key:'member',label:'僅可異動成員'};
 // L1＝系統一級功能分類；funcs＝其下的功能列（label＝L2，sub＝L3，顯示時以「－」連接，例如「行政相關表單－所有表單」）。
@@ -11,7 +17,7 @@ const PERM_MEMBER_ACTION={key:'member',label:'僅可異動成員'};
 const PERM_CATALOG=[
   {id:'forms',label:'表單申請／簽核',funcs:[
     {id:'forms-admin',label:'行政相關表單',sub:'所有表單',actions:['view','proxy'],locked:['view']},
-    {id:'forms-info',label:'資訊相關表單',sub:'所有表單',actions:['view','proxy'],locked:['view']},
+    {id:'forms-info',label:'資訊相關表單',sub:'所有表單',actions:['view','proxy','sre-exec','ai-exec'],locked:['view']},
     {id:'delegate-mine',label:'代理人設定',sub:'我的代理人',actions:['view'],locked:['view']},
     {id:'delegate-admin',label:'代理人設定',sub:'人員代理設定',actions:['view'],locked:[]}
   ]},
@@ -40,7 +46,7 @@ const PERM_GROUP_GRANTS={
   '部門主管':['forms-admin|proxy','forms-info|proxy'],
   '系統管理員':['delegate-admin|view','organization|view','employees|view','permission-groups|view','signoff-groups|view','signoff-groups|member']
 };
-function permActionLabel(key){return ([...PERM_ACTIONS,PERM_MEMBER_ACTION].find(a=>a.key===key)||{}).label||key}
+function permActionLabel(key){return ([...PERM_ACTIONS,PERM_MEMBER_ACTION,...PERM_EXEC_ACTIONS].find(a=>a.key===key)||{}).label||key}
 function permEscape(v){return String(v).replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll('<','&lt;').replaceAll('>','&gt;')}
 function permIsLocked(f,key){return (f.locked||[]).includes(key)}
 /* 繪製權限矩陣。
@@ -59,10 +65,14 @@ function renderPermMatrix(container,grants,options){
     funcs.forEach(f=>{
       const name=`<span>${permEscape(f.sub?f.label+'－'+f.sub:f.label)}</span>`;
       html+=`<div class="pm-row" data-fn="${f.id}"><div class="pm-fn">${name}</div><div class="pm-acts">`;
-      [PERM_ACTIONS[0],f.actions.includes('member')?PERM_MEMBER_ACTION:PERM_ACTIONS[1]].forEach(a=>{
+      // 固定四個欄位：查看編輯｜可代他人申請（或僅可異動成員）｜SRE 執行管理｜AI 工具執行管理；功能沒有提供的操作留白，讓各列同一種權限上下對齊。
+      [PERM_ACTIONS[0],f.actions.includes('member')?PERM_MEMBER_ACTION:PERM_ACTIONS[1],...PERM_EXEC_ACTIONS].forEach(a=>{
         if(!f.actions.includes(a.key)){html+='<span class="pm-act pm-act-empty"></span>';return}
         const locked=permIsLocked(f,a.key);
-        html+=`<label class="pm-act${locked?' pm-locked':''}"${locked?' title="所有內部帳號預設具有，不可取消"':''}><input type="checkbox" data-pm-act="${f.id}|${a.key}"${locked?' data-pm-locked':''}${isOn(f,a.key)?' checked':''}${readonly||locked?' disabled':''}> <span>${a.label}</span></label>`;
+        const box=`<label class="pm-act${locked?' pm-locked':''}"${locked?' title="所有內部帳號預設具有，不可取消"':''}><input type="checkbox" data-pm-act="${f.id}|${a.key}"${locked?' data-pm-locked':''}${isOn(f,a.key)?' checked':''}${readonly||locked?' disabled':''}> <span>${a.label}</span></label>`;
+        if(!a.hint){html+=box;return}
+        // 有說明的操作：名稱後加「i」圖示（在 label 外，點圖示不會誤勾選）。
+        html+=`<span class="pm-cell">${box}<span class="pm-info" tabindex="0" role="img" aria-label="${permEscape(a.hint)}" data-tip="${permEscape(a.hint)}">i</span></span>`;
       });
       html+='</div></div>';
     });
