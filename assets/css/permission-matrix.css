@@ -5,7 +5,7 @@
 .pm-band{display:flex;align-items:center;min-height:44px;padding:0 16px;background:#d8e9f5;border-bottom:1px solid #d3dde7;font-weight:700}
 .pm-row{display:grid;grid-template-columns:minmax(220px,340px) 1fr;border-bottom:1px solid #d3dde7}
 .pm-fn{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 28px;min-height:30px;background:#eef5fb;border-right:1px solid #d3dde7}
-.pm-acts{display:grid;grid-template-columns:repeat(2,minmax(120px,190px)) repeat(2,minmax(150px,210px));align-items:center;padding:6px 16px;background:#fff}
+.pm-acts{display:flex;flex-wrap:wrap;align-items:center;gap:6px 32px;padding:6px 16px;background:#fff}
 .pm-act{display:flex;align-items:center;gap:8px;cursor:pointer}
 .pm-act-empty{display:block}
 .pm-cell{display:flex;align-items:center;gap:6px}
@@ -17,8 +17,7 @@
 @media(max-width:700px){
   .pm-row{grid-template-columns:1fr}
   .pm-fn{border-right:0;border-bottom:1px solid #e4ebf2;padding-left:14px}
-  .pm-acts{grid-template-columns:repeat(2,1fr);gap:8px 12px;padding:8px 14px}
-  .pm-cell:nth-child(even) .pm-info::after{left:auto;right:-8px}
+  .pm-acts{gap:8px 20px;padding:8px 14px}
   .pm-fn{flex-wrap:wrap}
   .pm-act-empty{display:none}
 }
@@ -35,3 +34,6 @@
 .pm-info:hover,.pm-info:focus{background:#164d80;color:#fff;outline:0}
 .pm-info::after{content:attr(data-tip);position:absolute;left:-8px;top:calc(100% + 8px);z-index:20;width:max-content;max-width:280px;padding:8px 10px;border-radius:4px;background:#1f2d3d;color:#fff;font-size:12px;font-weight:400;line-height:1.5;text-align:left;white-space:normal;box-shadow:0 2px 8px rgba(0,0,0,.2);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .12s}
 .pm-info:hover::after,.pm-info:focus::after{opacity:1;visibility:visible}
+/* 最右側欄位的提示靠右展開，避免超出頁面造成橫向捲動 */
+.pm-acts>.pm-cell:last-child .pm-info::after,.pm-acts>.pm-cell:nth-last-child(2) .pm-info::after{left:auto;right:-8px}
+@media(max-width:700px){.pm-acts{position:relative}.pm-cell,.pm-info{position:static}.pm-acts>.pm-cell .pm-info::after,.pm-acts>.pm-cell:last-child .pm-info::after,.pm-acts>.pm-cell:nth-last-child(2) .pm-info::after,.pm-cell:nth-child(even) .pm-info::after{left:14px;right:14px;width:auto;max-width:none;top:calc(100% - 2px)}}

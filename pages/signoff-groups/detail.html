@@ -6,6 +6,7 @@
 <section class="panel"><h2><span id="detailTitle">新增群組</span>（<b id="sgIdView">新增後由系統產生</b>）</h2><div class="body sg-demand-grid">
 <label><span class="label req">群組名稱</span><input class="control" id="sgName" placeholder="請輸入群組名稱，格式：公司代碼-群組名稱，例如：CBS-總經理"></label>
 <label><span class="label req">適用公司</span><select class="control" id="sgCompany"><option value="">請選擇適用公司</option><option>網家跨境服務股份有限公司</option><option>比比昂株式會社</option><option>空中補給股份有限公司</option></select><small class="field-note">每個群組屬於單一公司，成員僅能選擇帳號對應公司組織包含此公司的員工；各公司請分別建立群組</small></label>
+<div class="sg-mode-field"><span class="label req">多人簽核方式</span><div class="sg-mode-options"><label class="sg-mode-opt"><input type="radio" name="sgMode" value="any" checked><span>任一人簽核即通過</span></label><label class="sg-mode-opt"><input type="radio" name="sgMode" value="all"><span>全員簽核才通過</span></label></div><small class="field-note">群組有多位成員時才有差別：「任一人」只要其中一位核准該關就通過；「全員」須所有成員都核准才通過（任一人退回則整張單退回）。群組只有一位成員時不受影響</small></div>
 <label><span class="label">說明</span><input class="control" id="sgDesc" maxlength="30" placeholder="請輸入群組用途說明（最多 30 字）"></label>
 </div></section>
 

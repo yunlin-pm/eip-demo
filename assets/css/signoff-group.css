@@ -11,7 +11,13 @@
 .sg-demand-grid>label>.field-note{grid-column:2}
 .sg-static{padding-top:6px;color:#1f2d3d;font-size:14px;line-height:1.4}
 .sg-demand-grid textarea.control{min-height:72px;resize:vertical;font:inherit}
-@media(max-width:700px){.sg-demand-grid>label{grid-template-columns:1fr}.sg-demand-grid>label>.field-note{grid-column:1}}
+.sg-demand-grid>.sg-mode-field{display:grid;grid-template-columns:140px 1fr;column-gap:24px;row-gap:6px;align-items:start;padding:0 0 14px;border-bottom:1px solid #e4e8ed}
+.sg-mode-field>.label{padding-top:6px;color:#344054;font-size:14px}
+.sg-mode-field>.field-note{grid-column:2}
+.sg-mode-options{display:flex;flex-wrap:wrap;gap:8px 24px;padding-top:6px}
+.sg-mode-opt{display:inline-flex;align-items:center;gap:6px;font-size:14px;cursor:pointer}
+.sg-mode-opt input{margin:0}
+@media(max-width:700px){.sg-demand-grid>label{grid-template-columns:1fr}.sg-demand-grid>label>.field-note{grid-column:1}.sg-demand-grid>.sg-mode-field{grid-template-columns:1fr}.sg-mode-field>.field-note{grid-column:1}}
 
 /* 成員：可新增列的表格，比照 employee.css 的 .detail-table／.mini／.link-button
    既有樣式（同上，複製必要規則）。 */

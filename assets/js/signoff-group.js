@@ -27,7 +27,7 @@ function renderGroups(){
     return companyOk&&target.toLowerCase().includes(key)
   });
   document.getElementById('resultCount').textContent=rows.length;
-  body.innerHTML=rows.length?rows.map(g=>`<tr><td>${g.id}</td><td>${g.company}</td><td>${g.name}</td><td>${g.members.length}</td><td${g.desc.length>15?` title="${g.desc}"`:''}>${descShort(g.desc)}</td><td><a href="detail.html?id=${g.id}${sgQ('&')}">${sgMemberOnly?'維護成員':'編輯'}</a></td><td>${g.editor}</td><td>${g.edited}</td><td>${g.creator}</td><td>${g.created}</td><td>${sgMemberOnly?'—':`<a href="#" onclick="deleteGroup('${g.id}');return false">刪除</a>`}</td></tr>`).join(''):`<tr><td colspan="11" class="empty">查無符合條件的群組</td></tr>`
+  body.innerHTML=rows.length?rows.map(g=>`<tr><td>${g.id}</td><td>${g.company}</td><td>${g.name}</td><td>${g.members.length}</td><td>${g.mode==='all'?'全員簽核':'任一人簽核'}</td><td${g.desc.length>15?` title="${g.desc}"`:''}>${descShort(g.desc)}</td><td><a href="detail.html?id=${g.id}${sgQ('&')}">${sgMemberOnly?'維護成員':'編輯'}</a></td><td>${g.editor}</td><td>${g.edited}</td><td>${g.creator}</td><td>${g.created}</td><td>${sgMemberOnly?'—':`<a href="#" onclick="deleteGroup('${g.id}');return false">刪除</a>`}</td></tr>`).join(''):`<tr><td colspan="12" class="empty">查無符合條件的群組</td></tr>`
 }
 function clearFilters(){document.getElementById('keywordField').value='all';document.getElementById('keyword').value='';document.getElementById('companyFilter').value='';renderGroups()}
 function deleteGroup(id){showToast(`Demo：${id} 刪除前須先確認無帳號使用此群組`)}
@@ -116,11 +116,12 @@ function initDetail(){
     document.getElementById('sgName').value=g.name;
     document.getElementById('sgCompany').value=g.company;
     document.getElementById('sgDesc').value=g.desc;
+    document.querySelectorAll('input[name="sgMode"]').forEach(r=>{r.checked=r.value===(g.mode||'any')});
     document.getElementById('sgMemberRows').innerHTML=g.members.map(m=>sgEmpByCode(sgLabelCode(m),g.company)).filter(Boolean).map(e=>memberRowHtml(e,g.company)).join('');
   }else{
     document.getElementById('sgMemberRows').innerHTML='';
   }
-  if(sgMemberOnly)['sgName','sgCompany','sgDesc'].forEach(id=>document.getElementById(id).disabled=true);
+  if(sgMemberOnly){['sgName','sgCompany','sgDesc'].forEach(id=>document.getElementById(id).disabled=true);document.querySelectorAll('input[name="sgMode"]').forEach(r=>r.disabled=true)}
   document.getElementById('sgCompany').addEventListener('change',onCompanyChange);
   initMemberSearch();
 }

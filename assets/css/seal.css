@@ -1,9 +1,38 @@
-.need-tag{display:inline-flex;padding:3px 9px;border-radius:12px;font-size:12px;font-weight:800}.need-tag.stamp{background:#e7f1fb;color:#164d80}.need-tag.borrow{background:#fff0d8;color:#925500}.seal-basic-grid{display:grid;grid-template-columns:repeat(3,minmax(220px,1fr));gap:14px}.choice-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:20px}.choice-grid fieldset{margin:0;padding:12px 14px;border:1px solid #d5dde6;border-radius:7px}.choice-grid fieldset label{display:inline-flex;align-items:center;gap:5px;margin:7px 18px 3px 0}.borrow-fields{display:grid;grid-template-columns:repeat(2,minmax(220px,1fr));gap:14px;padding:12px 14px;border-left:4px solid #e0a000;background:#fff9e8}.document-table{overflow-x:auto}.document-head,.document-row{display:grid;grid-template-columns:48px minmax(260px,1.5fr) 150px minmax(220px,1fr) 58px;gap:10px;align-items:center;padding:10px}.document-head{background:#f2f5f8;font-weight:800}.document-row{border-bottom:1px solid #e1e7ed}.document-row textarea{min-height:64px}.add-document{margin:10px}.handling-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}.handling-summary>div{display:grid;gap:4px;padding:12px;border-radius:7px;background:#f3f6f9}.handling-summary span{color:#667085;font-size:12px}.handling-fields{display:grid;grid-template-columns:repeat(3,minmax(190px,1fr));gap:14px}.seal-page .v2-route-wide>.body.route{grid-template-columns:repeat(5,minmax(170px,1fr))}@media(max-width:900px){.seal-basic-grid,.handling-fields{grid-template-columns:1fr 1fr}.choice-grid{grid-template-columns:1fr}.seal-page .v2-route-wide>.body.route{grid-template-columns:repeat(2,minmax(230px,1fr))}}@media(max-width:700px){.seal-basic-grid,.borrow-fields,.handling-summary,.handling-fields{grid-template-columns:1fr}.document-head{display:none}.document-row{grid-template-columns:34px 1fr}.document-row>*:nth-child(n+3){grid-column:2}.seal-page .v2-route-wide>.body.route{grid-template-columns:1fr}}@media print{.handling-panel{display:none!important}}/* Keep seal choices and document fields aligned as compact single rows. */
-.choice-grid fieldset{display:flex;align-items:center;flex-wrap:wrap;gap:8px 20px;min-height:70px}
+.need-tag{display:inline-flex;padding:3px 9px;border-radius:12px;font-size:12px;font-weight:800}.need-tag.stamp{background:#e7f1fb;color:#164d80}.need-tag.borrow{background:#fff0d8;color:#925500}.seal-basic-grid{display:grid;grid-template-columns:repeat(3,minmax(220px,1fr));gap:14px}.choice-grid{display:grid;grid-template-columns:.7fr 1.3fr;gap:20px}.choice-grid fieldset{margin:0;padding:12px 14px;border:1px solid #d5dde6;border-radius:7px}.choice-grid fieldset label{display:inline-flex;align-items:center;gap:5px;margin:7px 18px 3px 0}.borrow-fields{display:grid;grid-template-columns:repeat(2,minmax(220px,1fr));gap:14px;padding:12px 14px;border-left:4px solid #e0a000;background:#fff9e8}.document-table{overflow-x:auto}.document-head,.document-row{display:grid;grid-template-columns:48px minmax(260px,1.5fr) 150px minmax(220px,1fr) 58px;gap:10px;align-items:center;padding:10px}.document-head{background:#f2f5f8;font-weight:800}.document-row{border-bottom:1px solid #e1e7ed}.document-row textarea{min-height:64px}.add-document{margin:10px}.handling-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}.handling-summary>div{display:grid;gap:4px;padding:12px;border-radius:7px;background:#f3f6f9}.handling-summary span{color:#667085;font-size:12px}.handling-fields{display:grid;grid-template-columns:repeat(3,minmax(190px,1fr));gap:14px}.seal-page .v2-route-wide>.body.route{grid-template-columns:repeat(5,minmax(170px,1fr))}@media(max-width:900px){.seal-basic-grid,.handling-fields{grid-template-columns:1fr 1fr}.choice-grid{grid-template-columns:1fr}.seal-page .v2-route-wide>.body.route{grid-template-columns:repeat(2,minmax(230px,1fr))}}@media(max-width:700px){.seal-basic-grid,.borrow-fields,.handling-summary,.handling-fields{grid-template-columns:1fr}.document-head{display:none}.document-row{grid-template-columns:34px 1fr}.document-row>*:nth-child(n+3){grid-column:2}.seal-page .v2-route-wide>.body.route{grid-template-columns:1fr}}@media print{.handling-panel{display:none!important}}/* Keep seal choices and document fields aligned as compact single rows. */
+.choice-grid fieldset{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;min-height:52px}
 .choice-grid fieldset legend{float:left;width:auto;margin:0 16px 0 0;padding:0;white-space:nowrap}
-.choice-grid fieldset label{display:inline-flex;align-items:center;gap:6px;margin:0;white-space:nowrap}
+.choice-grid fieldset label{display:inline-flex;flex-direction:row;align-items:center;gap:6px;margin:0;white-space:nowrap;font-weight:400}
 .choice-grid fieldset input{flex:0 0 auto;margin:0}
-.document-head,.document-row{grid-template-columns:48px minmax(340px,1.7fr) 150px minmax(220px,1fr) 58px}
+.document-head,.document-row{grid-template-columns:36px 112px minmax(160px,1fr) minmax(200px,1.4fr) 48px}
 .document-head span{white-space:nowrap}
 .document-row>.control{min-height:40px;height:40px}
 @media(max-width:700px){.choice-grid fieldset{align-items:flex-start}.choice-grid fieldset legend{float:none;width:100%;margin:0}.document-row>.control{height:42px}}
+/* 會簽單位：「刪除」不折行，部門欄位與主管姓名對齊 */
+.seal-page .unit-panel td:last-child{white-space:nowrap;width:1%}
+.seal-page .unit-panel .department-select{min-width:0}
+.seal-page .unit-panel th:first-child,.seal-page .unit-panel td:first-child{min-width:0;max-width:none}
+.seal-page .unit-panel td{vertical-align:middle}
+/* 唯讀時會簽單位的部門以純文字呈現，不顯示成灰色下拉 */
+.readonly .seal-page .unit-panel .department-select{appearance:none;-webkit-appearance:none;border:0;background:transparent;padding:0;min-height:0;height:auto;color:#1f2933;opacity:1;font-weight:400}
+/* 每列用印文件各自的附件 */
+.row-attach{min-width:0;display:flex;align-items:center}
+.row-file{display:flex;align-items:center;gap:6px;min-width:0;max-width:100%;padding:4px 6px;border:1px solid #d5dde6;border-radius:6px;background:#f7fafc;font-size:12px}
+.row-file b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.row-file .file-thumb{flex:0 0 auto;width:28px;height:22px;font-size:10px}
+.row-file-remove{border:0;background:none;color:#d9364b;cursor:pointer;font-size:16px;line-height:1;padding:0 2px}
+.readonly .row-file-remove,.readonly .row-attach .upload-btn{display:none!important}
+.row-attach .upload-btn{padding:6px 8px;font-size:12px;white-space:nowrap}
+/* 借出／歸還紀錄（右側欄） */
+.handling-panel h2 .history-link{margin-left:auto}
+.handling-panel .panel-body{padding:14px 16px}
+.handling-time{margin:0 0 10px;font-size:13px;color:#667085}
+.handling-table{width:100%;table-layout:fixed;border-collapse:collapse;margin:0 0 14px;font-size:12.5px}
+.handling-table th,.handling-table td{padding:6px 8px;border:1px solid #c9d2dc;text-align:left;vertical-align:middle;word-break:break-all;white-space:normal}
+.handling-table th{background:#eef1f4;font-weight:700}
+.exec-dialog{width:min(460px,100%)}
+.exec-dialog .audit-content{display:grid;gap:16px;padding:18px}
+.exec-dialog label{display:flex;flex-direction:column;gap:6px}
+.exec-dialog .control{width:100%!important;max-width:none!important}
+.exec-dialog input[readonly]{background:#f2f4f7;color:#475467;cursor:not-allowed}
+.exec-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:4px}
+.seal-page .stack textarea.control{font-weight:400}

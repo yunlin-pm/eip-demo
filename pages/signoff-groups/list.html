@@ -4,7 +4,7 @@
 <main><div class="breadcrumb">總覽　›　組織／員工　›　簽核資格群組管理</div><div class="title-row"><div><h1>簽核資格群組管理</h1></div><button class="btn primary" type="button" id="addGroupBtn" onclick="location.href='detail.html'+sgQ('?')">＋ 新增</button></div>
 <section class="filters"><div class="field"><label>關鍵字</label><div class="keyword"><select id="keywordField"><option value="all">全部</option><option value="name">群組名稱</option><option value="desc">說明</option><option value="id">群組系統編號</option></select><input id="keyword" placeholder="請輸入關鍵字" onkeydown="if(event.key==='Enter')renderGroups()"></div></div><div class="field"><label>適用公司</label><select id="companyFilter"><option value="">全部</option><option>網家跨境服務股份有限公司</option><option>比比昂株式會社</option><option>空中補給股份有限公司</option></select></div><div class="filter-actions"><button class="btn" type="button" onclick="clearFilters()">清除</button><button class="btn primary" type="button" onclick="renderGroups()">查詢</button></div></section>
 <div class="resultbar"><span>查詢共 <b id="resultCount">0</b> 筆</span></div>
-<div class="table-wrap"><table><thead><tr><th>群組系統編號</th><th>適用公司</th><th>群組名稱</th><th>成員人數</th><th>說明</th><th>操作</th><th>最後異動者</th><th>最後異動時間</th><th>新增者</th><th>新增時間</th><th>刪除</th></tr></thead><tbody id="sgRows"></tbody></table></div>
+<div class="table-wrap"><table><thead><tr><th>群組系統編號</th><th>適用公司</th><th>群組名稱</th><th>成員人數</th><th>多人簽核方式</th><th>說明</th><th>操作</th><th>最後異動者</th><th>最後異動時間</th><th>新增者</th><th>新增時間</th><th>刪除</th></tr></thead><tbody id="sgRows"></tbody></table></div>
 <div class="pager"><button disabled>‹</button><span>1</span><button disabled>›</button></div>
 </main>
 <div class="sg-toast" id="sgToast"></div>

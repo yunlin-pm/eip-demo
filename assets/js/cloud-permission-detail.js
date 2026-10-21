@@ -7,7 +7,7 @@ let executionRecord={executor:'林家筠 (T038)',date:'2026/09/16',note:'已完�
 function fillPersonInfo(){const person=people[$('#applicant').value],company=$('#companySelect'),current=company.value;$('#applicantUnit').textContent=person?.unit||'';company.innerHTML=(person?.companies||[]).map(name=>'<option>'+name+'</option>').join('');if((person?.companies||[]).includes(current))company.value=current}
 $('#applicant').onchange=fillPersonInfo;
 function renderExecutionSummary(record){$('#executorView').textContent=record.executor;$('#executionDateView').textContent=record.date;$('#executionNoteView').textContent=record.note}
-const approvalOpinions=[{stage:'部級主管',person:'羅弘奕 (B019)',status:'approved',statusText:'已核准',opinion:''},{stage:'處級主管',person:'陳志明 (A008)',status:'approved',statusText:'已核准',opinion:'請 SRE 確認資源存取範圍是否符合最小權限原則。'}];
+const approvalOpinions=[{stage:'上級主管',person:'羅弘奕 (B019)',status:'approved',statusText:'已核准',opinion:'請 SRE 確認資源存取範圍是否符合最小權限原則。'}];
 function renderOpinionSummary(){
   const withOpinion=approvalOpinions.filter(o=>o.opinion&&o.opinion.trim()),rows=$('#opinionRows'),empty=$('#opinionEmpty');
   if(withOpinion.length){
@@ -18,13 +18,17 @@ function renderOpinionSummary(){
   }
 }
 renderOpinionSummary();
+const accessBody=$('#accessRequirementRows'),accessSample=[...accessBody.children].map(r=>r.cloneNode(true));let accessBlank=false;
+// 新增（非複製）時存取權限需求只有一列空白列：申請類型預設「請選擇」，其餘欄位為空白、顯示 placeholder；其他情境維持範例資料
+function syncAccessRows(){const blank=mode.value==='new'&&!params.get('copy');if(blank===accessBlank)return;accessBlank=blank;accessBody.replaceChildren(...(blank?[(()=>{const r=accessSample[0].cloneNode(true);r.querySelector('select').value='';r.querySelectorAll('input').forEach(i=>i.value='');return r})()]:accessSample.map(r=>r.cloneNode(true))))}
 function applyMode(){
+  syncAccessRows();
   const v=mode.value,readonly=['view','approve','execute','done'].includes(v),done=v==='done',executed=['view','done'].includes(v),wasReturned=v==='edit';
   $$('.control').forEach(x=>{if(x!==mode&&!x.closest('#executionModal'))x.disabled=readonly});
   $('#editActions').classList.toggle('view-only',readonly);
   copyBtn.hidden=v!=='edit';
   editPrintBtn.hidden=v!=='edit';
-  opinionSummary.hidden=!readonly;
+  opinionSummary.hidden=v==='new';
   $('#approveActions').classList.toggle('view-only',v!=='approve');
   $('#executeActions').classList.toggle('view-only',v!=='execute');
   $('#doneActions').classList.toggle('view-only',v!=='done');
@@ -70,10 +74,14 @@ function syncOtherFields(){$$('.other-toggle').forEach(x=>{const t=document.getE
 $$('.other-toggle').forEach(x=>{x.addEventListener('change',syncOtherFields);if(x.type==='radio'&&x.name)$$(`input[name="${x.name}"]`).forEach(sib=>sib.addEventListener('change',syncOtherFields))});syncOtherFields();
 function syncConditionalFields(){$$('.conditional-toggle').forEach(x=>{const t=document.getElementById(x.dataset.target);const show=x.checked;t.classList.toggle('hidden',!show);t.disabled=!show;if(!show)t.value=''})}
 $$('.conditional-toggle').forEach(x=>x.addEventListener('change',syncConditionalFields));syncConditionalFields();
-function syncExpiry(){const show=$$('input[name=duration]:checked').some(x=>x.value==='limited'),field=$('#expiry');field.classList.toggle('hidden',!show);field.disabled=!show;if(!show)field.value=''}
+function syncExpiry(){const show=$$('input[name=duration]:checked').some(x=>x.value==='limited'),box=$('#expiryField'),field=$('#expiry');box.classList.toggle('hidden',!show);field.disabled=!show;field.required=show;if(!show)field.value=''}
 $$('input[name=duration]').forEach(x=>x.addEventListener('change',syncExpiry));syncExpiry();
 routeToggle.onclick=()=>{const opening=routeBody.classList.contains('route-collapsed');routeBody.classList.toggle('route-collapsed');routeToggle.textContent=opening?'收合':'查看'};
-$('#submitBtn').onclick=e=>{e.preventDefault();if(!form.reportValidity())return;$('#docNo').textContent='CBS-ICP-2026-00007';$('#submitDate').textContent='申請日期：'+new Date().toLocaleDateString('zh-TW');alert('已送出簽核，系統已回寫申請日期與申請單號。')};
+// 使用環境的專案代號為選填；僅在送出簽核時，若已勾選的環境未填專案代號，先請使用者確認（儲存草稿不檢查）
+$('#submitBtn').onclick=e=>{e.preventDefault();
+// 申請人本人是 SRE 審核、技術副部長或技術部長的簽核人時，阻擋送出（Demo 以範例路線的簽核人對應）
+const selfStage=({T038:'SRE 審核',D012:'技術副部長',D020:'技術部長'})[$('#applicant').value];if(selfStage){alert(`您是本單「${selfStage}」的簽核人，無法以自己的名義送出雲端權限申請，請由其他同仁擔任申請人送出（您可列為權限使用者）。`);return}
+if(!form.reportValidity())return;const noProject=$$('.conditional-toggle:checked').filter(x=>!document.getElementById(x.dataset.target).value.trim()).map(x=>x.closest('label').textContent.trim());if(noProject.length&&!confirm(`${noProject.join('、')}尚未填寫專案代號，確認要送出簽核？`))return;$('#docNo').textContent='CBS-ICP-2026-00007';$('#submitDate').textContent='申請日期：'+new Date().toLocaleDateString('zh-TW');alert('已送出簽核，系統已回寫申請日期與申請單號。')};
 if(params.get('copy')){mode.value='new';applyMode();$('#docNo').textContent='尚未產生單號';$('#submitDate').textContent='申請日期：送出簽核後由系統回寫'}
 
 
@@ -107,8 +115,8 @@ function buildPermissionPrintView(){
   $('#permissionPrintReason').textContent=printText($('#applicationReason').value);
 
   const accessRows=$$('#accessRequirementRows tr').map(row=>{
-    const fields=[...row.querySelectorAll('select,input')],values=fields.map(field=>field.tagName==='SELECT'?field.selectedOptions[0]?.textContent:field.value);
-    return`<tr>${values.slice(0,4).map(value=>`<td>${printEscape(value)}</td>`).join('')}</tr>`;
+    const fields=[...row.querySelectorAll('select,input')],values=fields.map(field=>field.tagName==='SELECT'?(field.value?field.selectedOptions[0]?.textContent:''):field.value);
+    return`<tr>${values.slice(0,4).map(value=>`<td>${printEscape(printText(value))}</td>`).join('')}</tr>`;
   });
   $('#permissionPrintAccessRows').innerHTML=accessRows.join('')||'<tr><td colspan="4">—</td></tr>';
 
@@ -119,7 +127,7 @@ function buildPermissionPrintView(){
   }).filter(Boolean);
   $('#permissionPrintUserRows').innerHTML=userRows.join('')||'<tr><td colspan="2">—</td></tr>';
 
-  const approvedDates={'部級主管':'2026/09/17','處級主管':'2026/09/17'};
+  const approvedDates={'上級主管':'2026/09/17'};
   const opinionByStage=Object.fromEntries(approvalOpinions.map(item=>[item.stage,item.opinion]));
   const approvalRows=$$('.approval-stage').map(stage=>{
     const level=stage.querySelector('.stage-title').textContent.replace(/^[①-⑩]\s*/,''),person=stage.querySelector('.stage-person').textContent.replace(/^簽核者：/,'').trim(),status=stage.querySelector('.stage-status').textContent.trim();

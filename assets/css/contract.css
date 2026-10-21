@@ -1,0 +1,62 @@
+/* 合約送審申請：沿用 memo.css 版型（簽呈單／公司印鑑申請），僅補本表單專屬樣式；各表單 CSS 不互相引用 */
+.contract-page .v2-route-wide>.body.route{grid-template-columns:repeat(5,minmax(170px,1fr))}
+.contract-page .stack textarea.control{font-weight:400}
+.note-lines{margin:0;padding:10px 14px;border-left:4px solid #e0a000;background:#fff9e8;color:#6b4e00;font-size:13px;line-height:1.7}
+.two-col{display:grid;grid-template-columns:minmax(260px,.9fr) minmax(260px,1.1fr);gap:16px;align-items:start}
+.two-col>label{display:flex;flex-direction:column;gap:6px}
+.choice-box{display:flex;align-items:center;flex-wrap:wrap;gap:8px 18px;margin:0;padding:0;border:0}
+.choice-box .legend{width:auto;margin:0 16px 0 0;padding:0;white-space:nowrap}
+.choice-box label{display:inline-flex;flex-direction:row;align-items:center;gap:6px;margin:0;white-space:nowrap;font-weight:400}
+.choice-box input[type=radio],.choice-box input[type=checkbox]{flex:0 0 auto;margin:0}
+.choice-box.wrap .legend{width:100%;margin:0 0 2px}
+.choice-box .inline-input{width:170px;min-height:32px;height:32px;margin-left:4px}
+.clause-table{border:1px solid #d5dde6;border-radius:7px;overflow:hidden}
+.clause-head,.clause-row{display:grid;grid-template-columns:130px minmax(0,1fr);gap:12px;align-items:start;padding:10px 12px}
+.clause-head{background:#f2f5f8;font-weight:800}
+.clause-row{border-top:1px solid #e1e7ed}
+.clause-row>span:first-child{padding-top:9px;font-weight:700;color:#17324d}
+.clause-row textarea.control{width:100%;min-height:58px;resize:vertical}
+.doc-inline{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-height:38px}
+.doc-count-row{display:inline-flex;align-items:center;gap:6px;min-width:0}
+.doc-count-row .doc-pick{display:inline-flex;align-items:center;gap:6px;width:150px;margin:0;font-weight:400;white-space:nowrap}
+.doc-count-row input[type=checkbox]{flex:0 0 auto;margin:0}
+.doc-count-row>.control{height:32px;min-height:0;width:84px}
+.doc-count-row #docOtherName{width:380px;max-width:100%;margin-left:8px}
+.doc-count-row em{font-style:normal;color:#475467}
+.doc-count-total{margin-top:2px;font-weight:700;white-space:nowrap}
+.doc-count-total b{font-size:16px;color:#174f7f}
+/* 會簽單位：部門下拉與主管對齊，唯讀時以純文字呈現 */
+.contract-page .unit-panel td:last-child{white-space:nowrap;width:1%}
+.contract-page .unit-panel .department-select{min-width:0}
+.contract-page .unit-panel td{vertical-align:middle}
+.readonly .contract-page .unit-panel .department-select{appearance:none;-webkit-appearance:none;border:0;background:transparent;padding:0;min-height:0;height:auto;color:#1f2933;opacity:1;font-weight:400}
+.readonly .contract-page .add-unit,.readonly .contract-page .unit-panel .link-btn{display:none!important}
+.readonly .choice-box .inline-input,.readonly .clause-row textarea.control{opacity:1}
+.readonly .clause-row textarea.control:disabled,.readonly .doc-count-row .control:disabled,.readonly .two-col .control:disabled,.readonly #partner:disabled,.readonly #summary:disabled{color:#1f2933;-webkit-text-fill-color:#1f2933;background:#f7f9fb}
+@media(max-width:900px){.contract-page .v2-route-wide>.body.route{grid-template-columns:repeat(2,minmax(230px,1fr))}.two-col{grid-template-columns:1fr}}
+@media(max-width:700px){.contract-page .v2-route-wide>.body.route{grid-template-columns:1fr}.clause-head{display:none}.clause-row{grid-template-columns:1fr;gap:4px}.clause-row>span:first-child{padding-top:0}.choice-box .legend{width:100%;margin:0}}
+.contract-page .detail-grid>*{min-width:0}
+@media(max-width:700px){.contract-page .basic-grid{grid-template-columns:1fr}.contract-page .panel h2{flex-wrap:wrap;gap:4px}.choice-box label{white-space:normal}}
+.contract-page .unit-panel{overflow-x:auto}.show-approval-details.contract-page .unit-panel,.readonly .contract-page .unit-panel{overflow:visible}
+
+.readonly .clause-row textarea::placeholder,.readonly #docOtherName::placeholder,.readonly #bizOther::placeholder{color:transparent}
+.print-caption-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}.print-docno{font-weight:400;font-size:12px;color:#344054}
+
+.contract-page .basic-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.contract-page .basic-grid>label{display:flex;flex-direction:column;gap:6px;min-width:0}
+@media(max-width:900px){.contract-page .basic-grid{grid-template-columns:1fr}}
+
+/* 合約內容：左欄欄位名稱、右欄欄位內容（比照雲端權限申請的「申請需求資訊」） */
+.demand-body{display:flex;flex-direction:column;gap:0}
+.demand-body .note-lines{margin:0 0 6px}
+.demand-row{display:grid;grid-template-columns:190px minmax(0,1fr);gap:12px 16px;align-items:start;padding:14px 0;border-bottom:1px solid #e1e7ed}
+.demand-row:last-child{border-bottom:0}
+.demand-row>.label{padding-top:9px}
+.demand-row>.control{width:100%}
+.demand-choices{display:flex;align-items:center;flex-wrap:wrap;gap:8px 20px;min-height:38px}
+.demand-choices label{display:inline-flex;flex-direction:row;align-items:center;gap:6px;margin:0;font-weight:400;white-space:nowrap}
+.demand-choices input[type=radio],.demand-choices input[type=checkbox]{flex:0 0 auto;margin:0}
+.demand-choices .inline-input{width:180px;min-height:32px;height:32px;margin-left:4px}
+.readonly .demand-choices .inline-input::placeholder{color:transparent}
+@media(max-width:700px){.demand-row{grid-template-columns:1fr;gap:6px}.demand-row>.label{padding-top:0}.demand-choices label{white-space:normal}}
+@media(max-width:700px){.doc-count-row{flex-wrap:wrap}.doc-count-row .doc-pick{width:100%}.doc-count-row #docOtherName{width:100%;margin-left:0}}
+.doc-count-row [hidden]{display:none!important}

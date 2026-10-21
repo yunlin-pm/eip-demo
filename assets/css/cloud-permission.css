@@ -99,6 +99,10 @@
 .cloud-demand-grid .environment-list{display:grid!important;grid-template-columns:1fr!important;gap:8px!important}
 .cloud-demand-grid .cloud-choices>.inline-text{width:200px!important;min-width:0!important;max-width:200px!important;flex:0 0 auto!important}
 .cloud-demand-grid #plannedDate{width:160px!important;flex:0 0 auto}
+/* 使用期限選「限期」時，在選項旁顯示「預計到期日：」＋日期選擇器 */
+.cloud-choices .expiry-field{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.cloud-choices .expiry-field.hidden{display:none}
+.cloud-demand-grid #expiry{width:160px!important;flex:0 0 auto}
 .cloud-demand-grid textarea.control{min-height:96px;width:100%!important;max-width:none!important;resize:vertical}
 @media(max-width:700px){
   .cloud-demand-grid>.cloud-question,
