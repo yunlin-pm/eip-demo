@@ -90,3 +90,4 @@ body.cloud-resource-list table{min-width:1850px}
 .multi-options label:hover{background:#f3f6f9}
 .multi-options input{width:16px!important;height:16px!important;margin:0}
 @media(max-width:700px){.multi-select,.multi-select summary{height:42px}.multi-options{top:46px}.multi-options label{min-height:38px}}
+td.summary{white-space:nowrap}
