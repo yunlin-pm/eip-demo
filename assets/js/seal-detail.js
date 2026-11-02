@@ -5,29 +5,32 @@ function syncNeed(){const borrow=need()==='borrow';$('#borrowFields').hidden=!bo
 let handlingStep={borrow:0,stamp:0},paramStepUsed=false;
 // 畫面情境：執行回報＝已核准、尚未回壓；執行完成—印鑑蓋用／已借出／已歸還＝已有回壓紀錄（已借出仍可回壓「已歸還」）。
 const DONE={'done-stamp':{need:'stamp',step:1},'done-lent':{need:'borrow',step:1},'done-return':{need:'borrow',step:2}},isDone=m=>m in DONE;
+// 執行回報分兩種情境，依單據的用印需求：蓋用單＝執行回報—已蓋印（按「確認已蓋印」）；借用單＝執行回報—已借出（按「確認已借出」，回壓後按鈕接著變「確認已歸還」）。
+const EXEC={'execute-stamp':'stamp','execute-borrow':'borrow'},isExec=m=>m in EXEC;
 function nowText(){const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`}
 const KEEPER='呂金蓮 (B218)',fmt=v=>v?v.replace(/-/g,'/'):'—';let rec={};  // Demo：執行者＝登入帳號，以印章保管者示意
-function resetHandling(){const m=mode.value;if(isDone(m))$(`input[name=need][value=${DONE[m].need}]`).checked=true;
-  const key=need()==='borrow'?'borrow':'stamp';let st=0;if(isDone(m))st=DONE[m].step;else if(m!=='execute'&&!paramStepUsed)st=+params.get('step')||0;
-  if(m==='view'||m==='approve'||m==='execute'||isDone(m))paramStepUsed=true;
+function resetHandling(){const m=mode.value;if(isDone(m))$(`input[name=need][value=${DONE[m].need}]`).checked=true;else if(isExec(m))$(`input[name=need][value=${EXEC[m]}]`).checked=true;
+  const key=need()==='borrow'?'borrow':'stamp';let st=0;if(isDone(m))st=DONE[m].step;else if(!isExec(m)&&!paramStepUsed)st=+params.get('step')||0;
+  if(m==='view'||m==='approve'||isExec(m)||isDone(m))paramStepUsed=true;
   handlingStep={borrow:0,stamp:0};handlingStep[key]=st;rec={lend:'',lendBy:'',ret:'',retBy:'',stamp:'',stampBy:''};$('#handlingTime').textContent='最後更新時間：—';
   if(st>0){$('#handlingTime').textContent='最後更新時間：2026/09/26 10:20:00';
     if(key==='borrow'){rec.lend='2026-09-25';rec.lendBy=KEEPER;if(st>=2){rec.ret='2026-09-30';rec.retBy=KEEPER}}else{rec.stamp='2026-09-25';rec.stampBy=KEEPER}}}
-function renderHandling(){const m=mode.value,borrow=need()==='borrow',key=borrow?'borrow':'stamp',step=handlingStep[key],read=m!=='new'&&m!=='edit',acting=m==='execute'||m==='done-lent';
-  $('#handlingPanel').hidden=!(read&&(m==='execute'||step>0));$('#editHandling').hidden=!(isDone(m)&&step>0&&!$('#handlingPanel').hidden);
+function renderHandling(){const m=mode.value,borrow=need()==='borrow',key=borrow?'borrow':'stamp',step=handlingStep[key],read=m!=='new'&&m!=='edit',acting=isExec(m)||m==='done-lent';
+  $('#handlingPanel').hidden=!(read&&(isExec(m)||step>0));$('#editHandling').hidden=!(isDone(m)&&step>0&&!$('#handlingPanel').hidden);
   $('#borrowRecord').hidden=!borrow;$('#stampRecord').hidden=borrow;
   $('#hLendDate').textContent=fmt(rec.lend);$('#hLendBy').textContent=rec.lendBy||'—';$('#hReturnDate').textContent=fmt(rec.ret);$('#hReturnBy').textContent=rec.retBy||'—';$('#hStampDate').textContent=fmt(rec.stamp);$('#hStampBy').textContent=rec.stampBy||'—';
   const btn=$('#completeAction'),next=borrow?['確認已借出','確認已歸還']:['確認已蓋印'];btn.hidden=!acting||step>=next.length;btn.textContent=next[step]||''}
 function syncNeed(){const borrow=need()==='borrow';$('#borrowFields').hidden=!borrow;$('#printNeed').textContent=borrow?'借用':'蓋用';renderHandling()}
 function applyMode(){const m=mode.value,read=m!=='new'&&m!=='edit',no=params.get('no')||'CBS-CSI-2026-00003';
-  const box={new:'newActions',edit:'editActions',view:'viewActions',approve:'approveActions',execute:'manageActions','done-lent':'manageActions','done-stamp':'doneActions','done-return':'doneActions'}[m];
+  const box={new:'newActions',edit:'editActions',view:'viewActions',approve:'approveActions','execute-stamp':'manageActions','execute-borrow':'manageActions','done-lent':'manageActions','done-stamp':'doneActions','done-return':'doneActions'}[m];
   $$('#newActions,#editActions,#approveActions,#viewActions,#manageActions,#doneActions').forEach(x=>x.hidden=x.id!==box);
   $('#routePanel').hidden=m==='new';$('#returnAlert').hidden=m!=='edit';$('#opinionSummary').hidden=!read;
   document.body.classList.toggle('readonly',read);document.body.classList.toggle('show-approval-details',read);
-  $('#pageTitle').textContent=m==='new'?'新增公司印鑑申請（尚未產生單號）':m==='execute'?`執行回報公司印鑑申請（${no}）`:isDone(m)?`執行完成公司印鑑申請（${no}）`:`${m==='approve'?'簽核':m==='edit'?'編輯':'查看'}公司印鑑申請（${no}）`;
+  $('#pageTitle').textContent=m==='new'?'新增公司印鑑申請（尚未產生單號）':isExec(m)?`執行回報公司印鑑申請（${no}）`:isDone(m)?`執行完成公司印鑑申請（${no}）`:`${m==='approve'?'簽核':m==='edit'?'編輯':'查看'}公司印鑑申請（${no}）`;
   $('#applyDate').textContent=m==='new'?'申請日期：送出簽核後由系統回寫':'申請日期：2026/09/23';
-  $$('input,select,textarea').forEach(el=>{if(el===mode||el.closest('#execModal,#decisionModal'))return;if(el.name==='need'){el.disabled=isDone(m);return}el.disabled=read});syncNeed()}
-const startMode=params.get('mode')==='manage'?'execute':params.get('mode')||'new';mode.value=startMode;if(mode.value!==startMode)mode.value='new';if(params.get('need')==='borrow')$('input[name=need][value=borrow]').checked=true;mode.onchange=()=>{resetHandling();history.replaceState(null,'',`?mode=${mode.value}&need=${need()}`);applyMode()};$$('input[name=need]').forEach(x=>x.onchange=()=>{if(mode.value==='execute')resetHandling();syncNeed()});$('#routeToggle').onclick=()=>{const open=$('#routeBody').classList.toggle('route-collapsed');$('#routeToggle').textContent=open?'查看':'收合'};$('#historyLink').onclick=()=>$('#historyModal').hidden=false;$$('[data-close-history]').forEach(x=>x.onclick=()=>$('#historyModal').hidden=true);
+  $$('input,select,textarea').forEach(el=>{if(el===mode||el.closest('#execModal,#decisionModal'))return;if(el.name==='need'){el.disabled=isDone(m)||isExec(m);return}el.disabled=read});syncNeed()}
+// 舊連結 mode=execute／manage 依 need 參數轉成對應的執行回報情境
+let startMode=params.get('mode')==='manage'?'execute':params.get('mode')||'new';if(startMode==='execute')startMode=params.get('need')==='borrow'?'execute-borrow':'execute-stamp';mode.value=startMode;if(mode.value!==startMode)mode.value='new';if(params.get('need')==='borrow')$('input[name=need][value=borrow]').checked=true;mode.onchange=()=>{resetHandling();history.replaceState(null,'',`?mode=${mode.value}&need=${need()}`);applyMode()};$$('input[name=need]').forEach(x=>x.onchange=()=>{if(isExec(mode.value))resetHandling();syncNeed()});$('#routeToggle').onclick=()=>{const open=$('#routeBody').classList.toggle('route-collapsed');$('#routeToggle').textContent=open?'查看':'收合'};$('#historyLink').onclick=()=>$('#historyModal').hidden=false;$$('[data-close-history]').forEach(x=>x.onclick=()=>$('#historyModal').hidden=true);
 function openDecision(type){$('#decisionTitle').textContent=type==='approve'?'核准並批示':'退回原因';$('#decisionOpinion').placeholder=type==='approve'?'可填寫簽核意見（選填），留空可直接核准':'請輸入退回原因（必填）';$('#decisionModal').dataset.type=type;$('#decisionModal').hidden=false}$('#approveBtn').onclick=()=>openDecision('approve');$('#rejectBtn').onclick=()=>openDecision('reject');$$('[data-close-modal]').forEach(x=>x.onclick=()=>$('#decisionModal').hidden=true);$('#decisionConfirm').onclick=()=>{if($('#decisionModal').dataset.type==='reject'&&!$('#decisionOpinion').value.trim()){alert('請輸入退回原因');return}alert($('#decisionModal').dataset.type==='reject'?'已退回申請':'本關已核准');$('#decisionModal').hidden=true};
 const docTable=$('.document-table');
 function renumberDocs(){$$('.document-row .row-no').forEach((el,i)=>el.textContent=i+1)}

@@ -135,3 +135,35 @@
 .history-row time{color:#667085;font-size:13px}
 @media(max-width:900px){.v2-route-wide>.body.route{grid-template-columns:repeat(2,minmax(240px,1fr))}}
 @media(max-width:700px){.route-heading{align-items:flex-start;flex-direction:column;gap:5px}.v2-route-wide>.body.route{grid-template-columns:1fr}.v2-route-wide .approval-stage{min-height:0}.history-row{grid-template-columns:1fr;gap:4px}.audit-modal{padding:10px}}
+
+/* 會簽／知會單位：選完顯示末層，上層路徑灰色小字（2026-11-02） */
+.unit-native{display:none!important}
+.unit-trigger{position:relative;display:block;width:100%;min-height:44px;padding:6px 28px 6px 9px;border:1px solid #b9c5d1;border-radius:3px;background:#fff;color:#17202a;font:inherit;text-align:left;white-space:normal;cursor:pointer}
+.unit-trigger:hover{border-color:#164d80}
+.unit-trigger:focus-visible{outline:2px solid #164d80;outline-offset:1px}
+.unit-text{display:block;min-width:0}
+.unit-leaf{display:block;font-size:14px;font-weight:700;line-height:1.4;color:#17324d;overflow-wrap:anywhere}
+.unit-parent{display:block;margin-top:1px;font-size:12px;font-weight:400;line-height:1.4;color:#788596;overflow-wrap:anywhere}
+.unit-placeholder{font-weight:400;color:#98a2b3}
+.unit-caret{position:absolute;right:10px;top:50%;width:0;height:0;margin-top:-2px;border:5px solid transparent;border-top-color:#526275;border-bottom:0}
+.unit-trigger[aria-expanded="true"]{border-color:#164d80;box-shadow:0 0 0 2px rgba(22,77,128,.15)}
+.unit-pop{position:fixed;z-index:1000;display:flex;flex-direction:column;max-height:340px;border:1px solid #b9c5d1;border-radius:6px;background:#fff;box-shadow:0 8px 24px rgba(23,32,42,.18)}
+.unit-pop-head{display:flex;align-items:center;gap:6px;padding:8px;border-bottom:1px solid #e3e8ee}
+.unit-search{flex:1;min-width:0;height:34px;padding:5px 9px;border:1px solid #b9c5d1;border-radius:4px;font:inherit}
+.unit-pop-close{display:none;width:34px;height:34px;border:0;background:none;font-size:22px;color:#526275;cursor:pointer}
+.unit-list{margin:0;padding:4px;overflow-y:auto;list-style:none}
+.unit-list li{padding:8px 10px;border-radius:4px;cursor:pointer}
+.unit-list li:hover,.unit-list li:focus{background:#eef4fa;outline:0}
+.unit-list li.is-selected{background:#e3eef9}
+.unit-list li.is-selected .unit-leaf::after{content:' ✓';color:#164d80}
+.unit-empty{padding:16px;text-align:center;color:#788596}
+/* 查看／簽核：不顯示框線與箭頭，只呈現文字 */
+.readonly .unit-trigger{min-height:0;padding:0;border:0;background:transparent;cursor:default;pointer-events:none}
+.readonly .unit-caret{display:none}
+.show-approval-details .unit-pending .unit-leaf{color:#667085}
+/* 手機：底部面板 */
+.unit-pop.is-sheet{left:0;right:0;bottom:0;top:auto;width:auto;max-height:75vh;border-radius:12px 12px 0 0}
+.unit-pop.is-sheet .unit-pop-close{display:block}
+.unit-pop.is-sheet .unit-search{height:42px}
+.unit-pop.is-sheet .unit-list li{padding:12px 10px}
+@media(max-width:700px){.unit-panel th:first-child,.unit-panel td:first-child{min-width:0;max-width:none}.unit-panel .manager-cell{min-width:90px}.unit-panel td:last-child{white-space:nowrap}}

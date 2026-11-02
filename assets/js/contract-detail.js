@@ -3,14 +3,14 @@ const DEPTS={'法務部':'李東海 (B125)','財務部':'周怡君 (F002)','代�
 const applicantUnits={T037:'總經理室／後勤支援部／人事總務課',T021:'代標代購事業本部／客服部'};
 const DOC_NO='CBS-GCN-2026-00005';
 // 範例資料：新增為空白；修改／查看／簽核載入範例；複製（?copy=1）帶入範例但清除單號與簽核資料
-const SAMPLE={item:'審閱',legalNo:'LGL-2026-0042',partner:'雲端物流股份有限公司',biz:['物流','系統'],bizOther:'',
+const SAMPLE={item:'審閱',partner:'雲端物流股份有限公司',biz:['物流','系統'],bizOther:'',
  summary:'與雲端物流公司簽訂 2027 年度跨境物流服務合約，約定服務範圍、計價方式與服務水準（SLA）。',
  clauses:{'付款條件':'第 5 條：每月結算，次月 25 日前以匯款支付，月結 30 天。','合約期限':'第 3 條：2027/01/01～2027/12/31，共 1 年。','解約條件':'第 11 條：任一方得於 30 日前書面通知終止；重大違約得立即終止。','續約條件':'第 12 條：期滿前 60 日未提出異議者，自動續約 1 年。','特殊條款':'第 9 條：服務水準未達 98% 時，按月費 5% 計罰；違約金上限為年度費用 20%。','其他':''},
  docs:{'合約送審申請表':'1','合約':'12','報價單':'2','協議書':'','其他':''},docOther:'',
  units:['法務部','財務部']};
 function setForm(d){
   $$('input[name=item]').forEach(x=>x.checked=x.value===d.item);
-  $('#legalNo').value=d.legalNo;$('#partner').value=d.partner;$('#summary').value=d.summary;
+  $('#partner').value=d.partner;$('#summary').value=d.summary;
   $$('input[name=biz]').forEach(x=>x.checked=d.biz.includes(x.value));$('#bizOther').value=d.bizOther;
   $$('[data-clause]').forEach(x=>x.value=d.clauses[x.dataset.clause]||'');
   $$('#docCount .doc-count-row').forEach(r=>{const box=r.querySelector('[data-doc]'),name=box.dataset.doc,n=r.querySelector('input[type=number]'),v=d.docs[name]||'';box.checked=!!v;n.value=v});
@@ -18,7 +18,7 @@ function setForm(d){
   $('#countersignRows').innerHTML='';d.units.forEach(u=>addUnit(u));
   syncBiz();syncDocs();
 }
-function blankForm(){return{item:'',legalNo:'',partner:'',biz:[],bizOther:'',summary:'',clauses:{},docs:{'合約送審申請表':'1'},docOther:'',units:[]}}
+function blankForm(){return{item:'',partner:'',biz:[],bizOther:'',summary:'',clauses:{},docs:{'合約送審申請表':'1'},docOther:'',units:[]}}
 function syncBiz(){const on=$('#bizOtherChk').checked,ro=mode.value!=='new'&&mode.value!=='edit';$('#bizOther').hidden=!on;$('#bizOther').disabled=!on||ro;if(!on)$('#bizOther').value=''}
 function syncDocs(){
   const ro=mode.value!=='new'&&mode.value!=='edit';let total=0,any=false;
@@ -81,7 +81,7 @@ function buildPrint(){
   $('#pCompany').textContent=$('#company').value;$('#pDocNo').textContent=mm?mm[1]:'—';
   $('#pApplicant').textContent=$('#applicant').selectedOptions[0].textContent;$('#pUnit').textContent=dash($('#applicantUnit').textContent);
   $('#pDate').textContent=m==='new'||/回寫/.test($('#applyDate').textContent)?'—':$('#applyDate').textContent.replace('申請日期：','');
-  $('#pItem').textContent=dash($('input[name=item]:checked')?.value?'合約'+$('input[name=item]:checked').value:'');$('#pLegalNo').textContent=dash($('#legalNo').value);
+  $('#pItem').textContent=dash($('input[name=item]:checked')?.value?'合約'+$('input[name=item]:checked').value:'');
   $('#pPartner').textContent=dash($('#partner').value);
   $('#pBiz').textContent=dash($$('input[name=biz]:checked').map(x=>x.value==='其他'?'其他：'+($('#bizOther').value||'—'):x.value).join('、'));
   $('#pSummary').textContent=dash($('#summary').value);

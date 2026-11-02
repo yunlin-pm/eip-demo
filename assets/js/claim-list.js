@@ -26,7 +26,7 @@ function filtered(){const statuses=selectedStatuses(),sub=$('#subject').value,co
 function statusTone(r){return r.status==='已退回'?'rejected':r.status==='已核准'?'approved':r.status==='草稿'?'draft':r.status==='簽核中'?'signing':'applying'}
 function actionText(r){return r.status==='草稿'?'繼續編輯':r.status==='已退回'?'編輯':r.signer===currentUser?'簽核':'查看'}
 // 摘要欄：僅顯示請款明細第一列摘要，最多 10 個字，超過以「…」表示（完整內容放在 title）。
-function summaryText(v){const t=Array.from(v||'');return t.length>10?t.slice(0,10).join('')+'…':(v||'—')}
+function summaryText(v){const t=Array.from(v||'');return t.length>20?t.slice(0,20).join('')+'…':(v||'—')}
 function displayPerson(name){return name&&personIds[name]?`${name}(${personIds[name]})`:name}
 function actionsCell(r){if(!mine(r))return'<td></td><td></td>';return`<td><button class="icon-action" title="列印" onclick="window.print()">🖨</button></td><td><a class="icon-action" title="複製為新單" href="../forms/claim-detail.html?mode=new&copy=${encodeURIComponent(r.no)}">📋</a></td>`}
 function render(){

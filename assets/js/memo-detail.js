@@ -29,16 +29,80 @@ document.querySelectorAll('[data-close-history]').forEach(x=>x.onclick=()=>{hist
 mode.value=params.get('mode')||'new';mode.onchange=applyMode;
 const applicantUnits={T037:'總經理室／後勤支援部／人事總務課',T021:'代標代購事業本部／客服部',T038:'總經理室／後勤支援部／人事總務課'};
 document.getElementById('applicant').onchange=event=>{document.getElementById('applicantUnit').textContent=applicantUnits[event.target.value]||'未設定所屬部門'};
+/* 部門單位選擇：選完後主要顯示末層，上層路徑以灰色小字放下方；原生 select 保留為資料來源（隱藏） */
+function splitUnit(text){const p=(text||'').split('／');return{leaf:p[p.length-1]||'',parent:p.slice(0,-1).join('／')}}
+function escapeHtml(t){return String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function unitHtml(text,placeholder){
+  if(!text)return`<span class="unit-leaf unit-placeholder">${placeholder||'請選擇部門單位'}</span>`;
+  const u=splitUnit(text);
+  return`<span class="unit-leaf">${escapeHtml(u.leaf)}</span>${u.parent?`<span class="unit-parent">${escapeHtml(u.parent)}</span>`:''}`;
+}
+function refreshUnit(select){
+  const trigger=select.nextElementSibling;if(!trigger||!trigger.classList.contains('unit-trigger'))return;
+  const opt=select.selectedOptions[0],text=select.value&&opt?opt.text:'';
+  trigger.querySelector('.unit-text').innerHTML=unitHtml(text);
+  trigger.title=text;
+}
+function enhanceUnit(select){
+  if(select.dataset.enhanced)return;select.dataset.enhanced='1';select.classList.add('unit-native');select.tabIndex=-1;
+  const trigger=document.createElement('button');trigger.type='button';trigger.className='unit-trigger';trigger.setAttribute('aria-haspopup','listbox');
+  trigger.innerHTML='<span class="unit-text"></span><span class="unit-caret" aria-hidden="true"></span>';
+  select.after(trigger);refreshUnit(select);
+  trigger.onclick=()=>openUnitPop(select,trigger);
+}
+let unitPop=null,unitPopCtx=null;
+function closeUnitPop(){if(!unitPop)return;unitPop.remove();unitPop=null;if(unitPopCtx&&unitPopCtx.trigger)unitPopCtx.trigger.setAttribute('aria-expanded','false');unitPopCtx=null}
+function openUnitPop(select,trigger){
+  if(document.body.classList.contains('readonly'))return;
+  const reopen=unitPopCtx&&unitPopCtx.trigger===trigger;closeUnitPop();if(reopen)return;
+  const options=[...select.options].filter(o=>o.value);
+  unitPop=document.createElement('div');unitPop.className='unit-pop';unitPop.setAttribute('role','dialog');
+  unitPop.innerHTML='<div class="unit-pop-head"><input type="search" class="unit-search" placeholder="搜尋部門單位" aria-label="搜尋部門單位"><button type="button" class="unit-pop-close" aria-label="關閉">×</button></div><ul class="unit-list" role="listbox"></ul><div class="unit-empty" hidden>找不到符合的部門單位</div>';
+  const list=unitPop.querySelector('.unit-list'),search=unitPop.querySelector('.unit-search'),empty=unitPop.querySelector('.unit-empty');
+  const render=q=>{
+    const kw=q.trim().toLowerCase(),shown=options.filter(o=>!kw||o.text.toLowerCase().includes(kw));
+    list.innerHTML=shown.map(o=>`<li role="option" tabindex="-1" data-value="${escapeHtml(o.value)}" class="${o.value===select.value?'is-selected':''}" aria-selected="${o.value===select.value}">${unitHtml(o.text)}</li>`).join('');
+    empty.hidden=shown.length>0;
+  };
+  render('');document.body.appendChild(unitPop);
+  trigger.setAttribute('aria-expanded','true');unitPopCtx={select,trigger};
+  const place=()=>{
+    if(!unitPop)return;
+    if(window.matchMedia('(max-width:700px)').matches){unitPop.classList.add('is-sheet');unitPop.style.cssText='';return}
+    unitPop.classList.remove('is-sheet');
+    const r=trigger.getBoundingClientRect(),w=Math.max(r.width,340),left=Math.min(Math.max(8,r.left),window.innerWidth-w-8);
+    unitPop.style.width=w+'px';unitPop.style.left=left+'px';
+    const h=unitPop.offsetHeight,below=window.innerHeight-r.bottom-8;
+    unitPop.style.top=(below>=Math.min(h,260)||r.top<h?r.bottom+4:Math.max(8,r.top-h-4))+'px';
+  };
+  place();unitPopCtx.place=place;
+  const pick=li=>{select.value=li.dataset.value;refreshUnit(select);select.dispatchEvent(new Event('change',{bubbles:true}));closeUnitPop();trigger.focus()};
+  list.onclick=e=>{const li=e.target.closest('li');if(li)pick(li)};
+  search.oninput=()=>render(search.value);
+  unitPop.querySelector('.unit-pop-close').onclick=()=>{closeUnitPop();trigger.focus()};
+  unitPop.onkeydown=e=>{
+    const items=[...list.querySelectorAll('li')],i=items.indexOf(document.activeElement);
+    if(e.key==='ArrowDown'){e.preventDefault();(items[i+1]||items[0])?.focus()}
+    else if(e.key==='ArrowUp'){e.preventDefault();(i<=0?search:items[i-1]).focus()}
+    else if(e.key==='Enter'&&document.activeElement.tagName==='LI'){e.preventDefault();pick(document.activeElement)}
+    else if(e.key==='Enter'&&document.activeElement===search){e.preventDefault();items[0]&&pick(items[0])}
+    else if(e.key==='Escape'){e.stopPropagation();closeUnitPop();trigger.focus()}
+  };
+  search.focus({preventScroll:true});
+}
+document.addEventListener('mousedown',e=>{if(unitPop&&!unitPop.contains(e.target)&&!e.target.closest('.unit-trigger'))closeUnitPop()});
+window.addEventListener('resize',()=>{if(unitPopCtx&&unitPopCtx.place)unitPopCtx.place()});
+window.addEventListener('scroll',e=>{if(unitPop&&!unitPop.contains(e.target)&&!unitPop.classList.contains('is-sheet'))closeUnitPop()},true);
 const managerMap={'部':'羅弘奕 (B019)','課':'黃少佑 (B136)','活動課':'羅弘奕 (B019)'};
 const unitOptions='<option value="">請選擇部門單位</option><option value="部">代標代購事業本部／代購部</option><option value="課">代標代購事業本部／代購部／訂單服務課</option><option value="活動課">代標代購事業本部／代購部／活動企劃課</option>';
-document.querySelectorAll('.add-unit').forEach(button=>button.onclick=()=>{const body=document.getElementById(button.dataset.target),row=document.createElement('tr'),approval=button.dataset.target==='countersignRows';row.innerHTML='<td><select class="control department-select">'+unitOptions+'</select></td><td class="manager-cell">請選擇部門後帶入</td>'+(approval?'<td class="approval-only"><span class="stage-status pending">尚未送出</span></td>':'')+'<td><button class="link-btn" type="button">刪除</button></td>';body.appendChild(row)});
+document.querySelectorAll('.add-unit').forEach(button=>button.onclick=()=>{const body=document.getElementById(button.dataset.target),row=document.createElement('tr'),approval=button.dataset.target==='countersignRows';row.innerHTML='<td><select class="control department-select">'+unitOptions+'</select></td><td class="manager-cell">請選擇部門後帶入</td>'+(approval?'<td class="approval-only"><span class="stage-status pending">尚未送出</span></td>':'')+'<td><button class="link-btn" type="button">刪除</button></td>';body.appendChild(row);enhanceUnit(row.querySelector('.department-select'))});
 document.addEventListener('change',event=>{if(!event.target.classList.contains('department-select'))return;event.target.closest('tr').querySelector('.manager-cell').textContent=managerMap[event.target.value]||'請選擇部門後帶入'});
 document.addEventListener('click',event=>{const command=event.target.closest('[data-command]');if(command){let value=null;if(command.dataset.command==='createLink')value=prompt('請輸入連結網址');if(command.dataset.command!=='createLink'||value)document.execCommand(command.dataset.command,false,value);document.getElementById('description').focus();return}if(event.target.classList.contains('link-btn'))event.target.closest('tr').remove()});
 document.getElementById('editorSize').onchange=event=>{document.execCommand('fontSize',false,event.target.value);document.getElementById('description').focus()};
 document.getElementById('editorColor').oninput=event=>{document.execCommand('foreColor',false,event.target.value);document.getElementById('description').focus()};
 document.getElementById('importCountersign').onclick=()=>{
   const notifyBody=document.getElementById('notifyRows'),existing=new Set([...notifyBody.querySelectorAll('.department-select')].map(x=>x.value));let added=0;
-  [...document.querySelectorAll('#countersignRows .department-select')].forEach(select=>{if(!select.value||existing.has(select.value))return;const row=document.createElement('tr');row.innerHTML=`<td><select class="control department-select">${unitOptions}</select></td><td class="manager-cell">${managerMap[select.value]||'未設定主管'}</td><td><button class="link-btn" type="button">刪除</button></td>`;row.querySelector('select').value=select.value;notifyBody.appendChild(row);existing.add(select.value);added++});
+  [...document.querySelectorAll('#countersignRows .department-select')].forEach(select=>{if(!select.value||existing.has(select.value))return;const row=document.createElement('tr');row.innerHTML=`<td><select class="control department-select">${unitOptions}</select></td><td class="manager-cell">${managerMap[select.value]||'未設定主管'}</td><td><button class="link-btn" type="button">刪除</button></td>`;row.querySelector('select').value=select.value;notifyBody.appendChild(row);enhanceUnit(row.querySelector('select'));existing.add(select.value);added++});
   alert(added?`已帶入 ${added} 個會簽單位。`:'沒有可新增的會簽單位。');
 };
 
@@ -132,4 +196,5 @@ function buildPrintView(){
   document.getElementById('printApprovalRows').innerHTML=rows.map(r=>`<tr><td>${r.level}</td><td>${r.signer}</td><td>${r.status}</td><td>${r.date}</td><td>${r.opinion||'—'}</td></tr>`).join('')||'<tr><td colspan="5">尚未送出簽核</td></tr>';
 }
 window.addEventListener('beforeprint',buildPrintView);
+document.querySelectorAll('.department-select').forEach(enhanceUnit);
 applyMode();

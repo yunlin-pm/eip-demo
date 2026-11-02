@@ -13,7 +13,7 @@ const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],me=
 const brief=t=>t.length>10?t.slice(0,10)+'…':t,mine=r=>r.applicant===me, tone=s=>s==='草稿'?'draft':s==='已核准'?'approved':s==='已退回'?'rejected':s==='申請中'?'applying':'signing';
 const PENDING=['待借出','已借出（待歸還）','待用印'],STEP={'待借出':0,'已借出（待歸還）':1,'已歸還':2,'待用印':0,'已用印':1};
 const canHandle=r=>tab==='execution'&&r.status==='已核准'&&PENDING.includes(r.progress);
-const EXEC_MODE={'待借出':'execute','待用印':'execute','已借出（待歸還）':'done-lent','已歸還':'done-return','已用印':'done-stamp'};
+const EXEC_MODE={'待借出':'execute-borrow','待用印':'execute-stamp','已借出（待歸還）':'done-lent','已歸還':'done-return','已用印':'done-stamp'};
 function mode(r){return r.status==='草稿'||r.status==='已退回'?'edit':tab==='execution'&&r.status==='已核准'&&EXEC_MODE[r.progress]?EXEC_MODE[r.progress]:r.signer===me?'approve':'view'}
 function action(r){const m=mode(r);return m==='edit'?'編輯':m==='approve'?'簽核':canHandle(r)?'處理':'查看'}
 function link(r){const m=mode(r);return `detail.html?mode=${m}&need=${r.need==='借用'?'borrow':'stamp'}&no=${encodeURIComponent(r.no)}${m==='view'&&STEP[r.progress]?`&step=${STEP[r.progress]}`:''}`}

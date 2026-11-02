@@ -1,12 +1,12 @@
 const data=[
-{status:'申請中',signer:'陳庭瑋 (T037)',no:'CBS-GCN-2026-00006',partner:'大和物流股份有限公司',legalNo:'',item:'合約審閱',company:'網家跨境服務股份有限公司',unit:'人事總務課',applicant:'林家筠 (T038)',apply:'2026/09/22',approved:'—',signedByMe:false},
-{status:'簽核中',signer:'陳庭瑋 (T037)',no:'CBS-GCN-2026-00005',partner:'雲端物流股份有限公司',legalNo:'LGL-2026-0042',item:'合約審閱',company:'網家跨境服務股份有限公司',unit:'人事總務課',applicant:'陳庭瑋 (T037)',apply:'2026/09/24',approved:'—',signedByMe:false},
-{status:'草稿',signer:'',no:'尚未產生單號',partner:'新創廣告股份有限公司',legalNo:'',item:'合約擬定',company:'網家跨境服務股份有限公司',unit:'人事總務課',applicant:'陳庭瑋 (T037)',apply:'—',approved:'—',signedByMe:false},
-{status:'簽核中',signer:'羅弘奕 (B019)',no:'CBS-GCN-2026-00004',partner:'宏達資訊股份有限公司',legalNo:'LGL-2026-0038',item:'合約審閱',company:'網家跨境服務股份有限公司',unit:'客服部',applicant:'王曉明 (T021)',apply:'2026/09/20',approved:'—',signedByMe:false},
-{status:'簽核中',signer:'黃少佑 (B136)',no:'CBS-GCN-2026-00003',partner:'日本通運株式會社',legalNo:'',item:'合約擬定',company:'網家跨境服務股份有限公司',unit:'訂單服務課',applicant:'王曉明 (T021)',apply:'2026/09/18',approved:'—',signedByMe:true},
-{status:'已核准',signer:'',no:'CBS-GCN-2026-00002',partner:'遠東倉儲股份有限公司',legalNo:'LGL-2026-0031',item:'合約審閱',company:'網家跨境服務股份有限公司',unit:'人事總務課',applicant:'陳庭瑋 (T037)',apply:'2026/09/10',approved:'2026/09/16',signedByMe:true},
-{status:'已核准',signer:'',no:'CBS-GCN-2026-00001',partner:'永信會計師事務所',legalNo:'',item:'合約擬定',company:'網家跨境服務股份有限公司',unit:'客服部',applicant:'王曉明 (T021)',apply:'2026/09/05',approved:'2026/09/12',signedByMe:false},
-{status:'已退回',signer:'',no:'CBS-GCN-2026-00007',partner:'優選行銷股份有限公司',legalNo:'',item:'合約審閱',company:'網家跨境服務股份有限公司',unit:'人事總務課',applicant:'陳庭瑋 (T037)',apply:'2026/09/21',approved:'—',signedByMe:false}
+{status:'申請中',signer:'陳庭瑋 (T037)',no:'CBS-GCN-2026-00006',partner:'大和物流股份有限公司',item:'合約審閱',company:'網家跨境服務股份有限公司',unit:'人事總務課',applicant:'林家筠 (T038)',apply:'2026/09/22',approved:'—',signedByMe:false},
+{status:'簽核中',signer:'陳庭瑋 (T037)',no:'CBS-GCN-2026-00005',partner:'雲端物流股份有限公司',item:'合約審閱',company:'網家跨境服務股份有限公司',unit:'人事總務課',applicant:'陳庭瑋 (T037)',apply:'2026/09/24',approved:'—',signedByMe:false},
+{status:'草稿',signer:'',no:'尚未產生單號',partner:'新創廣告股份有限公司',item:'合約擬定',company:'網家跨境服務股份有限公司',unit:'人事總務課',applicant:'陳庭瑋 (T037)',apply:'—',approved:'—',signedByMe:false},
+{status:'簽核中',signer:'羅弘奕 (B019)',no:'CBS-GCN-2026-00004',partner:'宏達資訊股份有限公司',item:'合約審閱',company:'網家跨境服務股份有限公司',unit:'客服部',applicant:'王曉明 (T021)',apply:'2026/09/20',approved:'—',signedByMe:false},
+{status:'簽核中',signer:'黃少佑 (B136)',no:'CBS-GCN-2026-00003',partner:'日本通運株式會社',item:'合約擬定',company:'網家跨境服務股份有限公司',unit:'訂單服務課',applicant:'王曉明 (T021)',apply:'2026/09/18',approved:'—',signedByMe:true},
+{status:'已核准',signer:'',no:'CBS-GCN-2026-00002',partner:'遠東倉儲股份有限公司',item:'合約審閱',company:'網家跨境服務股份有限公司',unit:'人事總務課',applicant:'陳庭瑋 (T037)',apply:'2026/09/10',approved:'2026/09/16',signedByMe:true},
+{status:'已核准',signer:'',no:'CBS-GCN-2026-00001',partner:'永信會計師事務所',item:'合約擬定',company:'網家跨境服務股份有限公司',unit:'客服部',applicant:'王曉明 (T021)',apply:'2026/09/05',approved:'2026/09/12',signedByMe:false},
+{status:'已退回',signer:'',no:'CBS-GCN-2026-00007',partner:'優選行銷股份有限公司',item:'合約審閱',company:'網家跨境服務股份有限公司',unit:'人事總務課',applicant:'陳庭瑋 (T037)',apply:'2026/09/21',approved:'—',signedByMe:false}
 ];
 data.forEach(r=>{if(!r.creator)r.creator=r.applicant});
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
@@ -23,7 +23,7 @@ function filtered(){
  return data.filter(r=>{
   if(tab==='mine'&&!mine(r)||tab==='todo'&&r.signer!==me||tab==='signed'&&!r.signedByMe)return false;
   if(statuses.length&&!statuses.includes(r.status)||co&&r.company!==co||it&&r.item!==it)return false;
-  if(key){const p=person(r.applicant),values={no:r.no,partner:r.partner,legalNo:r.legalNo,applicantName:p.name,applicantId:p.id},target=type==='all'?Object.values(values).join(' '):values[type];if(!String(target||'').toLowerCase().includes(key))return false}
+  if(key){const p=person(r.applicant),values={no:r.no,partner:r.partner,applicantName:p.name,applicantId:p.id},target=type==='all'?Object.values(values).join(' '):values[type];if(!String(target||'').toLowerCase().includes(key))return false}
   const ad=rowDate(r.apply),pd=rowDate(r.approved);if(af&&(!ad||ad<af)||at&&(!ad||ad>at)||pf&&(!pd||pd<pf)||pt&&(!pd||pd>pt))return false;
   return true
  }).sort((a,b)=>rowDate(b.apply).localeCompare(rowDate(a.apply)))
