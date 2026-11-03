@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>通知信特例－使用期限到期彙整通知｜Bibian EIP Demo</title>
+  <style>
+    body{margin:0;background:#f1f1f1;color:#233449;font-family:"Microsoft JhengHei","Noto Sans TC",Arial,sans-serif;-webkit-text-size-adjust:100%}
+    table{border-collapse:collapse;border-spacing:0}.mail-card{width:760px;max-width:760px;background:#fff}.body-copy{font-size:14px;line-height:1.55}.footer{font-size:12px;line-height:1.55;color:#28394d;text-align:center;font-weight:700}
+    .digest{width:100%;font-size:13px;line-height:1.5}.digest th,.digest td{border:1px solid #cfd3d8;padding:7px 9px;text-align:left;vertical-align:top}.digest th{background:#f3f4f6;font-weight:600;white-space:nowrap}.digest td.nowrap{white-space:nowrap}
+    .digest .sub{display:block;color:#667085}
+    .table-wrap{overflow-x:auto}
+    .expiry{color:#d9364b;font-weight:700}
+    /* Demo 說明列（不屬於信件內容） */
+    .demo-bar{max-width:760px;margin:0 auto;padding:14px 12px 0;font-size:13px;line-height:1.5;color:#526275}
+    .demo-bar label{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-weight:700}
+    .demo-bar select{height:34px;padding:4px 9px;border:1px solid #b9c5d1;border-radius:4px;background:#fff;font:inherit;font-weight:400;color:#233449}
+    .demo-bar .subject{margin-top:8px;padding:8px 10px;border:1px dashed #b9c5d1;border-radius:4px;background:#fff;color:#233449;overflow-wrap:anywhere}
+    .demo-bar .subject b{color:#526275}
+    .demo-bar .rule{margin-top:6px;color:#788596}
+    @media(max-width:700px){.mail-card{width:100%!important;table-layout:fixed}.pad{padding-left:24px!important;padding-right:24px!important}.brand-title{font-size:17px!important;white-space:normal!important}.brand-logo{width:112px!important}}
+  </style>
+</head>
+<body>
+  <div class="demo-bar">
+    <label for="formType">範本表單
+      <select id="formType">
+        <option value="conn">系統連線申請表（收件：需求權責人）</option>
+        <option value="resource">雲端服務與資源申請表（收件：資源權責人）</option>
+        <option value="permission">雲端權限申請表（收件：申請人）</option>
+      </select>
+    </label>
+    <div class="subject"><b>主旨：</b><span id="subject"></span></div>
+    <div class="rule">寄送規則：每日約台灣早上 8 點；限期申請單、到期日為寄送日 + 7 天，依「收件者＋表單」彙整成一封，取代逐張通知；每張單據只寄一次；不放連結。</div>
+  </div>
+  <div id="preheader" style="display:none;max-height:0;overflow:hidden;opacity:0"></div>
+  <table role="presentation" width="100%" style="width:100%;background:#f1f1f1"><tr><td align="center" style="padding:16px 12px 0">
+    <table role="presentation" class="mail-card" width="760">
+      <tr><td class="pad" style="padding:18px 24px;border-bottom:3px solid #f3a126">
+        <table role="presentation" width="100%"><tr>
+          <td style="width:128px;vertical-align:middle"><img class="brand-logo" src="../../assets/img/bibian-logo.png" width="118" alt="Bibian" style="display:block;width:118px;height:auto;border:0"></td>
+          <td style="padding-left:14px;vertical-align:middle"><div class="brand-title" style="font-size:19px;font-weight:700;color:#174f7f;white-space:nowrap">Bibian EIP 比比昂企業資訊入口平台</div></td>
+        </tr></table>
+      </td></tr>
+      <tr><td class="pad body-copy" style="padding:34px 24px 20px">
+        <p style="margin:0 0 20px" id="lead"></p>
+        <div class="table-wrap" style="margin:0 0 20px"><table class="digest" id="digest"></table></div>
+        <p style="margin:0">使用期限到期後，系統不會自動停用或移除。請確認是否仍需使用；如需延長或調整，請另行提出申請。</p>
+      </td></tr>
+      <tr><td class="pad footer" style="padding:20px 24px 22px">
+        <div style="height:1px;background:#cfd3d8;margin-bottom:7px"></div>
+        此信件為系統發出信件，請勿直接回覆<br>
+        Copyright © PChome Bibian Inc. All Rights Reserved.
+      </td></tr>
+    </table>
+  </td></tr></table>
+  <script>
+    /* 範例資料：到期日一律為寄送日 + 7 天，故同一封信內所有單據的到期日相同；表格依申請單號由小到大 */
+    const FORMS={
+      conn:{name:'系統連線申請表',short:'系統連線申請',expiry:'2026/12/24',
+        cols:['申請單號','雲端平台','申請原因／用途'],
+        rows:[['CBS-ISC-2026-00005','GCP','內部稽核主機需連線至備份儲存環境，進行每月備份還原驗證作業'],
+              ['CBS-ISC-2026-00009','AWS','客服附件服務串接物流夥伴 API'],
+              ['CBS-ISC-2026-00012','GCP','開發環境應用程式連線測試資料庫，驗證新版資料表結構']]},
+      resource:{name:'雲端服務與資源申請表',short:'雲端服務與資源申請',expiry:'2026/12/31',
+        cols:['申請單號','申請項目','申請原因／用途'],
+        rows:[['CBS-ICS-2026-00005','新增／AWS／VM','雙 11 購物節活動頁壓力測試，需臨時增加主機與資料庫資源'],
+              ['CBS-ICS-2026-00011','新增／GCP／VM,Database','年度資安稽核環境建置']]},
+      permission:{name:'雲端權限申請表',short:'雲端權限申請',expiry:'2026/12/31',
+        cols:['申請單號','平台／系統','申請原因／用途'],
+        rows:[['CBS-ICP-2026-00005','GCP','備份檔案還原演練，需暫時查看 Cloud Storage 備份檔案'],
+              ['CBS-ICP-2026-00008','AWS','客訴調查需讀寫 S3 附件目錄']]}
+    };
+    const $=id=>document.getElementById(id);
+    const esc=t=>String(t).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+    function cell(v,i){return i===2?esc(trunc(v)):esc(v)}
+    /* 申請原因／用途：最多 20 個字，超過加 ... */
+    function trunc(t){const a=[...t];return a.length>20?a.slice(0,20).join('')+'...':t}
+    function render(){
+      const f=FORMS[$('formType').value],n=f.rows.length;
+      $('subject').textContent=`【Bibian EIP】${f.name} 使用期限到期彙整通知`;
+      $('preheader').textContent=`您有 ${n} 張${f.short}的使用期限將於 ${f.expiry}（7 天後）到期。`;
+      $('lead').innerHTML=`您有 <strong>${n} 張${f.short}的使用期限將於 <span class="expiry">${f.expiry}（7 天後）</span>到期</strong>，彙整如下。`;
+      $('digest').innerHTML=`<thead><tr>${f.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${f.rows.map(r=>`<tr>${r.map((v,i)=>`<td${i===0?' class="nowrap"':''}>${cell(v,i)}</td>`).join('')}</tr>`).join('')}</tbody>`;
+    }
+    $('formType').onchange=render;render();
+  </script>
+</body>
+</html>

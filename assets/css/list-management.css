@@ -37,3 +37,14 @@
   .eip-list-page .mobile-empty:not([hidden]){display:block}
 }
 
+
+/* 執行管理頁籤：顯示「使用限期」，不顯示「申請日期」「複製」（2026-11-03） */
+.eip-list-page .table-wrap .col-expiry{display:none}
+.eip-list-page .table-wrap.is-exec .col-expiry{display:table-cell}
+.eip-list-page .table-wrap.is-exec .col-apply,.eip-list-page .table-wrap.is-exec .col-copy{display:none}
+.eip-list-page .filters .field[hidden]{display:none}
+
+/* 非「執行管理」頁籤：不顯示「預計啟用／異動日」「執行完成日期」；執行管理不受影響（2026-11-03） */
+.eip-list-page .table-wrap:not(.is-exec) .col-target,.eip-list-page .table-wrap:not(.is-exec) .col-done{display:none}
+/* 雲端服務與資源申請管理「執行管理」：不顯示「申請人」 */
+.eip-list-page .table-wrap.is-exec .col-applicant{display:none}
