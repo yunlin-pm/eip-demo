@@ -111,3 +111,6 @@ tr[data-foreign] .lt-real{display:none}tr[data-foreign] .lt-mask{display:inline}
 .linkpick-foot .btn{height:44px}
 }
 .invoice-body{grid-template-columns:minmax(0,1fr)!important}
+
+/* 付款方式＝現金：隱藏付款條件、指定匯款日與整塊匯款資料，改顯示「預計領取現金日」（2026-11-03） */
+.cash-only{display:none}body.is-cash .cash-only{display:block}body.is-cash .cash-hide{display:none!important}
