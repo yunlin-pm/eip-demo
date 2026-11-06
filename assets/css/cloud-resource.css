@@ -196,3 +196,20 @@ body{background:#eef1f5}.cloud-title{display:flex;justify-content:space-between;
 .round-summary .return-record{display:grid;grid-template-columns:100px 190px 190px minmax(240px,1fr);gap:10px;align-items:center;padding:8px 11px;border:1px solid #f2d3d7;border-left:4px solid #d9364b;border-radius:6px;background:#fff8f8;color:#667085;font-size:13px}
 .round-summary .return-record>b{color:#a61b2b}
 @media(max-width:700px){.round-summary .return-record{grid-template-columns:1fr;gap:3px}}
+
+
+/* 雲端資源項目（申請單）與執行回報的資源編號、多行執行內容（2026-11-06） */
+/* 上方 .cloud-demand-grid>.cloud-question-group>.cloud-question 以 !important 強制 display:grid，.hidden 需用更高優先權才蓋得過 */
+.cloud-question.hidden,.cloud-demand-grid>.cloud-question-group>.cloud-question.hidden{display:none!important}
+#resourceItemChoices{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
+#resourceItemChoices .inline-text{width:180px}
+#executionSummary #executionNoteView,#executionSummary #resourceIdView{white-space:pre-wrap;overflow-wrap:anywhere}
+.execution-dialog{width:min(620px,100%)}
+.execution-dialog textarea.control{height:auto;min-height:112px;line-height:1.6;resize:vertical;white-space:pre-wrap}
+.resource-id-block{display:grid;gap:8px;padding:12px 14px;border:1px solid #d7dee7;border-radius:6px;background:#f7f9fb}
+.resource-id-block>.label{font-weight:700}
+.resource-id-rows{display:grid;gap:10px}
+.execution-dialog .resource-id-row{display:grid;grid-template-columns:230px minmax(0,1fr);align-items:center;gap:8px}
+.resource-id-name{color:#202936;font-size:14px}
+.req-star{color:#d9364b}
+@media(max-width:560px){.execution-dialog .resource-id-row{grid-template-columns:1fr;gap:5px}}

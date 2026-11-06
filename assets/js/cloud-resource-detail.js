@@ -1,10 +1,54 @@
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],params=new URLSearchParams(location.search),mode=$('#mode'),form=$('#form'),routePanel=$('#routePanel'),routeBody=$('#routeBody'),routeToggle=$('#routeToggle'),historyModal=$('#historyModal'),returnAlert=$('#returnAlert'),roundSummary=$('#roundSummary'),roundBadge=$('#roundBadge'),executionModal=$('#executionModal'),executionPanel=$('#executionPanel'),executionSummary=$('#executionSummary'),editExecutionBtn=$('#editExecutionBtn'),copyBtn=$('#copyBtn'),editPrintBtn=$('#editPrintBtn'),viewActions=$('#viewActions'),opinionSummary=$('#opinionSummary');
 const people={T037:{unit:'總經理室／後勤支援部／人事總務課',email:'t037@cbs-gss.com.tw'},T021:{unit:'營運本部／客戶服務部',email:'t021@cbs-gss.com.tw'},T038:{unit:'技術本部／資訊部／SRE',email:'t038@cbs-gss.com.tw'}};
 const loginUser=document.body.dataset.eipUser||'—';
-let executionRecord={executor:'林家筠 (T038)',date:'2026/09/16',note:'已完成雲端資源建立與權限設定，並通知申請人。'};
+let executionRecord={executor:'林家筠 (T038)',date:'2026/09/16',note:'已完成雲端資源建立與權限設定，並通知申請人。\n服務已部署至 asia-east1，防火牆規則已同步開通。',resources:[{name:'Cloud Run',id:'run-svc-order-api-prod'},{name:'Cloud SQL',id:'sql-inst-orders-01'},{name:'Cloud Storage',id:'gs://cbs-order-assets'}]};
+
+/* 雲端資源項目：選擇雲端平台 GCP／AWS 後顯示，依平台列出常用服務供複選（範例資料；正式清單由資訊單位維護，見規格 ICS-026） */
+const RESOURCE_ITEMS={
+  GCP:['Cloud Run','Compute Engine','Cloud SQL','Cloud Storage','BigQuery','GKE（Kubernetes）','Cloud Functions','Pub/Sub'],
+  AWS:['EC2','RDS','S3','Lambda','ECS／EKS','CloudFront','DynamoDB','SQS']
+};
+let resourceItemPlatform='',sampleLoaded=false;
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function isReadonlyMode(){return['view','approve','execute','done'].includes(mode.value)}
+function syncResourceItems(){
+  const checked=document.querySelector('input[name="platform"]:checked'),pf=checked?checked.value:'',list=RESOURCE_ITEMS[pf],group=$('#resourceItemGroup'),box=$('#resourceItemChoices');
+  group.classList.toggle('hidden',!list);
+  if(!list){box.innerHTML='';resourceItemPlatform='';return}
+  if(resourceItemPlatform===pf)return;
+  resourceItemPlatform=pf;
+  box.innerHTML=list.map(n=>`<label><input class="control resource-item" type="checkbox" value="${esc(n)}"> ${esc(n)}</label>`).join('')+'<label><input class="control resource-item-other-toggle" type="checkbox"> 其他</label><input id="resourceItemOther" class="control inline-text hidden" placeholder="資源項目名稱" disabled>';
+  box.querySelector('.resource-item-other-toggle').addEventListener('change',e=>{const t=$('#resourceItemOther');t.classList.toggle('hidden',!e.target.checked);t.disabled=!e.target.checked;if(!e.target.checked)t.value=''});
+  $$('.resource-item,.resource-item-other-toggle').forEach(x=>x.disabled=isReadonlyMode());
+}
+function selectedResourceItems(){
+  const names=$$('.resource-item:checked').map(x=>x.value),other=document.querySelector('.resource-item-other-toggle:checked');
+  if(other){const t=$('#resourceItemOther').value.trim();names.push(t?`其他（${t}）`:'其他')}
+  return names;
+}
+function validateResourceItems(){
+  if($('#resourceItemGroup').classList.contains('hidden'))return true;
+  if(!selectedResourceItems().length){alert('請至少選擇一項雲端資源項目。');return false}
+  const other=document.querySelector('.resource-item-other-toggle:checked');
+  if(other&&!$('#resourceItemOther').value.trim()){alert('選擇「其他」時，請填寫資源項目名稱。');return false}
+  return true;
+}
+/* Demo 範例：非新增情境（編輯／查看／簽核／執行）預設帶入 GCP 與三項雲端資源項目，方便展示執行回報 */
+function loadSampleResourceItems(){
+  if(sampleLoaded||mode.value==='new')return;
+  sampleLoaded=true;
+  const gcp=document.querySelector('input[name="platform"][value="GCP"]');gcp.checked=true;syncResourceItems();
+  $$('.resource-item').forEach(x=>{x.checked=['Cloud Run','Cloud SQL','Cloud Storage'].includes(x.value)});
+}
+$$('input[name="platform"]').forEach(x=>x.addEventListener('change',syncResourceItems));
+
 function fillPersonUnit(selectId,unitId){const person=people[$(selectId).value];$(unitId).textContent=person?.unit||''}
 $('#applicant').onchange=()=>fillPersonUnit('#applicant','#applicantUnit');$('#owner').onchange=()=>fillPersonUnit('#owner','#ownerUnit');
-function renderExecutionSummary(record){$('#executorView').textContent=record.executor;$('#executionDateView').textContent=record.date;$('#executionNoteView').textContent=record.note}
+function renderExecutionSummary(record){
+  $('#executorView').textContent=record.executor;$('#executionDateView').textContent=record.date;$('#executionNoteView').textContent=record.note;
+  const res=record.resources||[];$('#resourceIdViewField').hidden=!res.length;
+  $('#resourceIdView').innerHTML=res.map(r=>`${esc(r.name)}，資源編號：${esc(r.id)}`).join('<br>');
+}
 const approvalOpinions=[{stage:'課級主管',person:'林家筠 (T038)',status:'approved',statusText:'已核准',opinion:'已確認申請內容合理，同意受理。'},{stage:'部級主管',person:'王曉明 (B122)',status:'approved',statusText:'已核准',opinion:'請留意雲端資源到期後的續約與資料保存規範，執行前請再次確認申請人已知悉相關政策。'}];
 function renderOpinionSummary(){
   const withOpinion=approvalOpinions.filter(o=>o.opinion&&o.opinion.trim()),rows=$('#opinionRows'),empty=$('#opinionEmpty');
@@ -17,8 +61,10 @@ function renderOpinionSummary(){
 }
 renderOpinionSummary();
 function applyMode(){
+  loadSampleResourceItems();
   const v=mode.value,readonly=['view','approve','execute','done'].includes(v),done=v==='done',executed=['view','done'].includes(v),wasReturned=v==='edit';
   $$('.control').forEach(x=>{if(x!==mode&&!x.closest('#executionModal'))x.disabled=readonly});
+  const otherT=$('#resourceItemOther');if(otherT&&!readonly)otherT.disabled=otherT.classList.contains('hidden');
   $('#editActions').classList.toggle('view-only',readonly);
   copyBtn.hidden=v!=='edit';
   editPrintBtn.hidden=v!=='edit';
@@ -44,6 +90,9 @@ mode.onchange=applyMode;mode.value=params.get('mode')||'new';if(![...mode.option
 $('#historyLink').onclick=()=>{historyModal.hidden=false};
 $$('[data-close-history]').forEach(x=>x.onclick=()=>{historyModal.hidden=true});
 function openExecutionModal(prefill){
+  const items=selectedResourceItems(),old=(prefill&&prefill.resources)||[];
+  $('#resourceIdBlock').hidden=!items.length;
+  $('#resourceIdRows').innerHTML=items.map((n,i)=>{const hit=old.find(r=>r.name===n);return`<label class="resource-id-row"><span class="resource-id-name">${esc(n)}，資源編號 <b class="req-star">*</b>：</span><input class="control resource-id-input" data-name="${esc(n)}" value="${esc(hit?hit.id:'')}" placeholder="請輸入資源編號" autocomplete="off"></label>`}).join('');
   $('#executorInput').value=loginUser;
   $('#executionDateInput').value=prefill?prefill.date.replace(/\//g,'-'):'';
   $('#executionNoteInput').value=prefill?prefill.note:'';
@@ -56,9 +105,11 @@ editExecutionBtn.onclick=()=>openExecutionModal(executionRecord);
 $$('[data-close-execution]').forEach(x=>x.onclick=closeExecutionModal);
 $('#executionConfirm').onclick=()=>{
   const executor=loginUser,dateValue=$('#executionDateInput').value,note=$('#executionNoteInput').value.trim();
+  const resources=$$('.resource-id-input').map(x=>({name:x.dataset.name,id:x.value.trim()}));
+  if(resources.some(r=>!r.id)){alert('請填寫所有雲端資源項目的資源編號。');return}
   if(!executor||!dateValue||!note){alert('請填寫執行時間、執行內容與執行者。');return}
   const wasExecuting=mode.value==='execute';
-  executionRecord={executor,date:dateValue.replace(/-/g,'/'),note};
+  executionRecord={executor,date:dateValue.replace(/-/g,'/'),note,resources};
   closeExecutionModal();
   alert(wasExecuting?'已回壓執行完成，執行狀態更新為「已執行」。':'已更新執行紀錄。');
   if(!wasExecuting)renderExecutionSummary(executionRecord);
@@ -86,7 +137,7 @@ function syncCostFields(){
 }
 $$('.cost-trigger').forEach(x=>x.addEventListener('change',syncCostFields));syncCostFields();
 routeToggle.onclick=()=>{const opening=routeBody.classList.contains('route-collapsed');routeBody.classList.toggle('route-collapsed');routeToggle.textContent=opening?'收合':'查看'};
-$('#submitBtn').onclick=e=>{e.preventDefault();if(!form.reportValidity())return;$('#docNo').textContent='CBS-ICS-2026-00006';$('#submitDate').textContent='申請日期：'+new Date().toLocaleDateString('zh-TW');alert('已送出簽核，系統已回寫申請日期與申請單號。')};
+$('#submitBtn').onclick=e=>{e.preventDefault();if(!form.reportValidity())return;if(!validateResourceItems())return;$('#docNo').textContent='CBS-ICS-2026-00006';$('#submitDate').textContent='申請日期：'+new Date().toLocaleDateString('zh-TW');alert('已送出簽核，系統已回寫申請日期與申請單號。')};
 if(params.get('copy')){mode.value='new';applyMode();$('#docNo').textContent='尚未產生單號';$('#submitDate').textContent='申請日期：送出簽核後由系統回寫'}
 
 function radioLabelText(name){
@@ -154,6 +205,7 @@ function buildPrintView(){
   $('#printRequestType').textContent=radioLabelText('request');
   $('#printResourceType').textContent=resourceTypeText();
   $('#printPlatform').textContent=radioLabelText('platform');
+  $('#printResourceItems').textContent=$('#resourceItemGroup').classList.contains('hidden')?'—':(selectedResourceItems().join('、')||'—');
   $('#printEnvironment').textContent=environmentText();
   $('#printScope').textContent=radioLabelText('scope');
   const planned=$('#plannedDate').value;
@@ -173,6 +225,7 @@ function buildPrintView(){
     return`<tr><td>${title}</td><td>${person}</td><td>${status}</td><td>—</td></tr>`;
   }).join('')||'<tr><td colspan="4">尚未送出簽核</td></tr>';
   const executed=['view','done'].includes(mode.value);
+  $('#printExecResources').textContent=executed&&(executionRecord.resources||[]).length?executionRecord.resources.map(r=>`${r.name}：${r.id}`).join('\n'):'—';
   $('#printExecDate').textContent=executed?executionRecord.date:'—';
   $('#printExecNote').textContent=executed?executionRecord.note:'—';
   $('#printExecutor').textContent=executed?executionRecord.executor:'—';

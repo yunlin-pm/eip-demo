@@ -18,4 +18,6 @@
   .print-table>tbody>tr>th:first-child,.print-table>tbody>tr>th[colspan]{background:#f5f7f9}
   .print-table th{width:130px;font-weight:700;background:#f5f7f9}
   .print-approval th,.print-execution th{width:auto;background:#f5f7f9}
+  .print-table td.pre{white-space:pre-wrap}
+  #printExecNote{white-space:pre-wrap}
 }
