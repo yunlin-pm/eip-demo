@@ -6,7 +6,7 @@ $$('.unit-panel .employee-select').forEach(x=>{x.addEventListener('change',()=>s
 let executionRecord={executor:'林家筠 (T038)',date:'2026/09/16',note:'已完成權限設定並通知申請人，請於下次登入時確認可正常使用。'};
 function fillPersonInfo(){const person=people[$('#applicant').value],company=$('#companySelect'),current=company.value;$('#applicantUnit').textContent=person?.unit||'';company.innerHTML=(person?.companies||[]).map(name=>'<option>'+name+'</option>').join('');if((person?.companies||[]).includes(current))company.value=current}
 $('#applicant').onchange=fillPersonInfo;
-function renderExecutionSummary(record){$('#executorView').textContent=record.executor;$('#executionDateView').textContent=record.date;$('#executionNoteView').textContent=record.note}
+function renderExecutionSummary(record){$('#executorView').textContent=record.executor;$('#executionDateView').textContent=record.date;$('#executionNoteView').textContent=record.note;$('#disableDateView').textContent=record.disable||'—'}
 const approvalOpinions=[{stage:'上級主管',person:'羅弘奕 (B019)',status:'approved',statusText:'已核准',opinion:'請 SRE 確認資源存取範圍是否符合最小權限原則。'}];
 function renderOpinionSummary(){
   const withOpinion=approvalOpinions.filter(o=>o.opinion&&o.opinion.trim()),rows=$('#opinionRows'),empty=$('#opinionEmpty');
@@ -53,6 +53,7 @@ function openExecutionModal(prefill){
   $('#executorInput').value=prefill?prefill.executor:'林家筠 (T038)';
   $('#executionDateInput').value=prefill?prefill.date.replace(/\//g,'-'):'';
   $('#executionNoteInput').value=prefill?prefill.note:'';
+  $('#disableDateInput').value=prefill&&prefill.disable?prefill.disable.replace(/\//g,'-'):'';
   executionModal.hidden=false;
   requestAnimationFrame(()=>$('#executorInput').focus());
 }
@@ -63,8 +64,10 @@ $$('[data-close-execution]').forEach(x=>x.onclick=closeExecutionModal);
 $('#executionConfirm').onclick=()=>{
   const executor=$('#executorInput').value.trim(),dateValue=$('#executionDateInput').value,note=$('#executionNoteInput').value.trim();
   if(!executor||!dateValue||!note){alert('請填寫執行時間、執行內容與執行者。');return}
+  const disableValue=$('#disableDateInput').value;
+  if(disableValue&&disableValue<dateValue){alert('到期停用日期不可早於執行時間。');return}
   const wasExecuting=mode.value==='execute';
-  executionRecord={executor,date:dateValue.replace(/-/g,'/'),note};
+  executionRecord={executor,date:dateValue.replace(/-/g,'/'),note,disable:disableValue?disableValue.replace(/-/g,'/'):''};
   closeExecutionModal();
   alert(wasExecuting?'已回壓執行完成，執行狀態更新為「已執行」。':'已更新執行紀錄。');
   if(!wasExecuting)renderExecutionSummary(executionRecord);
@@ -139,6 +142,7 @@ function buildPermissionPrintView(){
   $('#permissionPrintExecutionDate').textContent=showExecution?printText(executionRecord.date):'—';
   $('#permissionPrintExecutor').textContent=showExecution?printText(executionRecord.executor):'—';
   $('#permissionPrintExecutionNote').textContent=showExecution?printText(executionRecord.note):'—';
+  $('#permissionPrintDisableDate').textContent=showExecution&&executionRecord.disable?executionRecord.disable:'—';
 }
 window.addEventListener('beforeprint',buildPermissionPrintView);
 

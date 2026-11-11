@@ -60,7 +60,7 @@ function syncApplyItemFields(){
   $('#benefitPanel').classList.toggle('hidden',isStop);
   $('#riskPanel').classList.toggle('hidden',isStop);
   $('#duration').required=!isStop;
-  $('#benefitRequirement').textContent=isStop?'停用時，預計節省工時與預計產生成效皆為非必填。':'新增或續用時，「預計節省工時」與「預計產生成效」至少擇一填寫。';
+  $('#benefitRequirement').textContent=isStop?'停用時，預計節省工時與預計產生成效皆為非必填。':'首次使用、續用或升級時，「預計節省工時」與「預計產生成效」至少擇一填寫。';
   validateExpectedBenefit();
 }
 $$('input[name=applyItem]').forEach(x=>x.addEventListener('change',syncApplyItemFields));
@@ -84,7 +84,7 @@ function validateExpectedBenefit(){
   const hoursValid=hoursComplete&&Number(before)>=Number(after);
   const negative=hoursComplete&&Number(before)<Number(after);
   const valid=stop||(!negative&&(hoursValid||benefit!==''));
-  $('#benefit').setCustomValidity(valid?'':negative?'預計導入後工時不得大於目前工時。':'新增或續用時，請完整填寫預計節省工時，或填寫預計產生成效。');
+  $('#benefit').setCustomValidity(valid?'':negative?'預計導入後工時不得大於目前工時。':'首次使用、續用或升級時，請完整填寫預計節省工時，或填寫預計產生成效。');
   return valid;
 }
 ['hoursBefore','hoursAfter','benefit'].forEach(id=>$('#'+id).addEventListener('input',validateExpectedBenefit));
@@ -99,7 +99,7 @@ $$('input[name=risk1],input[name=risk2]').forEach(x=>x.addEventListener('change'
 
 const loginUser=document.body.dataset.eipUser||'—';
 let executionRecord={executor:loginUser,date:'2026/09/22',cancelDate:'2026/12/22',note:'已完成 AI 工具帳號開通，並通知申請人。'};
-function renderExecutionSummary(record){$('#executorView').textContent=record.executor;$('#executionDateView').textContent=record.date;$('#cancelDateView').textContent=record.cancelDate||'—';$('#executionNoteView').textContent=record.note}
+function renderExecutionSummary(record){$('#executorView').textContent=record.executor;$('#executionDateView').textContent=record.date;$('#cancelDateView').textContent=record.cancelDate||'—';$('#executionNoteView').textContent=record.note;$('#disableDateView').textContent=record.disable||'—'}
 
 const approvalOpinions=[{stage:'課級主管',person:'林于婷 (T045)',status:'approved',statusText:'已核准',opinion:''},{stage:'部級主管',person:'陳大華 (B123)',status:'approved',statusText:'已核准',opinion:'請確認資料使用範圍是否涉及客戶個資。'}];
 function renderOpinionSummary(){
@@ -166,6 +166,7 @@ function openExecutionModal(prefill){
   $('#executionDateInput').value=prefill?prefill.date.replace(/\//g,'-'):'';
   $('#cancelDateInput').value=prefill?.cancelDate?prefill.cancelDate.replace(/\//g,'-'):'';
   $('#executionNoteInput').value=prefill?prefill.note:'';
+  $('#disableDateInput').value=prefill&&prefill.disable?prefill.disable.replace(/\//g,'-'):'';
   syncCancelDate(!prefill?.cancelDate);
   executionModal.hidden=false;
   requestAnimationFrame(()=>$('#executionDateInput').focus());
@@ -177,8 +178,10 @@ $$('[data-close-execution]').forEach(x=>x.onclick=closeExecutionModal);
 $('#executionConfirm').onclick=()=>{
   const executor=loginUser,dateValue=$('#executionDateInput').value,cancelDateValue=$('#cancelDateInput').value,note=$('#executionNoteInput').value.trim(),needsCancelDate=selectedApplyItem()!=='stop';
   if(!dateValue||!note||(needsCancelDate&&!cancelDateValue)){alert('請填寫執行日期、預計取消日與執行內容。');return}
+  const disableValue=$('#disableDateInput').value;
+  if(disableValue&&disableValue<dateValue){alert('到期停用日期不可早於執行日期。');return}
   const wasExecuting=mode.value==='execute';
-  executionRecord={executor,date:dateValue.replace(/-/g,'/'),cancelDate:needsCancelDate?cancelDateValue.replace(/-/g,'/'):'—',note};
+  executionRecord={executor,date:dateValue.replace(/-/g,'/'),cancelDate:needsCancelDate?cancelDateValue.replace(/-/g,'/'):'—',note,disable:disableValue?disableValue.replace(/-/g,'/'):''};
   closeExecutionModal();
   alert(wasExecuting?'已回填執行完成，執行狀態更新為「已執行」。':'已更新執行紀錄。');
   if(!wasExecuting)renderExecutionSummary(executionRecord);
@@ -247,6 +250,7 @@ function buildPrintView(){
   $('#printCancelDate').textContent=executed?(executionRecord.cancelDate||'—'):'—';
   $('#printExecutor').textContent=executed?executionRecord.executor:'—';
   $('#printExecNote').textContent=executed?executionRecord.note:'—';
+  $('#printDisableDate').textContent=executed&&executionRecord.disable?executionRecord.disable:'—';
 }
 window.addEventListener('beforeprint',buildPrintView);
 

@@ -239,3 +239,17 @@
 .opinion-list article b{color:#202936;font-size:13px}
 .opinion-list article p{margin:7px 0 0;padding:8px 10px;border-radius:5px;background:#fff8df;color:#4d3b00;font-size:14px;font-weight:700;line-height:1.55}
 #opinionSummary #opinionEmpty{margin:0;padding:12px 15px}
+
+/* 回填執行紀錄視窗：疊在頂部選單之上（原 z-index:50 低於 Header）；執行時間／日期與到期停用日期同列 */
+.audit-modal{z-index:300}
+.execution-date-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 16px}
+.execution-date-row .field-note{grid-column:1/-1;color:#667085;font-size:12px}
+@media(max-width:560px){.execution-date-row{grid-template-columns:1fr}}
+/* 回填執行紀錄視窗版面（比照雲端服務與資源申請；原本此檔沒有這組樣式，視窗沿用 900px 寬、欄位未排版） */
+.execution-dialog{width:min(560px,100%)}
+.execution-dialog .audit-content{display:grid;gap:16px;padding:18px}
+.execution-dialog label{display:flex;flex-direction:column;gap:6px}
+.execution-dialog .control{width:100%!important;max-width:none!important}
+.execution-dialog textarea.control{height:auto;min-height:112px;line-height:1.6;resize:vertical;white-space:pre-wrap}
+.execution-modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:4px}
+@media(max-width:700px){.execution-modal-actions .btn{flex:1 1 0}}

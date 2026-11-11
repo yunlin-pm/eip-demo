@@ -302,3 +302,9 @@
 .ai-estimate-field .ai-estimate-hint{margin:0}
 .ai-question.hidden,#attachmentPanel.hidden{display:none!important}
 #attachmentPanel>.body{padding-top:12px}
+
+/* 回填執行紀錄視窗：疊在頂部選單之上（原 z-index:50 低於 Header）；執行時間／日期與到期停用日期同列 */
+.audit-modal{z-index:300}
+.execution-date-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 16px}
+.execution-date-row .field-note{grid-column:1/-1;color:#667085;font-size:12px}
+@media(max-width:560px){.execution-date-row{grid-template-columns:1fr}}

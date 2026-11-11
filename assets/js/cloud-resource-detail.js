@@ -66,7 +66,7 @@ $$('input[name="platform"]').forEach(x=>x.addEventListener('change',syncResource
 function fillPersonUnit(selectId,unitId){const person=people[$(selectId).value];$(unitId).textContent=person?.unit||''}
 $('#applicant').onchange=()=>fillPersonUnit('#applicant','#applicantUnit');$('#owner').onchange=()=>fillPersonUnit('#owner','#ownerUnit');
 function renderExecutionSummary(record){
-  $('#executorView').textContent=record.executor;$('#executionDateView').textContent=record.date;$('#executionNoteView').textContent=record.note;
+  $('#executorView').textContent=record.executor;$('#executionDateView').textContent=record.date;$('#executionNoteView').textContent=record.note;$('#disableDateView').textContent=record.disable||'—';
   const res=record.resources||[];$('#resourceIdViewField').hidden=!res.length;
   $('#resourceIdView').innerHTML=res.map(r=>`${esc(r.name)}，資源編號：${esc(r.id)}`).join('<br>');
 }
@@ -118,6 +118,7 @@ function openExecutionModal(prefill){
   $('#executorInput').value=loginUser;
   $('#executionDateInput').value=prefill?prefill.date.replace(/\//g,'-'):'';
   $('#executionNoteInput').value=prefill?prefill.note:'';
+  $('#disableDateInput').value=prefill&&prefill.disable?prefill.disable.replace(/\//g,'-'):'';
   executionModal.hidden=false;
   requestAnimationFrame(()=>$('#executionDateInput').focus());
 }
@@ -130,8 +131,10 @@ $('#executionConfirm').onclick=()=>{
   const resources=$$('.resource-id-input').map(x=>({name:x.dataset.name,id:x.value.trim()}));
   if(resources.some(r=>!r.id)){alert('請填寫所有雲端資源項目的資源編號。');return}
   if(!executor||!dateValue||!note){alert('請填寫執行時間、執行內容與執行者。');return}
+  const disableValue=$('#disableDateInput').value;
+  if(disableValue&&disableValue<dateValue){alert('到期停用日期不可早於執行時間。');return}
   const wasExecuting=mode.value==='execute';
-  executionRecord={executor,date:dateValue.replace(/-/g,'/'),note,resources};
+  executionRecord={executor,date:dateValue.replace(/-/g,'/'),note,resources,disable:disableValue?disableValue.replace(/-/g,'/'):''};
   closeExecutionModal();
   alert(wasExecuting?'已回壓執行完成，執行狀態更新為「已執行」。':'已更新執行紀錄。');
   if(!wasExecuting)renderExecutionSummary(executionRecord);
@@ -250,6 +253,7 @@ function buildPrintView(){
   $('#printExecResources').textContent=executed&&(executionRecord.resources||[]).length?executionRecord.resources.map(r=>`${r.name}：${r.id}`).join('\n'):'—';
   $('#printExecDate').textContent=executed?executionRecord.date:'—';
   $('#printExecNote').textContent=executed?executionRecord.note:'—';
+  $('#printExecDisable').textContent=executed&&executionRecord.disable?executionRecord.disable:'—';
   $('#printExecutor').textContent=executed?executionRecord.executor:'—';
 }
 window.addEventListener('beforeprint',buildPrintView);

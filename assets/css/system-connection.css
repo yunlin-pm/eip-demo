@@ -276,3 +276,13 @@
 .execution-dialog .control{width:100%!important;max-width:none!important}
 .execution-dialog input[readonly]{background:#f2f4f7;color:#475467;cursor:not-allowed}
 .execution-modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:4px}
+
+/* 回填執行紀錄視窗：疊在頂部選單之上（原 z-index:50 低於 Header）；執行時間／日期與到期停用日期同列 */
+.audit-modal{z-index:300}
+.execution-date-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 16px}
+.execution-date-row .field-note{grid-column:1/-1;color:#667085;font-size:12px}
+@media(max-width:560px){.execution-date-row{grid-template-columns:1fr}}
+/* 回填執行紀錄：執行內容（多行） */
+.execution-dialog textarea.control{height:auto;min-height:112px;line-height:1.6;resize:vertical;white-space:pre-wrap}
+.execution-dialog{width:min(560px,100%)}
+#executionNoteView,.pre-line{white-space:pre-line}

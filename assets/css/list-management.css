@@ -42,9 +42,13 @@
 .eip-list-page .table-wrap .col-expiry{display:none}
 .eip-list-page .table-wrap.is-exec .col-expiry{display:table-cell}
 .eip-list-page .table-wrap.is-exec .col-apply,.eip-list-page .table-wrap.is-exec .col-copy{display:none}
+/* AI 工具使用申請管理：執行管理頁籤不顯示申請使用期間 */
+.eip-list-page .table-wrap.is-exec .col-duration{display:none}
+/* AI 工具使用申請管理：預計取消日在執行管理頁籤排在執行完成日期之前（col-cancel-exec），其他頁籤維持在到期停用日期之後的位置（col-cancel-std） */
+.eip-list-page .table-wrap.is-exec .col-cancel-std,.eip-list-page .table-wrap:not(.is-exec) .col-cancel-exec{display:none}
 .eip-list-page .filters .field[hidden]{display:none}
 
 /* 非「執行管理」頁籤：不顯示「預計啟用／異動日」「執行完成日期」；執行管理不受影響（2026-11-03） */
-.eip-list-page .table-wrap:not(.is-exec) .col-target,.eip-list-page .table-wrap:not(.is-exec) .col-done{display:none}
+.eip-list-page .table-wrap:not(.is-exec) .col-target,.eip-list-page .table-wrap:not(.is-exec) .col-done,.eip-list-page .table-wrap:not(.is-exec) .col-disable{display:none}
 /* 雲端服務與資源申請管理「執行管理」：不顯示「申請人」 */
 .eip-list-page .table-wrap.is-exec .col-applicant{display:none}

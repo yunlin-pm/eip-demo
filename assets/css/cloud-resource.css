@@ -220,3 +220,8 @@ body{background:#eef1f5}.cloud-title{display:flex;justify-content:space-between;
 .custom-item-row{display:flex;align-items:center;gap:10px}
 .custom-item-row .resource-item-custom{width:min(360px,100%)}
 .custom-item-row .custom-item-del[hidden],#addCustomItem[hidden]{display:none}
+/* 回填執行紀錄視窗：疊在頂部選單之上（原 z-index:50 低於 Header，視窗變高時上緣被蓋住）；執行時間與到期停用日期同列以降低高度 */
+.audit-modal{z-index:300}
+.execution-date-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 16px}
+.execution-date-row .field-note{grid-column:1/-1;color:#667085;font-size:12px}
+@media(max-width:560px){.execution-date-row{grid-template-columns:1fr}}

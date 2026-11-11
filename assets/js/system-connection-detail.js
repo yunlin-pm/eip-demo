@@ -3,13 +3,13 @@ const loginUser=document.body.dataset.eipUser||'—';
 // 申請人（可選公司與所屬單位）、權責人（部門、Email）範例資料
 const people={T037:{unit:'總經理室／後勤支援部／人事總務課',companies:['網家跨境服務股份有限公司','空中補給股份有限公司','比比昂株式會社']},T021:{unit:'營運本部／客戶服務部',companies:['網家跨境服務股份有限公司']},T038:{unit:'技術本部／資訊部／SRE',companies:['網家跨境服務股份有限公司','比比昂株式會社']}};
 const directory={T037:{name:'陳庭瑋',dept:'人事總務課',email:'user02@japan-import.com.tw'},T021:{name:'王曉明',dept:'客戶服務部',email:'user04@japan-import.com.tw'},T038:{name:'林家筠',dept:'資訊部／SRE',email:'user05@japan-import.com.tw'},B019:{name:'羅弘奕',dept:'代購部',email:'user03@japan-import.com.tw'},A008:{name:'陳志明',dept:'資訊部／SRE',email:'user06@japan-import.com.tw'}};
-let executionRecord={executor:'林家筠 (T038)',date:'2026/09/25'};
+let executionRecord={executor:'林家筠 (T038)',date:'2026/09/25',note:'已於防火牆新增連線規則並完成連通測試，已通知申請人與需求權責人。'};
 function fillPersonInfo(){const person=people[$('#applicant').value],company=$('#companySelect'),current=company.value;$('#applicantUnit').textContent=person?.unit||'';company.innerHTML=(person?.companies||[]).map(name=>'<option>'+name+'</option>').join('');if((person?.companies||[]).includes(current))company.value=current}
 $('#applicant').onchange=fillPersonInfo;
 // 需求權責人：選員工後，部門與 Email 由系統帶出（唯讀文字）
 function syncOwner(){const d=directory[$('#owner').value];$('#ownerInfo').innerHTML=d?d.dept+'<br>'+d.email:'—'}
 $('#owner').onchange=syncOwner;
-function renderExecutionSummary(record){$('#executorView').textContent=record.executor;$('#executionDateView').textContent=record.date}
+function renderExecutionSummary(record){$('#executorView').textContent=record.executor;$('#executionDateView').textContent=record.date;$('#executionNoteView').textContent=record.note||'—';$('#disableDateView').textContent=record.disable||'—'}
 const approvalOpinions=[{stage:'直屬主管',person:'羅弘奕 (B019)',status:'approved',statusText:'已核准',opinion:'請 SRE 確認來源端與目的端範圍是否符合最小開放原則。'}];
 function renderOpinionSummary(){
   const withOpinion=approvalOpinions.filter(o=>o.opinion&&o.opinion.trim()),rows=$('#opinionRows'),empty=$('#opinionEmpty');
@@ -97,6 +97,8 @@ $$('[data-close-history]').forEach(x=>x.onclick=()=>{historyModal.hidden=true});
 function openExecutionModal(prefill){
   $('#executorInput').value=loginUser;
   $('#executionDateInput').value=prefill?prefill.date.replace(/\//g,'-'):'';
+  $('#executionNoteInput').value=prefill?(prefill.note||''):'';
+  $('#disableDateInput').value=prefill&&prefill.disable?prefill.disable.replace(/\//g,'-'):'';
   $('#executionModalTitle').textContent=prefill?'編輯執行紀錄':'回填執行紀錄';
   $('#executionConfirm').textContent=prefill?'儲存':'確認執行完成';
   executionModal.hidden=false;
@@ -108,9 +110,12 @@ editExecutionBtn.onclick=()=>openExecutionModal(executionRecord);
 $$('[data-close-execution]').forEach(x=>x.onclick=closeExecutionModal);
 $('#executionConfirm').onclick=()=>{
   const dateValue=$('#executionDateInput').value;
-  if(!dateValue){alert('請填寫執行日期。');return}
+  const note=$('#executionNoteInput').value.trim();
+  if(!dateValue||!note){alert('請填寫執行日期與執行內容。');return}
+  const disableValue=$('#disableDateInput').value;
+  if(disableValue&&disableValue<dateValue){alert('到期停用日期不可早於執行日期。');return}
   const wasExecuting=mode.value==='execute';
-  executionRecord={executor:loginUser,date:dateValue.replace(/-/g,'/')};
+  executionRecord={executor:loginUser,date:dateValue.replace(/-/g,'/'),note,disable:disableValue?disableValue.replace(/-/g,'/'):''};
   closeExecutionModal();
   alert(wasExecuting?'已回壓執行完成，執行狀態更新為「已執行」。':'已更新執行紀錄。');
   if(!wasExecuting)renderExecutionSummary(executionRecord);
@@ -174,5 +179,7 @@ function buildConnectionPrintView(){
   const showExecution=['view','done'].includes(mode.value);
   $('#connectionPrintExecutionDate').textContent=showExecution?printText(executionRecord.date):'—';
   $('#connectionPrintExecutor').textContent=showExecution?printText(executionRecord.executor):'—';
+  $('#connectionPrintExecutionNote').textContent=showExecution?printText(executionRecord.note):'—';
+  $('#connectionPrintDisableDate').textContent=showExecution&&executionRecord.disable?executionRecord.disable:'—';
 }
 window.addEventListener('beforeprint',buildConnectionPrintView);
