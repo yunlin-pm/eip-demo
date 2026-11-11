@@ -15,8 +15,16 @@
 <div class="ai-question"><span class="label req">申請項目</span><div class="ai-choices"><label><input class="control" type="radio" name="applyItem" value="new" checked required> 新增使用</label><label><input class="control" type="radio" name="applyItem" value="renew"> 續用</label><label><input class="control" type="radio" name="applyItem" value="stop"> 停用</label></div></div>
 <div class="ai-question"><span class="label req">AI 工具／方案</span><div class="ai-choices ai-choices-col"><label><input class="control plan-option" type="radio" name="plan" value="25" data-label="ChatGPT Business－Standard seat" checked required> ChatGPT Business－Standard seat <span class="ai-plan-price">USD 25／月</span></label><label><input class="control plan-option" type="radio" name="plan" value="125" data-label="ChatGPT Business－Premium seat"> ChatGPT Business－Premium seat <span class="ai-plan-price">USD 125／月</span></label><label><input class="control plan-option other-toggle" data-target="planOtherFields" type="radio" name="plan" value="other" data-label="其他"> 其他</label></div><div class="ai-other-fields hidden" id="planOtherFields"><input id="planOtherNote" class="control ai-inline-text" placeholder="說明"><span>，每月費用：</span><span>USD</span><input id="planOtherPrice" class="control" type="number" min="0" step="1" style="width:100px"><span>／月</span></div></div>
 <label id="durationField"><span class="label req">申請使用期間</span><select id="duration" class="control" required><option value="1">1 個月</option><option value="2">2 個月</option><option value="3" selected>3 個月</option><option value="4">4 個月</option><option value="5">5 個月</option><option value="6">6 個月</option><option value="7">7 個月</option><option value="8">8 個月</option><option value="9">9 個月</option><option value="10">10 個月</option><option value="11">11 個月</option><option value="12">12 個月</option></select><p class="help">請選擇 1～12 個月。</p></label>
-<label id="estimateField"><span class="label req">預估費用</span><div class="ai-estimate-field"><b class="ai-cost-value" id="estimateCost">USD 75</b><span class="ai-estimate-hint" id="estimateHint">換算新臺幣約 NT$2,325（目前以 1 USD = NT$31 計算，待確認實際作法）</span></div></label>
+<div class="ai-question" id="estimateField"><span class="label req">預估費用</span><div class="ai-estimate-field"><div class="ai-estimate-line"><span class="ai-nt">NT$</span><input id="estimateNtd" class="control" type="number" min="0" step="1" inputmode="numeric" placeholder="請輸入新臺幣金額" required><span class="ai-usd">（<b class="ai-cost-value" id="estimateCost">USD 75</b>）</span></div><p class="ai-estimate-hint">請依照「臺灣銀行即期賣出匯率」自行換算台幣。</p></div></div>
 <label><span class="label req">原因／用途</span><textarea id="reason" class="control" rows="3" placeholder="請說明原因／用途" required></textarea></label>
+</div></section>
+<section class="panel" id="benefitPanel"><h2>預期效益</h2><div class="body ai-risk-grid"><p class="help" id="benefitRequirement">新增或續用時，「預計節省工時」與「預計產生成效」至少擇一填寫；停用時皆為非必填。</p>
+<div class="ai-question"><span class="label">預計節省工時</span><div class="ai-hours-field">
+<div class="ai-hours-row"><span>目前工時</span><select id="saveFreq" class="control"><option value="week" selected>每週</option><option value="month">每月</option><option value="project">依專案</option></select><input id="hoursBefore" class="control" type="number" min="0" step="0.5" placeholder="0"><span>小時，預計導入後</span><input id="hoursAfter" class="control" type="number" min="0" step="0.5" placeholder="0"><span>小時</span></div>
+<p class="ai-hours-summary">共節省 <span id="hoursSavedFreq">每週</span> <b id="hoursSaved">—</b> 小時</p>
+</div></div>
+<label><span class="label">預計產生成效</span><textarea id="benefit" class="control" rows="3" placeholder="請說明預計產生之效益"></textarea></label>
+
 </div></section>
 </div>
 <div class="ai-detail-side">
@@ -24,19 +32,13 @@
 <div class="ai-stack" id="executionSummary" hidden><label><span class="label">執行日期</span><div id="executionDateView">—</div></label><label><span class="label">預計取消日</span><div id="cancelDateView">—</div></label><label><span class="label">執行內容</span><div id="executionNoteView">—</div></label><label><span class="label">執行者</span><div id="executorView">—</div></label></div>
 </div></section>
 <section class="panel" id="opinionSummary" hidden><h2>簽核意見彙整</h2><div class="opinion-list" id="opinionRows"></div><p class="help" id="opinionEmpty" hidden>目前簽核完成關卡皆無意見。</p></section>
-<section class="panel" id="benefitPanel"><h2>預期效益</h2><div class="body ai-risk-grid"><p class="help" id="benefitRequirement">新增或續用時，「預計節省工時」與「預計產生成效」至少擇一填寫；停用時皆為非必填。</p>
-<div class="ai-question"><span class="label">預計節省工時</span><div class="ai-hours-field">
-<div class="ai-hours-row"><span>目前工時</span><select id="saveFreq" class="control"><option value="week" selected>每週</option><option value="month">每月</option><option value="project">依專案</option></select><input id="hoursBefore" class="control" type="number" min="0" step="0.5" placeholder="0"><span>小時，預計導入後</span><input id="hoursAfter" class="control" type="number" min="0" step="0.5" placeholder="0"><span>小時</span></div>
-<p class="ai-hours-summary">共節省 <span id="hoursSavedFreq">每週</span> <b id="hoursSaved">—</b> 小時</p>
-</div></div>
-<label><span class="label">預計產生成效</span><textarea id="benefit" class="control" rows="3" placeholder="請說明預計產生之效益"></textarea></label>
-<label><span class="label">表單附件</span><div class="ai-attach-field"><div class="attachment-area"><div class="file-card"><button class="file-preview" type="button" title="預覽附件"><span class="file-thumb">PDF</span><span class="file-meta"><b class="file-name">導入效益評估.pdf</b><small class="file-status">✓ 已上傳・點擊預覽</small></span></button><button class="file-action file-download" type="button" title="下載附件">⇩</button><button class="file-action file-remove" type="button" title="移除附件">×</button></div><button class="upload-btn" type="button">📎 選擇上傳附件</button></div><p class="help">格式暫不限制，單檔最大 5 MB，每張申請最多 20 個檔案。</p></div></label>
-</div></section>
 <section class="panel" id="riskPanel"><h2>資安與風險資訊</h2><div class="body ai-risk-grid">
 <div class="ai-question"><span class="label req">預計輸入個人資料</span><div class="ai-choices"><label><input class="control risk-toggle" type="radio" name="risk1" value="no" checked required> 否</label><label><input class="control risk-toggle" type="radio" name="risk1" value="yes"> 是</label></div></div>
 <div class="ai-question"><span class="label req">預計輸入機密/敏感資料 <span class="risk-alert" tabindex="0" role="img" aria-label="機敏資料說明" data-tooltip="機敏資料為「涉及財務／營運資訊、合約文件、程式碼、密碼／API 金鑰」等敏感資訊。">!</span></span><div class="ai-choices"><label><input class="control risk-toggle" type="radio" name="risk2" value="no" checked required> 否</label><label><input class="control risk-toggle" type="radio" name="risk2" value="yes"> 是</label></div></div>
 <label id="riskNoteField" class="hidden"><span class="label req">需求說明</span><textarea id="riskNote" class="control" rows="3" placeholder="請說明使用情境及必要性"></textarea><p class="help">※請說明預計輸入資料、使用情境及必要性。</p></label>
 </div></section>
+<section class="panel" id="attachmentPanel"><h2>表單附件</h2><div class="body ai-attach-body"><div class="ai-attach-field"><div class="attachment-area"><div class="file-card"><button class="file-preview" type="button" title="預覽附件"><span class="file-thumb">PDF</span><span class="file-meta"><b class="file-name">導入效益評估.pdf</b><small class="file-status">✓ 已上傳・點擊預覽</small></span></button><button class="file-action file-download" type="button" title="下載附件">⇩</button><button class="file-action file-remove" type="button" title="移除附件">×</button></div><button class="upload-btn" type="button">📎 選擇上傳附件</button></div><p class="help">格式暫不限制，單檔最大 5 MB，每張申請最多 20 個檔案。</p></div></div></section>
+
 </div>
 </div>
 </form>

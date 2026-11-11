@@ -26,8 +26,9 @@ $('#aiAccountInput').addEventListener('input',validateAccount);
 function currentAiAccount(){const shared=$('#sharedAccount').checked,v=(shared?$('#aiAccountInput').value:$('#applicantEmailNote').textContent).trim();return v?(shared?v+'（多人共用帳號）':v):''}
 $('#applicant').onchange=fillPersonInfo;
 
-/* 新臺幣換算暫以 1 USD = NT$31 計算，實際匯率作法待確認。 */
-const NTD_RATE=31;
+/* 預估費用：USD 由系統依方案月費 × 使用月數計算；新臺幣由申請人依「臺灣銀行即期賣出匯率」自行換算並填寫，金額核決以申請人填寫的新臺幣金額判斷。 */
+function ntdValue(){const v=$('#estimateNtd').value;return v===''?0:Number(v)}
+function ntdText(){const v=$('#estimateNtd').value;return v===''?'—':Number(v).toLocaleString('zh-TW')}
 function planMonthlyFee(){const checked=$$('.plan-option:checked')[0];if(!checked)return 0;if(checked.value==='other')return Number($('#planOtherPrice').value||0);return Number(checked.value)}
 function syncGeneralManagerStage(ntd){
   const stage=$('#generalManagerStage');
@@ -41,20 +42,21 @@ function syncGeneralManagerStage(ntd){
 function syncEstimate(){
   const fee=planMonthlyFee(),months=Number($('#duration').value||0),total=fee*months;
   $('#estimateCost').textContent='USD '+(total?String(total):'0');
-  const ntd=Math.round(total*NTD_RATE);
-  syncGeneralManagerStage(ntd);
-  $('#estimateHint').textContent=`換算新臺幣約 NT$${ntd.toLocaleString('zh-TW')}（目前以 1 USD = NT$31 計算，待確認實際作法）`;
+  syncGeneralManagerStage(ntdValue());
 }
 function syncPlanOther(){const other=$$('.plan-option:checked')[0]?.value==='other';$('#planOtherFields').classList.toggle('hidden',!other)}
 $$('input[name=plan]').forEach(x=>x.addEventListener('change',()=>{syncPlanOther();syncEstimate()}));
 $('#planOtherPrice').addEventListener('input',syncEstimate);
 $('#duration').addEventListener('input',syncEstimate);
+$('#estimateNtd').addEventListener('input',syncEstimate);
 syncPlanOther();syncEstimate();
 
 function syncApplyItemFields(){
   const isStop=selectedApplyItem()==='stop';
   $('#durationField').classList.toggle('hidden',isStop);
   $('#estimateField').classList.toggle('hidden',isStop);
+  $('#estimateNtd').required=!isStop;
+  $('#attachmentPanel').classList.toggle('hidden',isStop);
   $('#benefitPanel').classList.toggle('hidden',isStop);
   $('#riskPanel').classList.toggle('hidden',isStop);
   $('#duration').required=!isStop;
@@ -111,7 +113,11 @@ function renderOpinionSummary(){
 }
 renderOpinionSummary();
 
+/* Demo 範例：非新增情境預設帶入新臺幣預估費用，避免查看／簽核畫面金額欄空白 */
+let sampleNtdLoaded=false;
+function loadSampleNtd(){if(sampleNtdLoaded||mode.value==='new')return;sampleNtdLoaded=true;if($('#estimateNtd').value==='')$('#estimateNtd').value='2350';syncEstimate()}
 function applyMode(){
+  loadSampleNtd();
   const v=mode.value,readonly=['view','approve','execute','done'].includes(v),done=v==='done',executed=['view','done'].includes(v),wasReturned=v==='edit';
   $$('.control').forEach(x=>{if(x!==mode&&!x.closest('#executionModal'))x.disabled=readonly});
   $('#editActions').classList.toggle('view-only',readonly);
@@ -221,7 +227,7 @@ function buildPrintView(){
   $('#printBenefitTable').hidden=isStop;
   $('#printRiskTable').hidden=isStop;
   $('#printDuration').textContent=isStop?'—':`${$('#duration').value} 個月`;
-  $('#printCost').textContent=isStop?'—':textOrDash($('#estimateCost'));
+  $('#printCost').textContent=isStop?'—':`NT$ ${ntdText()}（${$('#estimateCost').textContent}）`;
   $('#printReason').textContent=textOrDash($('#reason'));
   $('#printHoursSaved').textContent=hoursSavedText();
   $('#printBenefit').textContent=textOrDash($('#benefit'));

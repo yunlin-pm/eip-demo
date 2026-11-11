@@ -11,23 +11,44 @@ const RESOURCE_ITEMS={
 let resourceItemPlatform='',sampleLoaded=false;
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function isReadonlyMode(){return['view','approve','execute','done'].includes(mode.value)}
+function customRowHtml(v){return`<div class="custom-item-row"><input class="control resource-item-custom" placeholder="請輸入雲端資源項目" value="${esc(v||'')}"><button class="btn compact custom-item-del" type="button">刪除</button></div>`}
+function syncCustomRows(){
+  const rows=$$('.custom-item-row'),ro=isReadonlyMode();
+  rows.forEach(r=>{const d=r.querySelector('.custom-item-del');d.hidden=ro||rows.length<2});
+  const add=$('#addCustomItem');if(add)add.hidden=ro;
+}
 function syncResourceItems(){
-  const checked=document.querySelector('input[name="platform"]:checked'),pf=checked?checked.value:'',list=RESOURCE_ITEMS[pf],group=$('#resourceItemGroup'),box=$('#resourceItemChoices');
-  group.classList.toggle('hidden',!list);
-  if(!list){box.innerHTML='';resourceItemPlatform='';return}
+  const checked=document.querySelector('input[name="platform"]:checked'),pf=checked?checked.value:'',isOther=pf==='other',list=RESOURCE_ITEMS[pf],group=$('#resourceItemGroup'),box=$('#resourceItemChoices');
+  group.classList.toggle('hidden',!list&&!isOther);
+  if(!list&&!isOther){box.innerHTML='';resourceItemPlatform='';return}
   if(resourceItemPlatform===pf)return;
   resourceItemPlatform=pf;
+  if(isOther){
+    /* 雲端平台選「其他」：沒有預設清單，改為自行輸入項目名稱，可新增／刪除列 */
+    box.innerHTML='<div class="custom-item-list" id="customItemList">'+customRowHtml('')+'</div><button class="btn compact" id="addCustomItem" type="button">增加項目</button>';
+    $('#addCustomItem').onclick=()=>{$('#customItemList').insertAdjacentHTML('beforeend',customRowHtml(''));syncCustomRows();const ins=$$('.resource-item-custom');ins[ins.length-1].focus()};
+    $('#customItemList').addEventListener('click',e=>{const b=e.target.closest('.custom-item-del');if(!b)return;b.closest('.custom-item-row').remove();syncCustomRows()});
+    $$('.resource-item-custom').forEach(x=>x.disabled=isReadonlyMode());syncCustomRows();
+    return;
+  }
   box.innerHTML=list.map(n=>`<label><input class="control resource-item" type="checkbox" value="${esc(n)}"> ${esc(n)}</label>`).join('')+'<label><input class="control resource-item-other-toggle" type="checkbox"> 其他</label><input id="resourceItemOther" class="control inline-text hidden" placeholder="資源項目名稱" disabled>';
   box.querySelector('.resource-item-other-toggle').addEventListener('change',e=>{const t=$('#resourceItemOther');t.classList.toggle('hidden',!e.target.checked);t.disabled=!e.target.checked;if(!e.target.checked)t.value=''});
   $$('.resource-item,.resource-item-other-toggle').forEach(x=>x.disabled=isReadonlyMode());
 }
 function selectedResourceItems(){
+  if($('#customItemList'))return $$('.resource-item-custom').map(x=>x.value.trim()).filter(Boolean);
   const names=$$('.resource-item:checked').map(x=>x.value),other=document.querySelector('.resource-item-other-toggle:checked');
   if(other){const t=$('#resourceItemOther').value.trim();names.push(t?`其他（${t}）`:'其他')}
   return names;
 }
 function validateResourceItems(){
   if($('#resourceItemGroup').classList.contains('hidden'))return true;
+  if($('#customItemList')){
+    const vals=$$('.resource-item-custom').map(x=>x.value.trim());
+    if(!vals.some(Boolean)){alert('請至少填寫一項雲端資源項目。');return false}
+    if(vals.some(v=>!v)){alert('請填寫雲端資源項目，或刪除空白的項目。');return false}
+    return true;
+  }
   if(!selectedResourceItems().length){alert('請至少選擇一項雲端資源項目。');return false}
   const other=document.querySelector('.resource-item-other-toggle:checked');
   if(other&&!$('#resourceItemOther').value.trim()){alert('選擇「其他」時，請填寫資源項目名稱。');return false}
@@ -64,6 +85,7 @@ function applyMode(){
   loadSampleResourceItems();
   const v=mode.value,readonly=['view','approve','execute','done'].includes(v),done=v==='done',executed=['view','done'].includes(v),wasReturned=v==='edit';
   $$('.control').forEach(x=>{if(x!==mode&&!x.closest('#executionModal'))x.disabled=readonly});
+  $$('.resource-item-custom').forEach(x=>x.disabled=readonly);syncCustomRows();
   const otherT=$('#resourceItemOther');if(otherT&&!readonly)otherT.disabled=otherT.classList.contains('hidden');
   $('#editActions').classList.toggle('view-only',readonly);
   copyBtn.hidden=v!=='edit';

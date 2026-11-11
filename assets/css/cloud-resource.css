@@ -213,3 +213,10 @@ body{background:#eef1f5}.cloud-title{display:flex;justify-content:space-between;
 .resource-id-name{color:#202936;font-size:14px}
 .req-star{color:#d9364b}
 @media(max-width:560px){.execution-dialog .resource-id-row{grid-template-columns:1fr;gap:5px}}
+
+/* 雲端平台選「其他」：自行輸入雲端資源項目（可新增／刪除列） */
+#resourceItemChoices:has(#customItemList){display:grid;gap:8px;justify-items:start}
+.custom-item-list{display:grid;gap:8px;width:100%}
+.custom-item-row{display:flex;align-items:center;gap:10px}
+.custom-item-row .resource-item-custom{width:min(360px,100%)}
+.custom-item-row .custom-item-del[hidden],#addCustomItem[hidden]{display:none}

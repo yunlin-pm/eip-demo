@@ -292,3 +292,13 @@
 .ai-shared-toggle input{margin:0}
 .label-note{color:#667085;font-size:12.5px;font-weight:400}
 .ai-account-line .readonly-value{width:320px;max-width:100%;background:#f5f7fa;color:#344054}
+
+
+/* 預估費用：NT$ 由申請人輸入，USD 由系統依方案月費 × 月數計算（2026-11-11）；表單附件移為右側欄最後一個區塊 */
+.ai-estimate-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ai-estimate-line input.control{width:180px!important}
+.ai-nt{font-weight:700;color:#344054}
+.ai-usd{color:#475467}
+.ai-estimate-field .ai-estimate-hint{margin:0}
+.ai-question.hidden,#attachmentPanel.hidden{display:none!important}
+#attachmentPanel>.body{padding-top:12px}
