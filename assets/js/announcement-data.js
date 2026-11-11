@@ -1,12 +1,16 @@
 /* 公司公告 Demo 資料：總覽「公司公告」區塊、公告列表頁、公告內容頁共用。
    發佈日期以「今天」往回推算（days），讓排序示範不會隨時間失效。
+   公告管理欄位：companies（公告公司代碼）、expiryDays（到期日＝今天往回推的天數，負數＝未來；null＝不到期）、published（發佈公告：true 顯示／false 隱藏）、notify（發送 Email 通知公告公司全體員工）。
+   同仁端（總覽、公告列表、公告內容）只顯示：發佈公告＝是、發佈日期≦今天、未過到期日、公告公司含登入者公司（Demo 為網家跨境 CBS）。
    排序規則：置頂旗標＝true 的排最前面（置頂之間依發佈日期新到舊），其餘依發佈日期新到舊。 */
+var ANN_COMPANIES={CBS:'網家跨境服務股份有限公司',BBN:'比比昂株式會社',ASL:'空中補給股份有限公司'};
+var ANN_COMPANY_SHORT={CBS:'網家跨境',BBN:'比比昂',ASL:'空中補給'};
 var ANN_TYPES={'一般公告':'general','人事公告':'hr','資訊公告':'it','活動公告':'event'};
 var ANNOUNCEMENTS=[
-  {id:'ANN-2026-0014',type:'人事公告',pinned:true,days:2,title:'2026 年度年終考核作業時程公告',summary:'年度考核自 12/01 起開放自評，請各單位主管於 12/15 前完成部屬評核，逾期將由人事總務課個別通知。',
+  {id:'ANN-2026-0014',type:'人事公告',pinned:true,days:2,title:'2026 年度年終考核作業時程公告',summary:'12/01 起開放年度考核自評，請各單位主管於 12/15 前完成部屬評核。',
    content:'<p>各位同仁好：</p><p>2026 年度年終考核作業即將開始，相關時程如下，請同仁與各單位主管依時程完成。</p><ul><li><b>12/01～12/07</b>：同仁於 EIP 完成自評</li><li><b>12/08～12/15</b>：單位主管完成部屬評核與面談</li><li><b>12/16～12/20</b>：部級主管覆核</li></ul><p>評核表與填寫說明請見附件。如有疑問，請洽人事總務課。</p>',
    attachments:[{name:'2026年度考核作業說明.pdf',size:'1.2 MB'},{name:'考核評核表.xlsx',size:'86 KB'}]},
-  {id:'ANN-2026-0013',type:'資訊公告',pinned:false,days:4,title:'EIP 表單申請功能第二階段上線',summary:'新增工程派工單、AI 工具使用申請等表單，操作方式請參閱 Bibian EIP 操作手冊；如有問題請至問題回報表單登記。',
+  {id:'ANN-2026-0013',type:'資訊公告',pinned:false,days:4,title:'EIP 表單申請功能第二階段上線',summary:'新增工程派工單、AI 工具使用申請等表單，操作方式請參閱 Bibian EIP 操作手冊。',
    content:'<p>EIP 第二階段功能已於今日上線，本次新增以下表單：</p><ul><li>工程派工單</li><li>AI 工具使用申請</li><li>系統連線申請</li></ul><p>操作方式請參閱「Bibian EIP 操作手冊」。使用上如有問題，請至「Bibian EIP 問題回報」登記，資訊系統部將儘速處理。</p>',
    attachments:[{name:'EIP第二階段功能說明.pdf',size:'2.4 MB'}]},
   {id:'ANN-2026-0012',type:'活動公告',pinned:false,days:9,title:'雙 11 購物節員工限定優惠活動',summary:'活動期間員工使用公司帳號下單享免運費及額外折扣，詳細活動辦法與兌換方式請見附件說明。',
@@ -35,8 +39,37 @@ var ANNOUNCEMENTS=[
    content:'<p>為加強資訊安全，公司帳號密碼原則調整如下：</p><ul><li>長度至少 12 碼</li><li>需包含大小寫英文、數字與符號</li><li>每 90 天更新一次</li></ul>',attachments:[]},
   {id:'ANN-2026-0001',type:'一般公告',pinned:false,days:80,title:'2026 年中秋連假及出勤提醒',summary:'中秋連假期間辦公室暫停開放，如需加班請事先提出申請。',
    content:'<p>中秋連假期間辦公室暫停開放，如需加班請事先於 EIP 提出申請並經主管核准。</p>',attachments:[]}
+  ,{id:'ANN-2026-0017',type:'活動公告',pinned:false,days:-5,expiryDays:-20,companies:['CBS','BBN'],published:true,title:'2027 春酒活動預告',summary:'2027 春酒預計於 2 月舉辦，詳細時間地點將於近期公告。',
+   content:'<p>2027 春酒預計於 2 月舉辦，詳細時間地點將於近期公告，敬請期待。</p>',attachments:[]},
+  {id:'ANN-2026-0016',type:'人事公告',pinned:false,days:6,expiryDays:null,companies:['CBS'],published:false,title:'組織調整說明（草稿）',summary:'因應業務發展，部分單位將於明年初進行調整，詳細內容待確認後公告。',
+   content:'<p>因應業務發展，部分單位將於明年初進行調整，詳細內容待確認後公告。</p>',attachments:[]},
+  {id:'ANN-2026-0015',type:'一般公告',pinned:false,days:40,expiryDays:10,companies:['CBS','BBN','ASL'],published:true,title:'颱風停班停課應變說明',summary:'颱風期間如經政府宣布停班，同仁免出勤，請留意人事總務課通知。',
+   content:'<p>颱風期間如經政府宣布停班，同仁免出勤；遠端作業安排請依各單位主管指示。</p>',attachments:[]}
 ];
-(function(){var t=new Date();t.setHours(0,0,0,0);ANNOUNCEMENTS.forEach(function(a){var d=new Date(t);d.setDate(d.getDate()-a.days);a.date=d})})();
+var ANN_TODAY=(function(){var t=new Date();t.setHours(0,0,0,0);return t})();
+(function(){
+  var DEF={'ANN-2026-0014':{expiryDays:-30,companies:['CBS','BBN','ASL']},'ANN-2026-0013':{companies:['CBS','BBN','ASL']},'ANN-2026-0012':{expiryDays:-4,companies:['CBS']},'ANN-2026-0010':{expiryDays:-10,companies:['CBS','BBN']}};
+  ANNOUNCEMENTS.forEach(function(a){var e=DEF[a.id]||{};
+    if(!a.companies)a.companies=e.companies||['CBS'];
+    if(a.expiryDays===undefined)a.expiryDays=e.expiryDays===undefined?null:e.expiryDays;
+    if(a.published===undefined)a.published=true;
+    if(a.notify===undefined)a.notify=a.pinned||a.type==='人事公告';
+    var d=new Date(ANN_TODAY);d.setDate(d.getDate()-a.days);a.date=d;
+    if(a.expiryDays===null){a.expiry=null}else{var x=new Date(ANN_TODAY);x.setDate(x.getDate()-a.expiryDays);a.expiry=x}
+    // 新增者／最後編輯者（Demo）：新增於發佈日前 2 天，最後編輯於發佈日前 1 天（不晚於今天）
+    var i=parseInt(a.id.slice(-2),10),c=new Date(a.date);c.setDate(c.getDate()-2);c.setHours(9+i%8,(i*7)%60,(i*13)%60);
+    var e=new Date(a.date);e.setDate(e.getDate()-1);if(e>ANN_TODAY)e=new Date(ANN_TODAY);e.setHours(10+i%7,(i*11)%60,(i*17)%60);
+    a.creator=a.creator||(i%2?'陳庭瑋':'洪榆瑄');a.created=c;a.editor=a.editor||(i%3?'陳庭瑋':'洪榆瑄');a.edited=e;
+  });
+})();
+/* 狀態（公告管理用）：隱藏／排程中（未到發佈日）／已到期／顯示中 */
+function annStatus(a){if(!a.published)return'隱藏';if(a.date>ANN_TODAY)return'排程中';if(a.expiry&&a.expiry<ANN_TODAY)return'已到期';return'顯示中'}
+function annVisible(a,company){return annStatus(a)==='顯示中'&&a.companies.indexOf(company||'CBS')>=0}
 function annFmt(d){var p=function(n){return String(n).padStart(2,'0')};return d.getFullYear()+'/'+p(d.getMonth()+1)+'/'+p(d.getDate())}
-function annSorted(){return ANNOUNCEMENTS.slice().sort(function(a,b){return (b.pinned-a.pinned)||(b.date-a.date)})}
+function annFmtTime(d){var p=function(n){return String(n).padStart(2,'0')};return annFmt(d)+' '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds())}
+function annSortRule(a,b){return (b.pinned-a.pinned)||(b.date-a.date)}
+/* 同仁端用：只回傳目前可見的公告 */
+function annSorted(){return ANNOUNCEMENTS.filter(function(a){return annVisible(a)}).sort(annSortRule)}
+/* 公告管理用：全部公告 */
+function annSortedAll(){return ANNOUNCEMENTS.slice().sort(annSortRule)}
 function annEsc(t){return String(t).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}

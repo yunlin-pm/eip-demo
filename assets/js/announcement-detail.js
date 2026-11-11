@@ -7,7 +7,7 @@
   pick.innerHTML=sorted.map(a=>`<option value="${a.id}">${annEsc(a.title)}</option>`).join('');
   function ext(name){return (name.split('.').pop()||'').toUpperCase().slice(0,4)}
   function show(id){
-    const a=ANNOUNCEMENTS.find(x=>x.id===id);
+    const a=ANNOUNCEMENTS.find(x=>x.id===id&&annVisible(x));
     $('#article').hidden=!a;$('#missing').hidden=!!a;if(!a){document.title='公告內容｜Bibian EIP Demo';return}
     pick.value=a.id;document.title=`${a.title}｜公司公告｜Bibian EIP Demo`;
     $('#tags').innerHTML=`<span class="ann-type ${ANN_TYPES[a.type]}">${annEsc(a.type)}</span>${a.pinned?'<span class="ann-pin">置頂</span>':''}`;

@@ -65,3 +65,53 @@
   .ann-article-head h1{font-size:20px}
   .ann-file{min-width:0;width:100%}
 }
+
+/* 公告管理（後台）列表 */
+.ann-filters{border-top:1px solid var(--line);border-radius:6px}
+.ann-filters .field.wide input{width:100%}
+.ann-admin-table .col-edit{width:64px}
+.ann-admin-table .col-status{width:88px}
+.ann-admin-table .col-company{width:170px}
+.ann-admin-table .col-title{width:auto}
+.ann-edit{color:#164d80;font-weight:700;text-decoration:none}
+.ann-edit:hover{text-decoration:underline}
+.ann-status{display:inline-flex;padding:2px 9px;border-radius:11px;font-size:12px;font-weight:800;white-space:nowrap}
+.ann-status.live{background:#e6f6ec;color:#17773d}
+.ann-status.hidden{background:#f3f4f6;color:#8a96a5;border:1px dashed #c9d2dc}
+
+/* 公告管理（後台）內容頁 */
+.ann-admin-page .toolbar{justify-content:flex-start}
+.ann-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 24px}
+.ann-form-row{display:flex;flex-direction:column;gap:6px;min-width:0;margin:0;font-weight:700}
+.ann-form-row.full{grid-column:1/-1}
+.ann-form-row .field-note{font-weight:400;color:#697586}
+.ann-choices{display:flex;flex-wrap:wrap;gap:8px 22px;min-height:38px;align-items:center}
+.ann-choices label{display:inline-flex;align-items:center;gap:6px;margin:0;font-weight:400;white-space:nowrap}
+.ann-choices input{margin:0}
+.ann-admin-page .rich-editor{min-height:220px}
+.ann-admin-page .panel+.panel{margin-top:16px}
+.ann-admin-page #summary{min-height:64px}
+@media(max-width:700px){.ann-form{grid-template-columns:1fr}.ann-choices label{white-space:normal}.ann-admin-page .toolbar{display:flex;flex-direction:row;gap:8px}.ann-admin-page .toolbar>.btn{flex:1;width:auto;margin:0;justify-content:center}}
+
+/* 公告管理內容頁：左欄欄位名稱、右欄欄位內容，列與列之間細線分隔（比照雲端服務與資源申請「申請需求資訊」） */
+.ann-rows{display:block;padding-top:4px;padding-bottom:4px}
+.ann-row{display:grid;grid-template-columns:150px minmax(0,1fr);gap:8px 20px;align-items:start;padding:16px 0;border-bottom:1px solid #e6ebf0}
+.ann-row:last-child{border-bottom:0}
+.ann-row>.label{margin:0;padding-top:8px;font-size:14px;font-weight:800;color:#344054}
+.ann-row>.ann-choices{min-height:36px}
+.ann-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ann-field .field-note{color:#697586;font-weight:400}
+.ann-field .ann-choices{min-height:36px}
+.ann-date{width:220px;max-width:100%}
+.ann-admin-page .ann-choices label{font-size:15px}
+@media(max-width:700px){.ann-row{grid-template-columns:1fr;gap:6px;padding:14px 0}.ann-row>.label{padding-top:0}.ann-date{width:100%}}
+
+/* 公告管理列表：欄位較多，表格可橫向捲動 */
+.ann-admin-table{min-width:1560px}
+.ann-admin-table .col-title{width:260px}
+.ann-admin-table .col-notify{width:96px}
+.ann-admin-table .col-user{width:96px}
+.ann-admin-table .col-time{width:168px}
+.ann-notify{display:inline-flex;padding:2px 9px;border-radius:11px;background:#f3f4f6;color:#8a96a5;font-size:12px;font-weight:800;white-space:nowrap}
+.ann-notify.on{background:#fff4e0;color:#a35a00}
+.ann-card .ann-card-sub{display:block;margin-top:2px}

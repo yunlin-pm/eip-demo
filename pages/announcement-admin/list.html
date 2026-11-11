@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>公告管理｜Bibian EIP Demo</title>
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/shell.css">
+  <link rel="stylesheet" href="../../assets/css/eip-layout.css">
+  <link rel="stylesheet" href="../../assets/css/memo.css">
+  <link rel="stylesheet" href="../../assets/css/claim-list.css">
+  <link rel="stylesheet" href="../../assets/css/list-management.css">
+  <link rel="stylesheet" href="../../assets/css/announcement.css">
+</head>
+<body class="eip-shared-layout eip-list-page ann-admin-list" data-eip-root="../../" data-eip-module="announcement" data-eip-sections="announcement-admin" data-eip-l2="announcement-admin" data-eip-l3="" data-eip-user="陳庭瑋 (T037)">
+  <header class="eip-shell-bar demo-preview-bar"><a class="eip-shell-brand demo-preview-brand" href="../../index.html" aria-label="返回系統功能目錄"><span class="demo-back" aria-hidden="true">‹</span><b class="demo-badge">Demo</b><strong>Bibian EIP</strong></a></header>
+  <div id="eipAppHeader"></div>
+  <main>
+    <div class="breadcrumb">總覽　›　公告設定　›　公告管理</div>
+    <div class="title-row"><div><h1>公告管理</h1><p>發佈狀態為「已發佈」的公告，會在發佈日期至到期日期之間顯示給同仁。</p></div><a class="btn primary" href="detail.html?mode=new">＋ 新增公告</a></div>
+    <section class="filters ann-filters" aria-label="查詢條件">
+      <div class="field"><label for="fCompany">公告公司</label><select id="fCompany"><option value="">全部</option><option value="CBS">網家跨境服務股份有限公司</option><option value="BBN">比比昂株式會社</option><option value="ASL">空中補給股份有限公司</option></select></div>
+      <div class="field"><label for="fType">公告類型</label><select id="fType"><option value="">全部</option><option>一般公告</option><option>人事公告</option><option>資訊公告</option><option>活動公告</option></select></div>
+      <div class="field"><label for="fStatus">發佈狀態</label><select id="fStatus"><option value="">全部</option><option>已發佈</option><option>不發佈</option></select></div>
+      <div class="field wide"><label for="fKeyword">關鍵字</label><input id="fKeyword" placeholder="公告標題／公告摘要"></div>
+      <div class="field"><label>發佈日期</label><div class="range"><input id="fFrom" placeholder="YYYYMMDD"><span>～</span><input id="fTo" placeholder="YYYYMMDD"></div></div>
+      <div class="filter-actions"><button class="btn" id="clear" type="button">清除</button><button class="btn primary" id="search" type="button">查詢</button></div>
+    </section>
+    <div class="resultbar"><span>查詢共 <b id="count">0</b> 筆</span></div>
+    <div class="mobile-claim-list ann-cards" id="cards"></div>
+    <div class="table-wrap"><table class="ann-table ann-admin-table"><thead><tr><th class="col-edit">操作</th><th class="col-status">發佈狀態</th><th class="col-pin">置頂</th><th class="col-type">公告類型</th><th class="col-title">公告標題</th><th class="col-company">公告公司</th><th class="col-date">發佈日期</th><th class="col-date">到期日期</th><th class="col-notify">Email 通知</th><th class="col-user">最後編輯者</th><th class="col-time">最後編輯時間</th><th class="col-user">新增者</th><th class="col-time">新增時間</th></tr></thead><tbody id="rows"></tbody></table><div class="empty" id="empty" hidden>查無符合條件的公告</div></div>
+    <div class="mobile-empty" id="mobileEmpty" hidden>查無符合條件的公告</div>
+    <nav class="ann-pager" id="pager" aria-label="分頁"></nav>
+  </main>
+  <div id="eipAppFooter"></div><script src="../../assets/js/eip-layout.js"></script><script src="../../assets/js/announcement-data.js"></script><script src="../../assets/js/announcement-admin-list.js"></script>
+</body>
+</html>

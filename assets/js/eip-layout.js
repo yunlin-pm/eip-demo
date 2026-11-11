@@ -11,6 +11,9 @@
       {id:'vendor',label:'廠商匯款資料',href:'pages/remittance/vendor-list.html'},
       {id:'payroll',label:'員工薪資帳戶資料',href:'pages/remittance/payroll-list.html'}
     ]},
+    announcement:{label:'公告設定',href:'pages/announcement-admin/list.html',sections:[
+      {id:'announcement-admin',label:'公告管理',href:'pages/announcement-admin/list.html'}
+    ]},
     organization:{label:'組織／員工',href:'pages/organization/list.html',sections:[
       {id:'organization',label:'組織管理',href:'pages/organization/list.html'},
       {id:'employees',label:'員工管理',href:'pages/employees/list.html'},
