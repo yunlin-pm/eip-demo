@@ -1,0 +1,67 @@
+/* 公司公告：列表頁沿用 claim-list.css／list-management.css，內容頁沿用 memo.css；此檔只放公告專屬樣式（類型標籤與總覽 overview.css 同色） */
+.ann-type{flex:0 0 auto;display:inline-flex;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:800;line-height:1.5;white-space:nowrap}
+.ann-type.general{background:#eef1f5;color:#4a5b6e}
+.ann-type.hr{background:#fff1e0;color:#a35a00}
+.ann-type.it{background:#e5f0fb;color:#165b94}
+.ann-type.event{background:#e6f6ec;color:#17773d}
+.ann-pin{display:inline-flex;align-items:center;padding:2px 9px;border-radius:11px;background:#fdecee;color:#c22a3c;font-size:12px;font-weight:800;white-space:nowrap}
+.ann-pin::before{content:'📌';margin-right:3px;font-size:11px}
+.ann-dash{color:#b0b9c4}
+.breadcrumb a,.crumb a{color:inherit;text-decoration:none}
+.breadcrumb a:hover,.crumb a:hover{text-decoration:underline}
+
+/* 列表頁 */
+.ann-list-page main{min-width:0}
+.ann-table{width:100%;table-layout:fixed}
+.ann-table .col-date{width:118px}
+.ann-table .col-pin{width:86px}
+.ann-table .col-type{width:110px}
+.ann-table .col-title{width:30%}
+.ann-table td.col-summary,.ann-table th:last-child{padding-right:16px}
+.ann-table td{overflow:hidden;text-overflow:ellipsis}
+.ann-table td.col-title a{color:#164d80;font-weight:700;text-decoration:none}
+.ann-table td.col-title a:hover{text-decoration:underline}
+.ann-table td.col-summary{color:#5b6b7c}
+.ann-table tr.is-pinned td{background:#fffafa}
+.ann-pager{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:6px;padding:20px 0 4px}
+.ann-pager button{min-width:34px;height:34px;padding:0 8px;border:1px solid #d0d8e2;border-radius:4px;background:#fff;color:#26384b;font:inherit;cursor:pointer}
+.ann-pager button:hover:not(:disabled){border-color:#176aa6;color:#176aa6}
+.ann-pager button.current{border-color:#176aa6;background:#176aa6;color:#fff;font-weight:800}
+.ann-pager button:disabled{color:#b8c1cc;cursor:default}
+.ann-pager-info{margin-left:8px;color:#697586;font-size:13px}
+.ann-card{padding-bottom:12px!important}
+.ann-card-head{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.ann-card strong{display:block;margin-bottom:5px;color:#17324d;font-size:16px;line-height:1.4}
+.ann-card p{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:0 0 8px;color:#5b6b7c;font-size:13px;line-height:1.55}
+.ann-card time{color:#8592a1;font-size:12px}
+.ann-card.is-pinned{border-color:#f1c6cc}
+
+/* 內容頁 */
+.ann-page{max-width:1040px;margin-left:auto;margin-right:auto}
+.ann-article{padding:0}
+.ann-article-head{padding:24px 28px 20px;border-bottom:1px solid #e3e8ee}
+.ann-article-tags{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.ann-article-head h1{margin:0 0 8px;color:#172f49;font-size:24px;line-height:1.4}
+.ann-article-meta{color:#697586;font-size:14px}
+.ann-section{padding:20px 28px;border-bottom:1px solid #eef1f5}
+.ann-section:last-child{border-bottom:0}
+.ann-section h2{margin:0 0 10px;color:#344054;font-size:15px;font-weight:800}
+.ann-summary{margin:0;padding:12px 14px;border-left:4px solid #1f6fa8;background:#f4f8fc;color:#344054;line-height:1.7}
+.ann-content{color:#1f2933;font-size:15px;line-height:1.8}
+.ann-content p{margin:0 0 10px}.ann-content ul,.ann-content ol{margin:0 0 10px;padding-left:24px}
+.ann-files{display:flex;flex-wrap:wrap;gap:10px}
+.ann-file{display:flex;align-items:center;gap:10px;min-width:300px;max-width:100%;padding:7px 12px 7px 8px;border:1px solid #d6dce3;border-radius:6px;background:#f7f9fb;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.ann-file:hover{border-color:#176aa6;background:#f1f7fc}
+.ann-file .file-thumb{flex:0 0 auto}
+.ann-file-meta{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.ann-file-meta b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#17324d;font-size:14px}
+.ann-file-meta small{color:#697586;font-size:12px}
+.ann-file-dl{color:#176aa6;font-size:18px}
+.ann-none{margin:0;color:#98a2b3}
+.ann-missing{padding:40px 28px;text-align:center}
+.ann-missing h1{margin:0 0 8px;font-size:20px}.ann-missing p{color:#697586}
+@media(max-width:700px){
+  .ann-article-head,.ann-section{padding-left:16px;padding-right:16px}
+  .ann-article-head h1{font-size:20px}
+  .ann-file{min-width:0;width:100%}
+}

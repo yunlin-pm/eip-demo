@@ -1,0 +1,73 @@
+/* 工程派工單：沿用 memo.css 版型（簽呈單／公司印鑑申請／合約送審申請），僅補本表單專屬樣式；各表單 CSS 不互相引用 */
+.work-order-page .detail-grid>*{min-width:0}
+.work-order-page .basic-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.work-order-page .basic-grid>label{display:flex;flex-direction:column;gap:6px;min-width:0}
+.work-order-page .v2-route-wide>.body.route{grid-template-columns:repeat(3,minmax(170px,1fr))}
+
+/* 需求效益 */
+.benefit-row{display:flex;flex-direction:column;gap:8px}
+.benefit-choices{display:flex;flex-wrap:wrap;align-items:center;gap:8px 22px;min-height:32px}
+.work-order-page .benefit-choices label{display:inline-flex;flex-direction:row;align-items:center;gap:6px;margin:0;font-weight:400;white-space:nowrap}
+.benefit-choices input[type=checkbox]{flex:0 0 auto;margin:0}
+.benefit-choices .inline-input{width:220px;max-width:100%;height:32px;min-height:32px;margin-left:4px}
+
+/* 工單項目與工時 */
+.work-order-page .panel h2 .hours-total{margin-left:auto;font-size:13px;font-weight:400;color:#475467}
+.hours-total b{font-size:16px;color:#174f7f}
+.wo-table{border:1px solid #d5dde6;border-radius:7px}
+.wo-head,.wo-row{display:grid;grid-template-columns:40px minmax(150px,1fr) minmax(200px,1.5fr) 104px minmax(200px,1.2fr) 48px;gap:10px;align-items:start;padding:10px 12px}
+.wo-head{background:#f2f5f8;font-weight:800;border-radius:7px 7px 0 0}
+.wo-head span{white-space:nowrap}
+.wo-row{border-top:1px solid #e1e7ed}
+.wo-row .row-no{padding-top:9px;font-weight:700;text-align:center;color:#17324d}
+.wo-cell{display:flex;flex-direction:column;gap:4px;min-width:0;margin:0;font-weight:400}
+.wo-cell-label{display:none}
+.wo-row textarea.control{min-height:84px;resize:vertical;font-weight:400}
+.wo-row .row-del{padding-top:9px}
+.hours-input{display:flex;align-items:center;gap:6px}
+.hours-input .control{width:100%;min-width:0}
+.hours-input em{font-style:normal;color:#475467;white-space:nowrap}
+.row-attach{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0}
+.row-attach>.control{width:100%}
+.row-files{display:flex;flex-direction:column;gap:4px;max-width:100%}
+.row-files:empty{display:none}
+.row-file{display:flex;align-items:center;gap:6px;min-width:0;max-width:100%;padding:4px 6px;border:1px solid #d5dde6;border-radius:6px;background:#f7fafc;font-size:12px}
+.row-file b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.row-file .file-thumb{flex:0 0 auto;width:30px;height:22px;font-size:9px}
+.row-file-remove{border:0;background:none;color:#d9364b;cursor:pointer;font-size:16px;line-height:1;padding:0 2px}
+.row-attach .upload-btn{padding:6px 8px;font-size:12px;white-space:nowrap}
+.doc-link{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#164d80;padding-top:9px}
+.doc-link[hidden]{display:none}
+.attach-empty{padding-top:9px;color:#98a2b3}
+.add-item{margin:10px 12px}
+
+/* 唯讀（查看／簽核） */
+.readonly .work-order-page .add-item,.readonly .work-order-page .row-del,.readonly .row-file-remove,.readonly .row-attach .upload-btn{display:none!important}
+.readonly .wo-head,.readonly .wo-row{grid-template-columns:40px minmax(150px,1fr) minmax(200px,1.5fr) 104px minmax(200px,1.2fr)}
+.readonly .wo-row .control:disabled,.readonly .benefit-choices .inline-input:disabled{color:#1f2933;-webkit-text-fill-color:#1f2933;background:#f7f9fb;opacity:1}
+.readonly .wo-row ::placeholder,.readonly #benefitOther::placeholder{color:transparent}
+.readonly .work-order-page .unit-panel .link-btn,.readonly .work-order-page .add-unit{display:none!important}
+
+/* 會簽單位表格 */
+.work-order-page .unit-panel td:last-child{white-space:nowrap;width:1%}
+.work-order-page .unit-panel td{vertical-align:middle}
+
+@media(max-width:1100px){
+  .wo-head{display:none}
+  .wo-row,.readonly .wo-row{grid-template-columns:32px minmax(0,1fr) minmax(0,1fr);grid-template-areas:"no sys hours" "no desc desc" "no att att" "no del del";row-gap:10px}
+  .wo-row .row-no{grid-area:no}
+  .wo-row>.c-sys{grid-area:sys}.wo-row>.c-desc{grid-area:desc}.wo-row>.c-hours{grid-area:hours}.wo-row>.c-att{grid-area:att}
+  .wo-row .row-del{grid-area:del;justify-self:end;padding-top:0}
+  .wo-cell-label{display:block;font-size:12px;font-weight:700;color:#475467}
+  .doc-link,.attach-empty{padding-top:0}
+}
+@media(max-width:900px){.work-order-page .basic-grid{grid-template-columns:1fr}}
+@media(max-width:700px){
+  .work-order-page .v2-route-wide>.body.route{grid-template-columns:1fr}
+  .work-order-page .panel h2{flex-wrap:wrap;gap:4px}
+  .work-order-page .panel h2 .hours-total{margin-left:0;width:100%}
+  .wo-row,.readonly .wo-row{grid-template-columns:28px minmax(0,1fr);grid-template-areas:"no sys" "no hours" "no desc" "no att" "no del"}
+  .benefit-choices label{white-space:normal}
+}
+.print-caption-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}.print-docno{font-weight:400;font-size:12px;color:#344054}
+.readonly .wo-row textarea.control{resize:none}

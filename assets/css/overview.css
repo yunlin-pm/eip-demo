@@ -30,3 +30,81 @@
 td.summary{white-space:nowrap}
 .mobile-summary{margin-bottom:4px;overflow:hidden;color:#202936;font-size:14px;text-overflow:ellipsis;white-space:nowrap}
 .overview-table-wrap{overflow-x:auto}
+
+/* 公司公告（總覽頁）：比照總覽未來擴展的公告卡片樣式 */
+.ann-panel{margin-top:32px;overflow:hidden;border:1px solid #dfe5ec;border-radius:10px;background:#fff;box-shadow:0 1px 4px rgba(18,45,71,.05)}
+.ann-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:22px 26px 16px;border-bottom:1px solid #e3e8ee}
+.ann-eyebrow{margin:0 0 6px;color:#1f6fa8;font-size:13px;font-weight:800;letter-spacing:.12em}
+.ann-title{margin:0;color:#172f49;font-size:22px;font-weight:800;line-height:1.3}
+.ann-more{padding-top:2px;color:#175b91;font-size:14px;font-weight:800;text-decoration:none;white-space:nowrap}
+.ann-more:hover{text-decoration:underline}
+.ann-item{display:grid;text-decoration:none;grid-template-columns:100px minmax(0,1fr) auto;gap:16px;align-items:center;width:100%;padding:18px 26px;border:0;border-bottom:1px solid #e9edf2;background:#fff;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.ann-item:last-child{border-bottom:0}
+.ann-item:hover{background:#f7fafc}
+.ann-item:focus-visible{outline:2px solid #164d80;outline-offset:-2px}
+.ann-item.is-pinned{background:#fbfcfe}
+.ann-item time{color:#6b7a8a;font-size:14px;font-variant-numeric:tabular-nums}
+.ann-body{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ann-line{display:flex;align-items:center;gap:8px;min-width:0}
+.ann-line strong{overflow:hidden;color:#25364a;font-size:16px;font-weight:800;text-overflow:ellipsis;white-space:nowrap}
+.ann-body small{overflow:hidden;color:#6b7a8a;font-size:13px;text-overflow:ellipsis;white-space:nowrap}
+.ann-type{flex:0 0 auto;display:inline-flex;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:800;line-height:1.5}
+.ann-type.general{background:#eef1f5;color:#4a5b6e}
+.ann-type.hr{background:#fff1e0;color:#a35a00}
+.ann-type.it{background:#e5f0fb;color:#165b94}
+.ann-type.event{background:#e6f6ec;color:#17773d}
+.ann-badges{display:flex;gap:6px;justify-content:flex-end}
+.ann-pin{display:inline-flex;align-items:center;padding:3px 9px;border-radius:11px;font-size:12px;font-weight:800;white-space:nowrap}
+.ann-pin{background:#fdecee;color:#c22a3c}
+.ann-pin::before{content:'📌';margin-right:3px;font-size:11px}
+.ann-empty{padding:40px;text-align:center;color:#8a96a5}
+.ann-empty[hidden]{display:none}
+@media(max-width:700px){
+  .ann-head{padding:18px 16px 14px}
+  .ann-title{font-size:20px}
+  .ann-item{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"body badges" "date date";gap:6px 10px;padding:14px 16px}
+  .ann-item time{grid-area:date;font-size:12px}
+  .ann-body{grid-area:body}.ann-badges{grid-area:badges;flex-direction:column;align-items:flex-end;align-self:start}
+  .ann-line{align-items:flex-start;flex-direction:column;gap:5px}
+  .ann-line strong{max-width:100%;font-size:15px;white-space:normal}
+}
+
+/* 總覽版面：桌機左欄「我的待辦」、右欄公告，兩塊同為白底大卡、等高；窄螢幕單欄時待辦在上、公告在下 */
+.ov-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:24px;align-items:stretch}
+.ov-grid>.ann-panel{margin-top:0}
+.task-panel{min-width:0;overflow:hidden;border:1px solid #dfe5ec;border-radius:10px;background:#fff;box-shadow:0 1px 4px rgba(18,45,71,.05)}
+.task-head{padding:20px 22px 14px;border-bottom:1px solid #e3e8ee}
+.task-group{padding:18px 22px 22px}
+.task-group+.task-group{border-top:1px dashed #e3e8ee}
+.task-group-title{margin:0 0 12px;color:#344054;font-size:15px;font-weight:800}
+.task-panel .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.task-panel .card{min-width:0;padding:16px;gap:12px;border:1px solid #e3e8ee;border-left-width:4px;box-shadow:none}
+.task-panel .card.pending{border-left-color:var(--card-yellow)}.task-panel .card.rejected{border-left-color:var(--card-red)}.task-panel .card.approved{border-left-color:var(--card-blue)}
+.task-panel .card-icon{width:38px;height:38px;font-size:16px}
+/* 要處理的卡片 */
+.task-hint{margin-top:6px;font-size:13px;font-weight:800}
+.task-hint:empty{display:none}
+.task-action.has-items.pending{background:#fff8e1;border-color:#f3d27a}
+.task-action.has-items.rejected{background:#fff1f2;border-color:#f3b4bb}
+.task-action.has-items .card-number{font-size:32px}
+.task-action.has-items.pending .task-hint{color:#946200}
+.task-action.has-items.rejected .task-hint{color:#c22a3c}
+.task-action.is-zero{background:#f8fafc;border-left-color:#c9d2dc!important}
+.task-action.is-zero .card-icon{background:#c9d2dc!important}
+.task-action.is-zero .card-number{color:#98a2b3}
+.task-action.is-zero .task-hint{color:#98a2b3;font-weight:600}
+/* 看進度用的卡片：數字較小 */
+.task-info .card-text .card-number{font-size:24px}
+@media(max-width:1100px){
+  .ov-grid{grid-template-columns:1fr}
+  .ov-grid>.ann-panel{margin-top:8px}
+}
+@media(max-width:700px){.task-panel .cards{grid-template-columns:1fr}.task-head{padding:18px 16px 14px}.task-group{padding:16px 16px 18px}}
+/* 右欄公告較窄：日期欄縮小、標題最多兩行、標籤直排 */
+.ov-grid .ann-head{padding:20px 22px 14px}
+.ov-grid .ann-item{grid-template-columns:84px minmax(0,1fr) auto;gap:12px;padding:16px 22px}
+.ov-grid .ann-item time{font-size:13px}
+.ov-grid .ann-line{align-items:flex-start}
+.ov-grid .ann-line strong{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;white-space:normal;line-height:1.4}
+.ov-grid .ann-badges{flex-direction:column;align-items:flex-end}
+@media(max-width:700px){.ov-grid .ann-head{padding:18px 16px 14px}.ov-grid .ann-item{grid-template-columns:minmax(0,1fr) auto;padding:14px 16px}}

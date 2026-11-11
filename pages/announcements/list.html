@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>公司公告｜Bibian EIP Demo</title>
+  <link rel="stylesheet" href="../../assets/css/tokens.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/shell.css">
+  <link rel="stylesheet" href="../../assets/css/eip-layout.css">
+  <link rel="stylesheet" href="../../assets/css/memo.css">
+  <link rel="stylesheet" href="../../assets/css/claim-list.css">
+  <link rel="stylesheet" href="../../assets/css/list-management.css">
+  <link rel="stylesheet" href="../../assets/css/announcement.css">
+</head>
+<body class="eip-shared-layout eip-list-page ann-list-page" data-eip-root="../../" data-eip-module="overview" data-eip-sections="" data-eip-l2="" data-eip-l3="" data-eip-user="陳庭瑋 (T037)">
+  <header class="eip-shell-bar demo-preview-bar"><a class="eip-shell-brand demo-preview-brand" href="../../index.html" aria-label="返回系統功能目錄"><span class="demo-back" aria-hidden="true">‹</span><b class="demo-badge">Demo</b><strong>Bibian EIP</strong></a></header>
+  <div id="eipAppHeader"></div>
+  <main>
+    <div class="breadcrumb"><a href="../overview.html">總覽</a>　›　公司公告</div>
+    <div class="title-row"><div><h1>公司公告</h1><p>置頂公告排在最前面，其餘依發佈日期由新到舊排列。</p></div></div>
+    <div class="resultbar"><span>共 <b id="count">0</b> 則公告</span></div>
+    <div class="mobile-claim-list ann-cards" id="cards"></div>
+    <div class="table-wrap"><table class="ann-table"><thead><tr><th class="col-date">發佈日期</th><th class="col-pin">置頂</th><th class="col-type">公告類型</th><th class="col-title">公告標題</th><th>公告摘要</th></tr></thead><tbody id="rows"></tbody></table><div class="empty" id="empty" hidden>目前沒有公告</div></div>
+    <div class="mobile-empty" id="mobileEmpty" hidden>目前沒有公告</div>
+    <nav class="ann-pager" id="pager" aria-label="分頁"></nav>
+  </main>
+  <div id="eipAppFooter"></div><script src="../../assets/js/eip-layout.js"></script><script src="../../assets/js/announcement-data.js"></script><script src="../../assets/js/announcement-list.js"></script>
+</body>
+</html>

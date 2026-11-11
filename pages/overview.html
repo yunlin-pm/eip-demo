@@ -76,44 +76,56 @@
       <span class="brand-text">Bibian EIP 比比昂企業資訊入口平台</span>
     </div>
   </div><div class="breadcrumb-bar"><span class="crumb-item active">總覽</span></div><main class="main"><div class="page active" id="page-overview">
-      <div class="overview-section">
-        <h2 class="section-title">行政表單－我的申請</h2>
-        <div class="cards">
-          <div class="card clickable pending" onclick="goToOverviewFiltered('pending')">
-            <div class="card-icon">&#128276;</div>
-            <div class="card-text">
-              <div class="card-number" id="ovMyPendingCount">2</div>
-              <div class="card-label">簽核申請中</div>
-            </div>
-          </div>
-          <div class="card clickable rejected" onclick="goToOverviewFiltered('rejected')">
-            <div class="card-icon">&#9888;</div>
-            <div class="card-text">
-              <div class="card-number" id="ovMyRejectedCount">1</div>
-              <div class="card-label">退回待處理</div>
-            </div>
-          </div>
-          <div class="card clickable approved" onclick="goToOverviewFiltered('approved14')">
-            <div class="card-icon">&#10003;</div>
-            <div class="card-text">
-              <div class="card-number" id="ovMyApproved14Count">5</div>
-              <div class="card-label">近14天已核准</div>
+      <div class="ov-grid">
+      <section class="task-panel" aria-labelledby="taskTitle">
+        <div class="task-head"><p class="ann-eyebrow">MY TASKS</p><h2 class="ann-title" id="taskTitle">我的待辦</h2></div>
+        <div class="task-group">
+          <h3 class="task-group-title">行政表單－簽核作業</h3>
+          <div class="cards">
+            <div class="card clickable pending task-action" onclick="goToOverviewFiltered('toSign')">
+              <div class="card-icon">&#128276;</div>
+              <div class="card-text">
+                <div class="card-number" id="ovToSignCount">0</div>
+                <div class="card-label">待我簽核</div>
+                <div class="task-hint"></div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+        <div class="task-group">
+          <h3 class="task-group-title">行政表單－我的申請</h3>
+          <div class="cards">
+            <div class="card clickable pending task-info" onclick="goToOverviewFiltered('pending')">
+              <div class="card-icon">&#128276;</div>
+              <div class="card-text">
+                <div class="card-number" id="ovMyPendingCount">2</div>
+                <div class="card-label">簽核申請中</div>
+              </div>
+            </div>
+            <div class="card clickable rejected task-action" onclick="goToOverviewFiltered('rejected')">
+              <div class="card-icon">&#9888;</div>
+              <div class="card-text">
+                <div class="card-number" id="ovMyRejectedCount">1</div>
+                <div class="card-label">退回待處理</div>
+                <div class="task-hint"></div>
+              </div>
+            </div>
+            <div class="card clickable approved task-info" onclick="goToOverviewFiltered('approved14')">
+              <div class="card-icon">&#10003;</div>
+              <div class="card-text">
+                <div class="card-number" id="ovMyApproved14Count">5</div>
+                <div class="card-label">近14天已核准</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-      <div class="overview-section">
-        <h2 class="section-title">行政表單－簽核作業</h2>
-        <div class="cards">
-          <div class="card clickable pending" onclick="goToOverviewFiltered('toSign')">
-            <div class="card-icon">&#128276;</div>
-            <div class="card-text">
-              <div class="card-number" id="ovToSignCount">0</div>
-              <div class="card-label">待我簽核</div>
-            </div>
-          </div>
-        </div>
+      <section class="overview-section ann-panel" aria-labelledby="annTitle">
+        <div class="ann-head"><div><p class="ann-eyebrow">COMPANY NEWS</p><h2 class="ann-title" id="annTitle">公司公告</h2></div><a class="ann-more" href="announcements/list.html" id="annMore">更多公告 ›</a></div>
+        <div class="ann-list" id="annList"></div>
+        <div class="ann-empty" id="annEmpty" hidden>目前沒有公告</div>
+      </section>
       </div>
 
       <div class="help-links">
@@ -121,4 +133,4 @@
         <span class="help-sep" aria-hidden="true">|</span>
         <a class="doc-help-link" id="issueReportLink" href="https://docs.google.com/spreadsheets/d/1evC0HgAeXCnfLLfH18ORQsLBKJE9oqYGZf-_WELhRCk/edit?usp=sharing" target="_blank" rel="noopener noreferrer">Bibian EIP —問題回報</a>
       </div>
-    </div></main><div class="site-footer">Copyright &copy; PChome Bibian Inc. All Rights Reserved.</div></div><script src="../assets/js/overview.js"></script><div id="eipAppFooter"></div><script src="../assets/js/eip-layout.js"></script></body></html>
+    </div></main><div class="site-footer">Copyright &copy; PChome Bibian Inc. All Rights Reserved.</div></div><script src="../assets/js/announcement-data.js"></script><script src="../assets/js/overview.js"></script><div id="eipAppFooter"></div><script src="../assets/js/eip-layout.js"></script></body></html>
