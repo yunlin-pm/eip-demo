@@ -3,9 +3,9 @@ function need(){return $('input[name=need]:checked').value}
 function syncNeed(){const borrow=need()==='borrow';$('#borrowFields').hidden=!borrow;$('#printNeed').textContent=borrow?'借用':'蓋用';renderHandling()}
 // 借出／歸還紀錄（保管者回壓）：借用＝待借出→已借出→已歸還；蓋用＝待用印→已用印。
 let handlingStep={borrow:0,stamp:0},paramStepUsed=false;
-// 畫面情境：執行回報＝已核准、尚未回壓；執行完成—印鑑蓋用／已借出／已歸還＝已有回壓紀錄（已借出仍可回壓「已歸還」）。
+// 畫面情境：執行回報＝已核准、尚未回壓；執行人員—文件蓋印完成／印鑑未歸還／印鑑已歸還＝已有回壓紀錄（印鑑未歸還仍可回壓「已歸還」）。
 const DONE={'done-stamp':{need:'stamp',step:1},'done-lent':{need:'borrow',step:1},'done-return':{need:'borrow',step:2}},isDone=m=>m in DONE;
-// 執行回報分兩種情境，依單據的用印需求：蓋用單＝執行回報—已蓋印（按「確認已蓋印」）；借用單＝執行回報—已借出（按「確認已借出」，回壓後按鈕接著變「確認已歸還」）。
+// 執行回報分兩種情境，依單據的用印需求：蓋用單＝執行人員—印鑑蓋印（按「確認已蓋印」）；借用單＝執行人員—印鑑借出（按「確認已借出」，回壓後按鈕接著變「確認已歸還」）。
 const EXEC={'execute-stamp':'stamp','execute-borrow':'borrow'},isExec=m=>m in EXEC;
 function nowText(){const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`}
 const KEEPER='呂金蓮 (B218)',fmt=v=>v?v.replace(/-/g,'/'):'—';let rec={};  // Demo：執行者＝登入帳號，以印章保管者示意

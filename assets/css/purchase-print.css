@@ -21,5 +21,6 @@
   .print-vendor-description{height:32mm}
   .print-vendor-description p{margin:0 0 6px}
   .print-required{color:#c62828}
+  .print-reason{white-space:pre-wrap!important}
   .print-approval th{width:auto}
 }

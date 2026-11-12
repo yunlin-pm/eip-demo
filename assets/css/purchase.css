@@ -57,3 +57,6 @@
 .purchase-detail .currency-note{margin:0 0 10px;color:#667085;font-size:13px;line-height:1.5}
 .purchase-detail .editor+.currency-note{margin:7px 0 0}
 @media(max-width:700px){.purchase-detail .currency-field{height:44px;max-width:none}.purchase-detail .currency-field>input.control{height:42px!important;min-height:42px!important}}
+
+.form-head .head-grid .reason-field{grid-column:1/-1;display:block}
+.purchase-detail textarea.control#applyReason{display:block;width:100%;max-width:none!important;box-sizing:border-box;resize:vertical;margin-top:4px}

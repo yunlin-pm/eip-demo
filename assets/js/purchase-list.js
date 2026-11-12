@@ -1,8 +1,8 @@
 const data=[
-{status:'草稿',wait:'—',no:'尚未產生單號',company:'網家跨境服務股份有限公司',applicantUnit:'後勤支援部／人事總務課',unit:'後勤支援部／人事總務課',purpose:'訂單出貨',product:'辦公文具',applicant:'陳庭瑋 (T037)',need:'2026/10/15',apply:'—',approve:'—',mode:'edit'},
-{status:'申請中',wait:'林家筠 (T038)',no:'CBS-FPU-2026-00105',company:'網家跨境服務股份有限公司',applicantUnit:'後勤支援部／人事總務課',unit:'後勤支援部／人事總務課',purpose:'測試',product:'測試治具',applicant:'陳庭瑋 (T037)',need:'2026/10/10',apply:'2026/09/18',approve:'—',mode:'view'},
-{status:'簽核中',wait:'陳志明 (A008)',no:'CBS-FPU-2026-00102',company:'網家跨境服務股份有限公司',applicantUnit:'客服部',unit:'代標代購事業本部／代購部',purpose:'訂單出貨',product:'筆記型電腦',applicant:'王曉明 (T021)',creator:'陳庭瑋 (T037)',need:'2026/10/03',apply:'2026/09/16',approve:'—',mode:'approve'},
-{status:'已核准',wait:'—',no:'CBS-FPU-2026-00098',company:'網家跨境服務股份有限公司',applicantUnit:'後勤支援部／人事總務課',unit:'後勤支援部／人事總務課',purpose:'個人領用',product:'辦公耗材',applicant:'林家筠 (T038)',need:'2026/09/30',apply:'2026/09/12',approve:'2026/09/17',mode:'view',signedByMe:true}
+{status:'草稿',wait:'—',no:'尚未產生單號',company:'網家跨境服務股份有限公司',applicantUnit:'後勤支援部／人事總務課',unit:'後勤支援部／人事總務課',purpose:'訂單出貨',product:'辦公文具',reason:'部門辦公文具庫存不足，補充日常使用',applicant:'陳庭瑋 (T037)',need:'2026/10/15',apply:'—',approve:'—',mode:'edit'},
+{status:'申請中',wait:'林家筠 (T038)',no:'CBS-FPU-2026-00105',company:'網家跨境服務股份有限公司',applicantUnit:'後勤支援部／人事總務課',unit:'後勤支援部／人事總務課',purpose:'測試',product:'測試治具',reason:'新品測試需採購測試治具以驗證相容性',applicant:'陳庭瑋 (T037)',need:'2026/10/10',apply:'2026/09/18',approve:'—',mode:'view'},
+{status:'簽核中',wait:'陳志明 (A008)',no:'CBS-FPU-2026-00102',company:'網家跨境服務股份有限公司',applicantUnit:'客服部',unit:'代標代購事業本部／代購部',purpose:'訂單出貨',product:'筆記型電腦',reason:'新進人員到職，需配置筆記型電腦',applicant:'王曉明 (T021)',creator:'陳庭瑋 (T037)',need:'2026/10/03',apply:'2026/09/16',approve:'—',mode:'approve'},
+{status:'已核准',wait:'—',no:'CBS-FPU-2026-00098',company:'網家跨境服務股份有限公司',applicantUnit:'後勤支援部／人事總務課',unit:'後勤支援部／人事總務課',purpose:'個人領用',product:'辦公耗材',reason:'月度辦公耗材補貨，供部門日常使用',applicant:'林家筠 (T038)',need:'2026/09/30',apply:'2026/09/12',approve:'2026/09/17',mode:'view',signedByMe:true}
 ];
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const me='陳庭瑋 (T037)',pageSize=20;let tab='mine',page=1,shown=[];
@@ -10,6 +10,7 @@ data.forEach(r=>{if(!r.creator)r.creator=r.applicant});
 function mine(r){return r.applicant===me||r.creator===me}
 const ymd=v=>(v||'').replace(/\D/g,'').slice(0,8),rowDate=v=>v==='—'?'':ymd(v);
 function person(v){const m=String(v||'').match(/^(.*?)\s*\(([^)]+)\)$/);return{name:m?m[1]:v,id:m?m[2]:''}}
+function reasonText(v){v=String(v||'');return v.length>20?v.slice(0,20)+'…':v}
 function dept(v){return String(v||'').split('／').pop()}
 function cls(s){return s==='草稿'?'draft':s==='申請中'?'applying':s==='簽核中'?'signing':s==='已核准'?'approved':s==='已退回'?'rejected':''}
 function act(r){return r.mode==='edit'?'編輯':r.mode==='approve'?'簽核':'查看'}
@@ -29,8 +30,8 @@ function filtered(){
 function render(){
  const all=filtered(),pages=Math.max(1,Math.ceil(all.length/pageSize));page=Math.min(page,pages);shown=all.slice((page-1)*pageSize,page*pageSize);
  $('#count').textContent=all.length;$('#pageText').textContent=`${page} / ${pages}`;$('#prevPage').disabled=page===1;$('#nextPage').disabled=page===pages;
- $('#rows').innerHTML=shown.map((r,i)=>`<tr><td><input class="pick" type="checkbox" data-i="${i}" aria-label="選取 ${r.no}"></td><td><span class="status ${cls(r.status)}">${r.status}</span></td><td>${r.wait}</td><td><a class="row-action" href="detail.html?mode=${r.mode}">${act(r)}</a></td><td>${r.no}</td><td>${r.company}</td><td>${dept(r.applicantUnit)}</td><td>${dept(r.unit)}</td><td>${r.applicant}</td><td>${r.need}</td><td>${r.apply}</td><td>${r.approve}</td>${actionsCell(r)}</tr>`).join('');
- $('#cards').innerHTML=shown.map(r=>`<a class="mobile-claim-card" href="detail.html?mode=${r.mode}"><div class="mobile-claim-head"><span class="mobile-status ${cls(r.status)}">${r.status}</span>${r.wait&&r.wait!=='—'?`<span class="mobile-signer">待簽核：${r.wait}</span>`:''}</div><strong class="mobile-claim-no">${r.no}</strong><div class="mobile-claim-meta"><span>申請人：${r.applicant}</span><span>需用日期：${r.need}</span><span class="full">採購單位：${dept(r.unit)}</span></div><div class="mobile-claim-foot"><span>${r.company}</span><span>${act(r)} <b>›</b></span></div></a>`).join('');
+ $('#rows').innerHTML=shown.map((r,i)=>`<tr><td><input class="pick" type="checkbox" data-i="${i}" aria-label="選取 ${r.no}"></td><td><span class="status ${cls(r.status)}">${r.status}</span></td><td>${r.wait}</td><td><a class="row-action" href="detail.html?mode=${r.mode}">${act(r)}</a></td><td>${r.no}</td><td>${r.company}</td><td title="${r.reason}">${reasonText(r.reason)}</td><td>${dept(r.applicantUnit)}</td><td>${dept(r.unit)}</td><td>${r.applicant}</td><td>${r.need}</td><td>${r.apply}</td><td>${r.approve}</td>${actionsCell(r)}</tr>`).join('');
+ $('#cards').innerHTML=shown.map(r=>`<a class="mobile-claim-card" href="detail.html?mode=${r.mode}"><div class="mobile-claim-head"><span class="mobile-status ${cls(r.status)}">${r.status}</span>${r.wait&&r.wait!=='—'?`<span class="mobile-signer">待簽核：${r.wait}</span>`:''}</div><strong class="mobile-claim-no">${r.no}</strong><div class="mobile-claim-meta"><span>申請人：${r.applicant}</span><span>需用日期：${r.need}</span><span class="full">採購單位：${dept(r.unit)}</span><span class="full">申請原因：${reasonText(r.reason)}</span></div><div class="mobile-claim-foot"><span>${r.company}</span><span>${act(r)} <b>›</b></span></div></a>`).join('');
  $('#empty').hidden=shown.length>0;$('#mobileEmpty').hidden=shown.length>0;$('#selectAll').checked=false;selection()
 }
 function selectedRows(){return $$('.pick:checked').map(x=>shown[Number(x.dataset.i)])}

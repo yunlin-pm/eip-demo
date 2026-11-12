@@ -63,6 +63,7 @@ function buildPurchasePrintView(){
   document.getElementById('printApplyDate').textContent=current.date;
   document.getElementById('printNeedDate').textContent=document.getElementById('needDate').value||'—';
   document.getElementById('printProcureUnit').textContent=document.getElementById('procureUnit').selectedOptions[0].textContent;
+  document.getElementById('printReason').textContent=document.getElementById('applyReason').value.trim()||'—';
   document.getElementById('printPurpose').textContent=[...document.querySelectorAll('.purpose input[type="checkbox"]:checked')].map(x=>x.parentElement.textContent.trim()).join('、')||'—';
   document.getElementById('printProductRows').innerHTML=purchaseRows('.detail-table:not(.quote-table)',5)||'<tr><td colspan="5">無資料</td></tr>';
   document.getElementById('printQuoteRows').innerHTML=purchaseRows('.quote-table',5)||'<tr><td colspan="5">無資料</td></tr>';
