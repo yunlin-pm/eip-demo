@@ -4,31 +4,32 @@ function syncNeed(){const borrow=need()==='borrow';$('#borrowFields').hidden=!bo
 // 借出／歸還紀錄（保管者回壓）：借用＝待借出→已借出→已歸還；蓋用＝待用印→已用印。
 let handlingStep={borrow:0,stamp:0},paramStepUsed=false;
 // 畫面情境：執行回報＝已核准、尚未回壓；執行人員—文件蓋印完成／印鑑未歸還／印鑑已歸還＝已有回壓紀錄（印鑑未歸還仍可回壓「已歸還」）。
-const DONE={'done-stamp':{need:'stamp',step:1},'done-lent':{need:'borrow',step:1},'done-return':{need:'borrow',step:2}},isDone=m=>m in DONE;
+const DONE={'done-cancel':{need:null,step:0},'done-stamp':{need:'stamp',step:1},'done-lent':{need:'borrow',step:1},'done-return':{need:'borrow',step:2}},isDone=m=>m in DONE;
 // 執行回報分兩種情境，依單據的用印需求：蓋用單＝執行人員—印鑑蓋印（按「確認已蓋印」）；借用單＝執行人員—印鑑借出（按「確認已借出」，回壓後按鈕接著變「確認已歸還」）。
 const EXEC={'execute-stamp':'stamp','execute-borrow':'borrow'},isExec=m=>m in EXEC;
 function nowText(){const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`}
-const KEEPER='呂金蓮 (B218)',fmt=v=>v?v.replace(/-/g,'/'):'—';let rec={};  // Demo：執行者＝登入帳號，以印章保管者示意
-function resetHandling(){const m=mode.value;if(isDone(m))$(`input[name=need][value=${DONE[m].need}]`).checked=true;else if(isExec(m))$(`input[name=need][value=${EXEC[m]}]`).checked=true;
+const KEEPER='呂金蓮 (B218)',fmt=v=>v?v.replace(/-/g,'/'):'—';let rec={},cancelRec=null;  // Demo：執行者＝登入帳號，以印章保管者示意
+function resetHandling(){const m=mode.value;if(isDone(m)){if(DONE[m].need)$(`input[name=need][value=${DONE[m].need}]`).checked=true}else if(isExec(m))$(`input[name=need][value=${EXEC[m]}]`).checked=true;
   const key=need()==='borrow'?'borrow':'stamp';let st=0;if(isDone(m))st=DONE[m].step;else if(!isExec(m)&&!paramStepUsed)st=+params.get('step')||0;
   if(m==='view'||m==='approve'||isExec(m)||isDone(m))paramStepUsed=true;
-  handlingStep={borrow:0,stamp:0};handlingStep[key]=st;rec={lend:'',lendBy:'',ret:'',retBy:'',stamp:'',stampBy:''};$('#handlingTime').textContent='最後更新時間：—';
+  handlingStep={borrow:0,stamp:0};handlingStep[key]=st;rec={lend:'',lendBy:'',ret:'',retBy:'',stamp:'',stampBy:''};cancelRec=m==='done-cancel'?{reason:'客戶合約內容變更，原用印文件作廢，無須處理。',by:KEEPER,at:'2026/09/26 10:20:00'}:null;$('#handlingTime').textContent='最後更新時間：—';
   if(st>0){$('#handlingTime').textContent='最後更新時間：2026/09/26 10:20:00';
     if(key==='borrow'){rec.lend='2026/09/25 09:30';rec.lendBy=KEEPER;if(st>=2){rec.ret='2026/09/30 16:00';rec.retBy=KEEPER}}else{rec.stamp='2026/09/25 14:30';rec.stampBy=KEEPER}}}
 function renderHandling(){const m=mode.value,borrow=need()==='borrow',key=borrow?'borrow':'stamp',step=handlingStep[key],read=m!=='new'&&m!=='edit',acting=isExec(m)||m==='done-lent';
-  $('#handlingPanel').hidden=!(read&&(isExec(m)||step>0));$('#editHandling').hidden=!(isDone(m)&&step>0&&!$('#handlingPanel').hidden);
+  $('#handlingPanel').hidden=!!cancelRec||!(read&&(isExec(m)||step>0));$('#cancelPanel').hidden=!cancelRec;if(cancelRec){$('#cCancelKind').textContent=borrow?'取消借出':'取消蓋印';$('#cCancelAt').textContent=cancelRec.at;$('#cCancelBy').textContent=cancelRec.by;$('#cCancelReason').textContent=cancelRec.reason}
+  $('#cancelAction').hidden=!(isExec(m)&&step===0);$('#cancelAction').textContent=borrow?'取消借出':'取消蓋印';$('#editHandling').hidden=!(isDone(m)&&step>0&&!$('#handlingPanel').hidden);
   $('#borrowRecord').hidden=!borrow;$('#stampRecord').hidden=borrow;
   $('#hLendDate').textContent=rec.lend||'—';$('#hLendBy').textContent=rec.lendBy||'—';$('#hReturnDate').textContent=rec.ret||'—';$('#hReturnBy').textContent=rec.retBy||'—';$('#hStampDate').textContent=fmt(rec.stamp);$('#hStampBy').textContent=rec.stampBy||'—';
   const btn=$('#completeAction'),next=borrow?['確認已借出','確認已歸還']:['確認已蓋印'];btn.hidden=!acting||step>=next.length;btn.textContent=next[step]||''}
 function syncNeed(){const borrow=need()==='borrow';$('#borrowFields').hidden=!borrow;$('#printNeed').textContent=borrow?'借用':'蓋用';renderHandling()}
 function applyMode(){const m=mode.value,read=m!=='new'&&m!=='edit',no=params.get('no')||'CBS-CSI-2026-00003';
-  const box={new:'newActions',edit:'editActions',view:'viewActions',approve:'approveActions','execute-stamp':'manageActions','execute-borrow':'manageActions','done-lent':'manageActions','done-stamp':'doneActions','done-return':'doneActions'}[m];
+  const box={new:'newActions',edit:'editActions',view:'viewActions',approve:'approveActions','execute-stamp':'manageActions','execute-borrow':'manageActions','done-lent':'manageActions','done-stamp':'doneActions','done-return':'doneActions','done-cancel':'doneActions'}[m];
   $$('#newActions,#editActions,#approveActions,#viewActions,#manageActions,#doneActions').forEach(x=>x.hidden=x.id!==box);
   $('#routePanel').hidden=m==='new';$('#returnAlert').hidden=m!=='edit';$('#opinionSummary').hidden=!read;
   document.body.classList.toggle('readonly',read);document.body.classList.toggle('show-approval-details',read);
-  $('#pageTitle').textContent=m==='new'?'新增公司印鑑申請（尚未產生單號）':isExec(m)?`執行回報公司印鑑申請（${no}）`:isDone(m)?`執行完成公司印鑑申請（${no}）`:`${m==='approve'?'簽核':m==='edit'?'編輯':'查看'}公司印鑑申請（${no}）`;
+  $('#pageTitle').textContent=m==='new'?'新增公司印鑑申請（尚未產生單號）':isExec(m)?`執行回報公司印鑑申請（${no}）`:m==='done-cancel'?`已取消執行公司印鑑申請（${no}）`:isDone(m)?`執行完成公司印鑑申請（${no}）`:`${m==='approve'?'簽核':m==='edit'?'編輯':'查看'}公司印鑑申請（${no}）`;
   $('#applyDate').textContent=m==='new'?'申請日期：送出簽核後由系統回寫':'申請日期：2026/09/23';
-  $$('input,select,textarea').forEach(el=>{if(el===mode||el.closest('#execModal,#decisionModal'))return;if(el.name==='need'){el.disabled=isDone(m)||isExec(m);return}el.disabled=read});syncSealOther();syncNeed()}
+  $$('input,select,textarea').forEach(el=>{if(el===mode||el.closest('#execModal,#decisionModal,#cancelModal'))return;if(el.name==='need'){el.disabled=isDone(m)||isExec(m);return}el.disabled=read});syncSealOther();syncNeed()}
 // 舊連結 mode=execute／manage 依 need 參數轉成對應的執行回報情境
 // 新增情境用印類別預設不選（其他情境保留範例資料的勾選）
 function clearSealTypes(){$$('input[name=sealType]').forEach(x=>x.checked=false);$$('#borrowFields input[type=date]').forEach(x=>x.value='');planMin()}
@@ -45,7 +46,7 @@ planInputs()[0].addEventListener('change',e=>{const b=e.target,r=planInputs()[1]
 planInputs()[1].addEventListener('change',e=>{const b=planInputs()[0],r=e.target;
   if(b.value&&r.value&&r.value<b.value){alert('預計歸還日不得早於預計借出日。');r.value=''}});
 planMin();
-$$('#newActions .btn.primary,#editActions .btn.primary').forEach(x=>x.addEventListener('click',()=>{if(need()!=='borrow')return;const[b,r]=planInputs();
+$$('#newActions .btn.primary,#editActions .btn.primary').forEach(x=>x.addEventListener('click',()=>{const miss=$$('.document-row').findIndex(r=>!r.querySelector('.row-file'));if(miss>=0){alert(`第 ${miss+1} 列用印文件尚未上傳附件檔案，每一列用印文件都須上傳附件。`);return}if(need()!=='borrow')return;const[b,r]=planInputs();
   if(!b.value||!r.value){alert('請填寫預計借出日與預計歸還日。');return}const m=planCheck();if(m)alert(m)}));
 let startMode=params.get('mode')==='manage'?'execute':params.get('mode')||'new';if(startMode==='execute')startMode=params.get('need')==='borrow'?'execute-borrow':'execute-stamp';mode.value=startMode;if(mode.value!==startMode)mode.value='new';if(mode.value==='new')clearSealTypes();if(params.get('need')==='borrow')$('input[name=need][value=borrow]').checked=true;mode.onchange=()=>{if(mode.value==='new')clearSealTypes();resetHandling();history.replaceState(null,'',`?mode=${mode.value}&need=${need()}`);applyMode()};$$('input[name=need]').forEach(x=>x.onchange=()=>{if(isExec(mode.value))resetHandling();syncNeed()});$('#routeToggle').onclick=()=>{const open=$('#routeBody').classList.toggle('route-collapsed');$('#routeToggle').textContent=open?'查看':'收合'};$('#historyLink').onclick=()=>$('#historyModal').hidden=false;$$('[data-close-history]').forEach(x=>x.onclick=()=>$('#historyModal').hidden=true);
 function openDecision(type){$('#decisionTitle').textContent=type==='approve'?'核准並批示':'退回原因';$('#decisionOpinion').placeholder=type==='approve'?'可填寫簽核意見（選填），留空可直接核准':'請輸入退回原因（必填）';$('#decisionModal').dataset.type=type;$('#decisionModal').hidden=false}$('#approveBtn').onclick=()=>openDecision('approve');$('#rejectBtn').onclick=()=>openDecision('reject');$$('[data-close-modal]').forEach(x=>x.onclick=()=>$('#decisionModal').hidden=true);$('#decisionConfirm').onclick=()=>{if($('#decisionModal').dataset.type==='reject'&&!$('#decisionOpinion').value.trim()){alert('請輸入退回原因');return}alert($('#decisionModal').dataset.type==='reject'?'已退回申請':'本關已核准');$('#decisionModal').hidden=true};
@@ -65,7 +66,7 @@ function buildPrintRecords(){const borrow=need()==='borrow',v=x=>escH(x||''),pla
 window.addEventListener('beforeprint',()=>{buildPrint();buildPrintRecords()});
 function renumberDocs(){$$('.document-row .row-no').forEach((el,i)=>el.textContent=i+1)}
 function syncRowAttach(row){const has=!!row.querySelector('.row-file');row.querySelector('.upload-btn').hidden=has}
-function newDocRow(){const row=document.createElement('div');row.className='document-row';row.innerHTML='<span class="row-no"></span><span class="m-label req">用印文件名稱</span><input class="control doc-name" type="text" maxlength="50" placeholder="請輸入用印文件名稱" aria-label="用印文件名稱"><span class="m-label req">用印份數</span><input class="control doc-copies" type="number" min="1" placeholder="份數" aria-label="用印份數" value="1"><span class="m-label">附件檔案</span><div class="row-attach"><button class="upload-btn" type="button">📎 選擇上傳附件</button></div><button class="link-btn" type="button">刪除</button>';return row}
+function newDocRow(){const row=document.createElement('div');row.className='document-row';row.innerHTML='<span class="row-no"></span><span class="m-label req">用印文件名稱</span><input class="control doc-name" type="text" maxlength="50" placeholder="請輸入用印文件名稱" aria-label="用印文件名稱"><span class="m-label req">用印份數</span><input class="control doc-copies" type="number" min="1" placeholder="份數" aria-label="用印份數" value="1"><span class="m-label req">附件檔案</span><div class="row-attach"><button class="upload-btn" type="button">📎 選擇上傳附件</button></div><button class="link-btn" type="button">刪除</button>';return row}
 docTable.addEventListener('click',e=>{const t=e.target;
   if(t.classList.contains('add-document')){docTable.insertBefore(newDocRow(),t);renumberDocs();return}
   if(t.classList.contains('link-btn')){const rows=$$('.document-row');if(rows.length<=1){alert('至少需保留一列用印文件。');return}t.closest('.document-row').remove();renumberDocs();return}
@@ -108,6 +109,16 @@ $('#execConfirm').onclick=()=>{const borrow=need()==='borrow',key=borrow?'borrow
   else if(execKind==='lend'){rec.lend=v1;rec.lendBy=KEEPER}else if(execKind==='return'){rec.ret=v1;rec.retBy=KEEPER}else{rec.stamp=v1;rec.stampBy=KEEPER}
   if(!edit)handlingStep[key]++;$('#handlingTime').textContent='最後更新時間：'+nowText();$('#execModal').hidden=true;renderHandling();
   alert(edit?'已更新借出／歸還紀錄。':execKind==='lend'?'已記錄印鑑借出，並通知申請人與印章保管者。':execKind==='return'?'已記錄印鑑歸還，並通知申請人與印章保管者。':'已記錄蓋印，並通知申請人與印章保管者。')};
+// 取消借出／取消蓋印：僅「尚未執行」可取消；原因必填；送出後執行狀態為「取消執行」且無法異動
+function openCancel(){const borrow=need()==='borrow',w=borrow?'借出':'蓋印';$('#cancelTitle').textContent='取消'+w;$('#cancelConfirm').textContent='確認取消'+w;
+  $('#cancelWarn').textContent=`※ 送出後無法異動：本單執行狀態將變更為「取消執行」，不可再${w}，也無法復原；如仍需${borrow?'借用':'用印'}，請申請人重新填寫公司印鑑申請。`;
+  $('#cancelReason').value='';$('#cancelCount').textContent='0／500';$('#cancelBy').value=KEEPER;$('#cancelModal').hidden=false;requestAnimationFrame(()=>$('#cancelReason').focus())}
+$('#cancelAction').onclick=openCancel;
+$('#cancelReason').addEventListener('input',e=>{$('#cancelCount').textContent=e.target.value.length+'／500'});
+$$('[data-close-cancel]').forEach(x=>x.onclick=()=>$('#cancelModal').hidden=true);
+$('#cancelConfirm').onclick=()=>{const r=$('#cancelReason').value.trim();if(!r){alert('請填寫取消原因。');return}const w=need()==='borrow'?'借出':'蓋印';
+  cancelRec={reason:r,by:KEEPER,at:nowText()};$('#cancelModal').hidden=true;mode.value='done-cancel';history.replaceState(null,'',`?mode=done-cancel&need=${need()}`);applyMode();
+  alert(`已取消${w}，執行狀態變更為「取消執行」，並通知申請人。`)};
 resetHandling();
 applyMode();
 const applicantUnits={T037:'總經理室／後勤支援部／人事總務課',T021:'代標代購事業本部／客服部'};$('#applicant').onchange=e=>{$('#applicantUnit').textContent=applicantUnits[e.target.value]||'未設定所屬部門';$('#printApplicantUnit').textContent=$('#applicantUnit').textContent;$('#printApplicant').textContent=e.target.selectedOptions[0].textContent};

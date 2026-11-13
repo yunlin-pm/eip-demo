@@ -7,23 +7,24 @@ const data=[
 {status:'已核准',need:'借用',no:'CBS-CSI-2026-00007',approve:'2026/09/26',plan:'2026/10/30',reason:'辦理分公司設立登記，借用印鑑用於登記文件正本。',seal:'印鑑大小章',applicant:'王曉明 (T021)',unit:'總務部',apply:'2026/09/25',progress:'待借出',signer:'',signed:false},
 {status:'已核准',need:'蓋用',no:'CBS-CSI-2026-00004',approve:'2026/09/21',reason:'員工在職證明用印。',seal:'印鑑大小章',applicant:'林家筠 (T038)',unit:'人事總務課',apply:'2026/09/20',progress:'待用印',signer:'',signed:false},
 {status:'已核准',need:'借用',no:'CBS-CSI-2026-00008',approve:'2026/09/11',lend:'2026/09/11 10:00',ret:'2026/09/15 16:30',plan:'2026/09/15',reason:'申請退還租賃保證金，借用印鑑用於申請書。',seal:'便章大小章',applicant:'陳庭瑋 (T037)',unit:'人事總務課',apply:'2026/09/10',progress:'已歸還',signer:'',signed:true},
+{status:'已核准',need:'蓋用',no:'CBS-CSI-2026-00009',approve:'2026/09/24',reason:'客戶合約內容變更，原用印文件作廢。',seal:'便章大小章',applicant:'王曉明 (T021)',unit:'總務部',apply:'2026/09/23',progress:'取消執行',signer:'',signed:true},
 {status:'已退回',need:'借用',no:'CBS-CSI-2026-00001',reason:'海外倉儲租賃契約簽署，借用印鑑。',seal:'大章、小章',applicant:'陳庭瑋 (T037)',unit:'跨境營運部',apply:'2026/09/16',progress:'—',signer:'',signed:false}
 ];
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],me='陳庭瑋 (T037)';let tab='mine',shown=[];
 const brief=t=>t.length>10?t.slice(0,10)+'…':t,mine=r=>r.applicant===me, tone=s=>s==='草稿'?'draft':s==='已核准'?'approved':s==='已退回'?'rejected':s==='申請中'?'applying':'signing';
 const PENDING=['待借出','已借出（待歸還）','待用印'],STEP={'待借出':0,'已借出（待歸還）':1,'已歸還':2,'待用印':0,'已用印':1};
 const canHandle=r=>tab==='execution'&&r.status==='已核准'&&PENDING.includes(r.progress);
-const EXEC_MODE={'待借出':'execute-borrow','待用印':'execute-stamp','已借出（待歸還）':'done-lent','已歸還':'done-return','已用印':'done-stamp'};
+const EXEC_MODE={'待借出':'execute-borrow','待用印':'execute-stamp','已借出（待歸還）':'done-lent','已歸還':'done-return','已用印':'done-stamp','取消執行':'done-cancel'};
 function mode(r){return r.status==='草稿'||r.status==='已退回'?'edit':tab==='execution'&&r.status==='已核准'&&EXEC_MODE[r.progress]?EXEC_MODE[r.progress]:r.signer===me?'approve':'view'}
 function action(r){const m=mode(r);return m==='edit'?'編輯':m==='approve'?'簽核':canHandle(r)?'處理':'查看'}
 function link(r){const m=mode(r);return `detail.html?mode=${m}&need=${r.need==='借用'?'borrow':'stamp'}&no=${encodeURIComponent(r.no)}${m==='view'&&STEP[r.progress]?`&step=${STEP[r.progress]}`:''}`}
 // 執行狀態／借用日期／歸還日期（只有已核准的單據才有；蓋用沒有借還日期）
-const EXEC_LABEL={'待借出':'尚未執行','待用印':'尚未執行','已借出（待歸還）':'已借出','已歸還':'已歸還','已用印':'已蓋印'};
+const EXEC_LABEL={'待借出':'尚未執行','待用印':'尚未執行','已借出（待歸還）':'已借出','已歸還':'已歸還','已用印':'已蓋印','取消執行':'取消執行'};
 const execLabel=r=>r.status==='已核准'?EXEC_LABEL[r.progress]||'—':'—';
 const lendDate=r=>r.status==='已核准'&&r.need==='借用'&&r.lend?r.lend:'—';
 const overdueTag=' <span class="status rejected">逾期</span>';
-const returnDate=r=>r.status!=='已核准'?'—':r.need==='蓋用'?(r.stamp||'—'):r.ret?r.ret:`預計 ${r.plan||'—'}${r.overdue?overdueTag:''}`;
-const EXEC_TONE={'尚未執行':'gray','已借出':'yellow','已歸還':'green','已蓋印':'green'};
+const returnDate=r=>r.status!=='已核准'||r.progress==='取消執行'?'—':r.need==='蓋用'?(r.stamp||'—'):r.ret?r.ret:`預計 ${r.plan||'—'}${r.overdue?overdueTag:''}`;
+const EXEC_TONE={'尚未執行':'gray','已借出':'yellow','已歸還':'green','已蓋印':'green','取消執行':'red'};
 // 所有頁籤：用印需求為純文字、執行狀態為淺色標籤
 function needCell(r){return r.need}
 function execCell(r){const t=execLabel(r);return EXEC_TONE[t]?`<span class="exec-tag ${EXEC_TONE[t]}">${t}</span>`:t}

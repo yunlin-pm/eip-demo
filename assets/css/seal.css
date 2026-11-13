@@ -48,3 +48,9 @@
 .m-label{display:none}
 .print-records{margin-top:14px}.print-records th,.print-records td{text-align:center}.print-records .rec-title{letter-spacing:.4em;background:#f2f5f8}.print-records .rec-head th{width:33.33%}.print-records .rec-val td{height:34px}
 .table-wrap.is-exec .col-apply{display:none}
+.exec-tag.red{background:#fde4e4;color:#b42318}
+.cancel-reason{padding:12px 16px;border-top:1px solid #e4ebf2}.cancel-reason p{margin:6px 0 0;white-space:pre-wrap;line-height:1.6}
+.cancel-warn{margin:0;padding:10px 12px;border-radius:6px;background:#fff4e5;color:#8a4b00;font-size:13px;line-height:1.6}
+.btn.danger{background:#b42318;border-color:#b42318;color:#fff}.btn.danger:hover{background:#912018}
+.exec-dialog textarea.control{height:auto!important;min-height:112px;padding:8px 10px;line-height:1.6;resize:vertical}
+.cancel-count{align-self:flex-end;color:#657384;font-size:12px}
