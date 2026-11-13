@@ -52,3 +52,6 @@
 .eip-list-page .table-wrap:not(.is-exec) .col-target,.eip-list-page .table-wrap:not(.is-exec) .col-done,.eip-list-page .table-wrap:not(.is-exec) .col-disable{display:none}
 /* 雲端服務與資源申請管理「執行管理」：不顯示「申請人」 */
 .eip-list-page .table-wrap.is-exec .col-applicant{display:none}
+.eip-list-page .table-wrap.is-exec .col-req-std{display:none}
+.eip-list-page .table-wrap:not(.is-exec) .col-req-exec{display:none}
+.eip-list-page .table-wrap.is-exec table.req-table{min-width:100%}

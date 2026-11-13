@@ -14,11 +14,11 @@ function resetHandling(){const m=mode.value;if(isDone(m))$(`input[name=need][val
   if(m==='view'||m==='approve'||isExec(m)||isDone(m))paramStepUsed=true;
   handlingStep={borrow:0,stamp:0};handlingStep[key]=st;rec={lend:'',lendBy:'',ret:'',retBy:'',stamp:'',stampBy:''};$('#handlingTime').textContent='最後更新時間：—';
   if(st>0){$('#handlingTime').textContent='最後更新時間：2026/09/26 10:20:00';
-    if(key==='borrow'){rec.lend='2026-09-25';rec.lendBy=KEEPER;if(st>=2){rec.ret='2026-09-30';rec.retBy=KEEPER}}else{rec.stamp='2026-09-25';rec.stampBy=KEEPER}}}
+    if(key==='borrow'){rec.lend='2026/09/25 09:30';rec.lendBy=KEEPER;if(st>=2){rec.ret='2026/09/30 16:00';rec.retBy=KEEPER}}else{rec.stamp='2026-09-25';rec.stampBy=KEEPER}}}
 function renderHandling(){const m=mode.value,borrow=need()==='borrow',key=borrow?'borrow':'stamp',step=handlingStep[key],read=m!=='new'&&m!=='edit',acting=isExec(m)||m==='done-lent';
   $('#handlingPanel').hidden=!(read&&(isExec(m)||step>0));$('#editHandling').hidden=!(isDone(m)&&step>0&&!$('#handlingPanel').hidden);
   $('#borrowRecord').hidden=!borrow;$('#stampRecord').hidden=borrow;
-  $('#hLendDate').textContent=fmt(rec.lend);$('#hLendBy').textContent=rec.lendBy||'—';$('#hReturnDate').textContent=fmt(rec.ret);$('#hReturnBy').textContent=rec.retBy||'—';$('#hStampDate').textContent=fmt(rec.stamp);$('#hStampBy').textContent=rec.stampBy||'—';
+  $('#hLendDate').textContent=rec.lend||'—';$('#hLendBy').textContent=rec.lendBy||'—';$('#hReturnDate').textContent=rec.ret||'—';$('#hReturnBy').textContent=rec.retBy||'—';$('#hStampDate').textContent=fmt(rec.stamp);$('#hStampBy').textContent=rec.stampBy||'—';
   const btn=$('#completeAction'),next=borrow?['確認已借出','確認已歸還']:['確認已蓋印'];btn.hidden=!acting||step>=next.length;btn.textContent=next[step]||''}
 function syncNeed(){const borrow=need()==='borrow';$('#borrowFields').hidden=!borrow;$('#printNeed').textContent=borrow?'借用':'蓋用';renderHandling()}
 function applyMode(){const m=mode.value,read=m!=='new'&&m!=='edit',no=params.get('no')||'CBS-CSI-2026-00003';
@@ -28,14 +28,27 @@ function applyMode(){const m=mode.value,read=m!=='new'&&m!=='edit',no=params.get
   document.body.classList.toggle('readonly',read);document.body.classList.toggle('show-approval-details',read);
   $('#pageTitle').textContent=m==='new'?'新增公司印鑑申請（尚未產生單號）':isExec(m)?`執行回報公司印鑑申請（${no}）`:isDone(m)?`執行完成公司印鑑申請（${no}）`:`${m==='approve'?'簽核':m==='edit'?'編輯':'查看'}公司印鑑申請（${no}）`;
   $('#applyDate').textContent=m==='new'?'申請日期：送出簽核後由系統回寫':'申請日期：2026/09/23';
-  $$('input,select,textarea').forEach(el=>{if(el===mode||el.closest('#execModal,#decisionModal'))return;if(el.name==='need'){el.disabled=isDone(m)||isExec(m);return}el.disabled=read});syncNeed()}
+  $$('input,select,textarea').forEach(el=>{if(el===mode||el.closest('#execModal,#decisionModal'))return;if(el.name==='need'){el.disabled=isDone(m)||isExec(m);return}el.disabled=read});syncSealOther();syncNeed()}
 // 舊連結 mode=execute／manage 依 need 參數轉成對應的執行回報情境
 let startMode=params.get('mode')==='manage'?'execute':params.get('mode')||'new';if(startMode==='execute')startMode=params.get('need')==='borrow'?'execute-borrow':'execute-stamp';mode.value=startMode;if(mode.value!==startMode)mode.value='new';if(params.get('need')==='borrow')$('input[name=need][value=borrow]').checked=true;mode.onchange=()=>{resetHandling();history.replaceState(null,'',`?mode=${mode.value}&need=${need()}`);applyMode()};$$('input[name=need]').forEach(x=>x.onchange=()=>{if(isExec(mode.value))resetHandling();syncNeed()});$('#routeToggle').onclick=()=>{const open=$('#routeBody').classList.toggle('route-collapsed');$('#routeToggle').textContent=open?'查看':'收合'};$('#historyLink').onclick=()=>$('#historyModal').hidden=false;$$('[data-close-history]').forEach(x=>x.onclick=()=>$('#historyModal').hidden=true);
 function openDecision(type){$('#decisionTitle').textContent=type==='approve'?'核准並批示':'退回原因';$('#decisionOpinion').placeholder=type==='approve'?'可填寫簽核意見（選填），留空可直接核准':'請輸入退回原因（必填）';$('#decisionModal').dataset.type=type;$('#decisionModal').hidden=false}$('#approveBtn').onclick=()=>openDecision('approve');$('#rejectBtn').onclick=()=>openDecision('reject');$$('[data-close-modal]').forEach(x=>x.onclick=()=>$('#decisionModal').hidden=true);$('#decisionConfirm').onclick=()=>{if($('#decisionModal').dataset.type==='reject'&&!$('#decisionOpinion').value.trim()){alert('請輸入退回原因');return}alert($('#decisionModal').dataset.type==='reject'?'已退回申請':'本關已核准');$('#decisionModal').hidden=true};
 const docTable=$('.document-table');
+// 用印類別：「其他」勾選後才可輸入文字
+function syncSealOther(){const on=$('#sealOther').checked,t=$('#sealOtherText');t.hidden=false;t.disabled=!on||mode.value!=='new'&&mode.value!=='edit';if(!on)t.value=''}
+$('#sealOther').onchange=()=>{syncSealOther();if($('#sealOther').checked)$('#sealOtherText').focus()};
+function sealTypes(){return $$('input[name=sealType]:checked').map(x=>x.value==='其他'?'其他：'+($('#sealOtherText').value.trim()||'（未填）'):x.value)}
+const escH=v=>String(v).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function buildPrint(){$('#printSealType').textContent=sealTypes().join('、')||'—';
+  $('#printDocRows').innerHTML=$$('.document-row').map((r,i)=>`<tr><td>${i+1}</td><td>${escH(r.querySelector('.doc-name').value.trim()||'—')}</td><td>${escH(r.querySelector('.doc-copies').value||'—')}</td><td>${r.querySelector('.row-file b')?escH(r.querySelector('.row-file b').textContent):'—'}</td></tr>`).join('')}
+// 列印「借出／歸還記錄」：列印當下已有值才帶入，沒有值留空白（借用單＝借出記錄＋歸還記錄；蓋用單＝蓋用記錄）
+function buildPrintRecords(){const borrow=need()==='borrow',v=x=>escH(x||''),plan=(($$('#borrowFields input[type=date]')[1]||{}).value||'').replace(/-/g,'/');
+  $('#printRecords').innerHTML=borrow
+   ?`<tbody><tr><th class="rec-title" colspan="3">借 出 記 錄</th></tr><tr class="rec-head"><th>借出日期</th><th>預計歸還日</th><th>借出人簽名</th></tr><tr class="rec-val"><td>${v(rec.lend)}</td><td>${v(plan)}</td><td>${v(rec.lendBy)}</td></tr><tr><th class="rec-title" colspan="3">歸 還 記 錄</th></tr><tr class="rec-head"><th>預計歸還日</th><th>實際歸還日</th><th>保管人簽名</th></tr><tr class="rec-val"><td>${v(plan)}</td><td>${v(rec.ret)}</td><td>${v(rec.retBy)}</td></tr></tbody>`
+   :`<tbody><tr><th class="rec-title" colspan="2">蓋 用 記 錄</th></tr><tr class="rec-head"><th>實際蓋用日期</th><th>保管人簽名</th></tr><tr class="rec-val"><td>${v(fmt(rec.stamp)==='—'?'':fmt(rec.stamp))}</td><td>${v(rec.stampBy)}</td></tr></tbody>`}
+window.addEventListener('beforeprint',()=>{buildPrint();buildPrintRecords()});
 function renumberDocs(){$$('.document-row .row-no').forEach((el,i)=>el.textContent=i+1)}
 function syncRowAttach(row){const has=!!row.querySelector('.row-file');row.querySelector('.upload-btn').hidden=has}
-function newDocRow(){const row=document.createElement('div');row.className='document-row';row.innerHTML='<span class="row-no"></span><input class="control" type="number" min="1" value="1"><input class="control" placeholder="選填"><div class="row-attach"><button class="upload-btn" type="button">📎 選擇上傳附件</button></div><button class="link-btn" type="button">刪除</button>';return row}
+function newDocRow(){const row=document.createElement('div');row.className='document-row';row.innerHTML='<span class="row-no"></span><span class="m-label req">用印文件名稱</span><input class="control doc-name" type="text" maxlength="100" placeholder="請輸入用印文件名稱" aria-label="用印文件名稱"><span class="m-label req">用印份數</span><input class="control doc-copies" type="number" min="1" placeholder="份數" aria-label="用印份數" value="1"><span class="m-label">附件檔案</span><div class="row-attach"><button class="upload-btn" type="button">📎 選擇上傳附件</button></div><button class="link-btn" type="button">刪除</button>';return row}
 docTable.addEventListener('click',e=>{const t=e.target;
   if(t.classList.contains('add-document')){docTable.insertBefore(newDocRow(),t);renumberDocs();return}
   if(t.classList.contains('link-btn')){const rows=$$('.document-row');if(rows.length<=1){alert('至少需保留一列用印文件。');return}t.closest('.document-row').remove();renumberDocs();return}
@@ -44,20 +57,32 @@ docTable.addEventListener('click',e=>{const t=e.target;
 $('.add-unit').onclick=()=>alert('已新增一筆會簽單位輸入列。');
 // 回填執行紀錄／編輯：彈窗，執行者固定帶登入帳號
 let execKind='';
+// 實際借出／歸還日期時間：YYYY/MM/DD HH:MM（文字輸入，輸入數字自動補斜線、空白與冒號；「現在」帶入目前時間）；實際蓋印日期仍為日期選擇
+const DT_RE=/^(\d{4})\/(\d{2})\/(\d{2}) (\d{2}):(\d{2})$/;
+function maskDt(v){const d=v.replace(/\D/g,'').slice(0,12);let o=d.slice(0,4);if(d.length>4)o+='/'+d.slice(4,6);if(d.length>6)o+='/'+d.slice(6,8);if(d.length>8)o+=' '+d.slice(8,10);if(d.length>10)o+=':'+d.slice(10,12);return o}
+function validDt(v){const m=DT_RE.exec(v);if(!m)return false;const[,y,mo,da,h,mi]=m.map(Number),d=new Date(y,mo-1,da,h,mi);return d.getFullYear()===y&&d.getMonth()===mo-1&&d.getDate()===da&&h<24&&mi<60}
+function nowDt(){return nowText().slice(0,16)}
+['#execDt','#execDt2'].forEach(id=>$(id).addEventListener('input',e=>{e.target.value=maskDt(e.target.value)}));
+$$('[data-now]').forEach(b=>b.onclick=()=>{$('#'+b.dataset.now).value=nowDt()});
+const slashToDash=v=>v?v.replace(/\//g,'-'):'';
 function openExec(kind){execKind=kind;const borrow=need()==='borrow',step=handlingStep[borrow?'borrow':'stamp'],edit=kind==='edit';
-  const lbl={lend:'實際借出日期',return:'實際歸還日期',stamp:'實際蓋印日期'};
+  const lbl={lend:'實際借出日期',return:'實際歸還日期',stamp:'實際蓋印日期'},useDt=edit?borrow:kind!=='stamp';
   $('#execTitle').textContent=edit?'編輯借出／歸還紀錄':'回填執行紀錄';
   $('#execDateLabel').textContent=edit?(borrow?'實際借出日期':'實際蓋印日期'):lbl[kind];
-  $('#execDate').value=edit?(borrow?rec.lend:rec.stamp):'';
-  $('#execField2').hidden=!(edit&&borrow&&step>=2);$('#execDate2').value=edit&&borrow?rec.ret:'';
-  $('#execBy').value=KEEPER;$('#execConfirm').textContent=edit?'儲存':'確認執行完成';$('#execModal').hidden=false;requestAnimationFrame(()=>$('#execDate').focus())}
+  $('#execDate').hidden=useDt;$('#execDtBox').hidden=!useDt;
+  $('#execDate').value=useDt?'':slashToDash(edit?rec.stamp:'');$('#execDt').value=useDt?(edit?rec.lend:''):'';
+  $('#execField2').hidden=!(edit&&borrow&&step>=2);$('#execDt2').value=edit&&borrow?rec.ret:'';
+  $('#execBy').value=KEEPER;$('#execConfirm').textContent=edit?'儲存':'確認執行完成';$('#execModal').hidden=false;requestAnimationFrame(()=>(useDt?$('#execDt'):$('#execDate')).focus())}
 $$('[data-close-exec]').forEach(x=>x.onclick=()=>$('#execModal').hidden=true);
 $('#completeAction').onclick=()=>{const borrow=need()==='borrow',step=handlingStep[borrow?'borrow':'stamp'];openExec(borrow?(step===0?'lend':'return'):'stamp')};
 $('#editHandling').onclick=()=>openExec('edit');
-$('#execConfirm').onclick=()=>{const borrow=need()==='borrow',key=borrow?'borrow':'stamp',v1=$('#execDate').value,v2=$('#execDate2').value,edit=execKind==='edit';
+$('#execConfirm').onclick=()=>{const borrow=need()==='borrow',key=borrow?'borrow':'stamp',edit=execKind==='edit',useDt=edit?borrow:execKind!=='stamp';
   const name=edit?(borrow?'實際借出日期':'實際蓋印日期'):{lend:'實際借出日期',return:'實際歸還日期',stamp:'實際蓋印日期'}[execKind];
+  const v1=useDt?$('#execDt').value.trim():$('#execDate').value,v2=$('#execDt2').value.trim(),need2=edit&&!$('#execField2').hidden;
   if(!v1){alert(`請填寫${name}。`);return}
-  if(edit&&!$('#execField2').hidden&&!v2){alert('請填寫實際歸還日期。');return}
+  if(useDt&&!validDt(v1)){alert(`${name}格式須為 YYYY/MM/DD HH:MM，請輸入正確的日期與時間。`);return}
+  if(need2&&!v2){alert('請填寫實際歸還日期。');return}
+  if(need2&&!validDt(v2)){alert('實際歸還日期格式須為 YYYY/MM/DD HH:MM，請輸入正確的日期與時間。');return}
   if(edit){if(borrow){rec.lend=v1;rec.lendBy=KEEPER;if(rec.ret){rec.ret=v2;rec.retBy=KEEPER}}else{rec.stamp=v1;rec.stampBy=KEEPER}}
   else if(execKind==='lend'){rec.lend=v1;rec.lendBy=KEEPER}else if(execKind==='return'){rec.ret=v1;rec.retBy=KEEPER}else{rec.stamp=v1;rec.stampBy=KEEPER}
   if(!edit)handlingStep[key]++;$('#handlingTime').textContent='最後更新時間：'+nowText();$('#execModal').hidden=true;renderHandling();

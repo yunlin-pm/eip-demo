@@ -10,6 +10,7 @@
   .print-header h2{margin:4px 0;font-size:16px}
   .print-header .print-docno{color:#526275;font-size:13px}
   .print-table{width:100%;border-collapse:collapse;margin-bottom:14px;break-inside:avoid}
+  .print-table.print-inner{margin:0;break-inside:auto}
   .print-table caption{caption-side:top;text-align:left;font-weight:700;padding:6px 0}
   .print-caption-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
   .print-caption-row .print-docno{color:#526275;font-size:13px;font-weight:400;white-space:nowrap}
@@ -18,8 +19,7 @@
   .print-table th{width:110px}
   .print-items th:first-child,.print-items td:first-child{width:34px;text-align:center}
   .print-vendor th{width:20%}
-  .print-vendor-description{height:32mm}
-  .print-vendor-description p{margin:0 0 6px}
+  .print-nested{padding:0!important}
   .print-required{color:#c62828}
   .print-reason{white-space:pre-wrap!important}
   .print-approval th{width:auto}
