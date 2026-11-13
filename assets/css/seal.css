@@ -43,6 +43,7 @@
 .dt-input{display:flex;align-items:center;gap:8px}.dt-input .control{flex:1;min-width:0}.dt-input .btn{white-space:nowrap}
 .exec-dialog .exec-field .control{width:100%!important;max-width:none!important}.exec-dialog .dt-input .control{width:auto!important;flex:1}
 .seal-row-body input.control.seal-other-text{width:220px;max-width:100%}
+.seal-row-body input.control.seal-other-text[hidden]{display:none}
 .print-docs-head th{text-align:center}
 .m-label{display:none}
 .print-records{margin-top:14px}.print-records th,.print-records td{text-align:center}.print-records .rec-title{letter-spacing:.4em;background:#f2f5f8}.print-records .rec-head th{width:33.33%}.print-records .rec-val td{height:34px}

@@ -3,7 +3,7 @@ const data=[
 {status:'簽核中',need:'借用',no:'CBS-CSI-2026-00005',reason:'辦公室租賃契約續約，需加蓋公司大小章。',seal:'便章大小章',applicant:'王曉明 (T021)',unit:'總務部',apply:'2026/09/22',progress:'待簽核',signer:'陳庭瑋 (T037)',signed:false},
 {status:'草稿',need:'蓋用',no:'尚未產生單號',reason:'辦理年度保險投保，需於投保文件用印。',seal:'大章',applicant:'陳庭瑋 (T037)',unit:'人事總務課',apply:'—',progress:'—',signer:'',signed:false},
 {status:'已核准',need:'借用',no:'CBS-CSI-2026-00003',approve:'2026/09/19',lend:'2026/09/19 09:30',plan:'2026/09/25',reason:'與物流夥伴簽訂合作合約，借用印鑑供對方簽署。',seal:'印鑑大小章',applicant:'陳庭瑋 (T037)',unit:'訂單服務課',apply:'2026/09/18',progress:'已借出（待歸還）',overdue:true,signer:'',signed:true},
-{status:'已核准',need:'蓋用',no:'CBS-CSI-2026-00002',approve:'2026/09/18',stamp:'2026/09/18',reason:'供應商合作契約用印。',seal:'便章大小章',applicant:'林家筠 (T038)',unit:'人事總務課',apply:'2026/09/17',progress:'已用印',signer:'',signed:true},
+{status:'已核准',need:'蓋用',no:'CBS-CSI-2026-00002',approve:'2026/09/18',stamp:'2026/09/18 11:00',reason:'供應商合作契約用印。',seal:'便章大小章',applicant:'林家筠 (T038)',unit:'人事總務課',apply:'2026/09/17',progress:'已用印',signer:'',signed:true},
 {status:'已核准',need:'借用',no:'CBS-CSI-2026-00007',approve:'2026/09/26',plan:'2026/10/30',reason:'辦理分公司設立登記，借用印鑑用於登記文件正本。',seal:'印鑑大小章',applicant:'王曉明 (T021)',unit:'總務部',apply:'2026/09/25',progress:'待借出',signer:'',signed:false},
 {status:'已核准',need:'蓋用',no:'CBS-CSI-2026-00004',approve:'2026/09/21',reason:'員工在職證明用印。',seal:'印鑑大小章',applicant:'林家筠 (T038)',unit:'人事總務課',apply:'2026/09/20',progress:'待用印',signer:'',signed:false},
 {status:'已核准',need:'借用',no:'CBS-CSI-2026-00008',approve:'2026/09/11',lend:'2026/09/11 10:00',ret:'2026/09/15 16:30',plan:'2026/09/15',reason:'申請退還租賃保證金，借用印鑑用於申請書。',seal:'便章大小章',applicant:'陳庭瑋 (T037)',unit:'人事總務課',apply:'2026/09/10',progress:'已歸還',signer:'',signed:true},
