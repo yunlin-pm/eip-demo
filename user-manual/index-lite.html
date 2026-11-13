@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/>
+<title>Bibian EIP 比比昂企業資訊入口平台—使用者操作手冊（精簡版）</title>
+<style>
+  :root {
+    --navy: #1c3f66;
+    --orange: #f5a623;
+    --text-dark: #2b2b2b;
+    --text-gray: #6b7280;
+    --border: #e3e5e8;
+    --bg: #f5f6f8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text-dark);
+    line-height: 1.7;
+  }
+  .doc-header {
+    background: var(--navy);
+    color: #fff;
+    padding: 28px 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 4px solid var(--orange);
+  }
+  .doc-header img { height: 44px; }
+  .doc-header .titles h1 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .doc-header .titles p {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: rgba(255,255,255,0.75);
+  }
+  .layout {
+    display: flex;
+    max-width: 1440px;
+    margin: 0 auto;
+    align-items: flex-start;
+  }
+  .toc {
+    width: 230px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    padding: 32px 20px 40px 40px;
+    font-size: 13px;
+  }
+  .toc h3 {
+    font-size: 12px;
+    color: var(--text-gray);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    margin: 0 0 10px;
+  }
+  .toc ol {
+    margin: 0;
+    padding-left: 18px;
+  }
+  .toc li { margin-bottom: 8px; }
+  .toc a {
+    color: var(--text-dark);
+    text-decoration: none;
+  }
+  .toc a:hover { color: var(--navy); text-decoration: underline; }
+  .toc-sub {
+    list-style: none;
+    margin: 8px 0 0;
+    padding-left: 14px;
+    border-left: 2px solid var(--border);
+  }
+  .toc-sub li { margin-bottom: 6px; }
+  .toc-sub a { font-size: 12px; color: var(--text-gray); }
+  .toc-sub a:hover { color: var(--navy); }
+  .content {
+    flex: 1;
+    padding: 32px 40px 80px 30px;
+    min-width: 0;
+  }
+  .info-box {
+    background: #eef4fb;
+    border: 1px solid #cfe0f2;
+    border-radius: 6px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: #1e4976;
+    margin-bottom: 28px;
+  }
+  .info-box b { color: var(--navy); }
+  section {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    scroll-margin-top: 20px;
+  }
+  section h2 {
+    font-size: 19px;
+    margin: 0 0 4px;
+    color: var(--navy);
+    border-bottom: 2px solid var(--orange);
+    padding-bottom: 12px;
+  }
+  section .section-desc {
+    color: var(--text-gray);
+    font-size: 13px;
+    margin: 10px 0 20px;
+  }
+  section h3 {
+    font-size: 17px;
+    margin: 40px 0 12px;
+    padding: 10px 12px;
+    color: #b45309;
+    background: #fff7ed;
+    border-left: 4px solid var(--orange);
+    border-radius: 0 5px 5px 0;
+    line-height: 1.45;
+    scroll-margin-top: 20px;
+  }
+  section h3:first-of-type { margin-top: 28px; }
+  section h4 {
+    font-size: 14px;
+    margin: 20px 0 8px;
+    color: var(--navy);
+    padding-left: 8px;
+    border-left: 3px solid var(--orange);
+  }
+  p { font-size: 14px; margin: 0 0 12px; }
+  .role-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 3px;
+    padding: 2px 8px;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .role-applicant { background: #e6f0fb; color: #1e5fb0; }
+  .role-approver { background: #fdeee0; color: #b5590a; }
+  ol, ul {
+    font-size: 14px;
+    padding-left: 22px;
+    margin: 0 0 14px;
+  }
+  li { margin-bottom: 6px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 0 0 18px;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 8px 10px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background: #f7f8fa;
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+  .shot {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    max-width: 100%;
+    display: block;
+    margin: 14px 0 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .shot-nav { width: 520px; max-width: 100%; }
+  .shot-vpn { width: 300px; max-width: 100%; }
+  .document-link { color: var(--navy); font-weight: 700; }
+  .image-link { display: block; cursor: zoom-in; }
+  .image-link .shot { margin-bottom: 8px; }
+  .table-scroll { width: 100%; overflow-x: auto; margin-bottom: 18px; }
+  .table-scroll table { margin-bottom: 0; }
+  .approval-actions th:first-child, .approval-actions td:first-child { white-space: nowrap; width: 1%; }
+  .role-admin { background: #ece9f8; color: #6047a5; }
+  .shot-caption {
+    font-size: 12px;
+    color: var(--text-gray);
+    margin: -14px 0 20px;
+  }
+  .note {
+    background: #f5f6f8;
+    border: 1px solid #d8dde5;
+    border-left: 4px solid var(--navy);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 12.5px;
+    color: #4b5563;
+    margin: 0 0 16px;
+  }
+  .note b { color: var(--navy); }
+  code {
+    background: #f1f2f4;
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 12.5px;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 12px;
+    border-radius: 3px;
+    padding: 1px 7px;
+    font-weight: 700;
+  }
+  .badge-draft { background: #eef0f2; color: #6b7280; }
+  .badge-applying { background: #fdf1e0; color: #b5590a; }
+  .badge-approved { background: #e3f3ea; color: #1f8a4c; }
+  .badge-rejected { background: #fbe6e5; color: #c0392b; }
+  .doc-footer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-gray);
+    padding: 30px 0 50px;
+  }
+  @media (max-width: 900px) {
+    .layout { flex-direction: column; }
+    .toc { position: static; width: auto; padding: 20px 24px 0; }
+    .content { padding: 20px 24px 60px; }
+  }
+  .shot-pair {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 18px;
+    margin: 14px 0 20px;
+  }
+  .shot-pair figure { margin: 0; min-width: 0; }
+  .shot-pair .shot { margin: 0 0 7px; }
+  .shot-pair figcaption { color: var(--text-gray); font-size: 12px; text-align: center; }
+  .document-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--navy);
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    box-shadow: 0 2px 5px rgba(21, 65, 105, 0.18);
+    transition: background-color 0.15s ease, transform 0.15s ease;
+  }
+  .document-link::before { content: 'PDF'; font-size: 10px; border: 1px solid rgba(255,255,255,0.7); border-radius: 3px; padding: 1px 4px; }
+  .document-link:hover { background: #123e67; transform: translateY(-1px); }
+  .document-link:focus-visible { outline: 3px solid rgba(239, 143, 0, 0.45); outline-offset: 2px; }
+
+  .approval-flow {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 4px;
+    margin: 20px 0 16px;
+    padding: 24px 18px 18px;
+    background: linear-gradient(135deg, #eef3f9, #f7f9fc);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow-x: auto;
+  }
+  .flow-step {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    flex-shrink: 0;
+    min-width: 112px;
+    padding: 14px 10px 12px;
+    border: 2px solid var(--navy);
+    border-radius: 10px;
+    background: #fff;
+    text-align: center;
+    box-shadow: 0 3px 8px rgba(28, 63, 102, 0.14);
+  }
+  .flow-step .flow-num {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--navy);
+    color: #fff;
+    font-size: 12.5px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+  .flow-step .flow-role { font-weight: 700; font-size: 16px; color: var(--navy); margin-top: 6px; }
+  .flow-step .flow-cond { font-size: 11.5px; color: var(--text-gray); line-height: 1.35; }
+  .flow-step.flow-final { background: #eef7f0; border-color: #1f8a4c; }
+  .flow-step.flow-final .flow-num { background: #1f8a4c; }
+  .flow-step.flow-final .flow-role { color: #1f8a4c; }
+  .flow-arrow { color: var(--orange); font-size: 28px; font-weight: 700; flex-shrink: 0; padding: 0 6px; align-self: center; }
+  .flow-footnote { font-size: 12.5px; color: var(--text-gray); margin: 0 0 10px; }
+  .flow-footnote b { color: var(--navy); }
+  @media (max-width: 720px) {
+    .approval-flow { flex-direction: column; align-items: stretch; padding: 24px 16px 18px; }
+    .flow-arrow { align-self: center; transform: rotate(90deg); }
+    .flow-step { min-width: 0; }
+  }
+  .notify-tables {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+    margin: 14px 0 4px;
+  }
+  .notify-tables table { font-size: 12.5px; margin-bottom: 0; }
+  .notify-tables th { text-align: center; }
+  .notify-code {
+    display: inline-block;
+    color: #fff;
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-right: 6px;
+  }
+  .notify-code.a { background: #1e5fb0; }
+  .notify-code.b { background: #b5590a; }
+
+  .form-index td:first-child { white-space: nowrap; font-weight: 700; }
+  .form-card { border: 1px solid #cfe0f2; border-radius: 10px; padding: 4px 22px 18px; margin: 20px 0; background: #fbfdff; }
+  .form-card > h3 { margin-top: 18px !important; }
+  .card-grid { display: grid; grid-template-columns: 120px 1fr; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin: 0 0 16px; font-size: 13.5px; }
+  .card-grid > div { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  .card-grid > div:nth-last-child(-n+2) { border-bottom: 0; }
+  .card-grid .k { background: #f7f8fa; font-weight: 700; color: var(--navy); }
+  .lite-badge { display:inline-block; background: var(--orange); color:#fff; font-size:11px; font-weight:700; border-radius:3px; padding:1px 7px; margin-left:8px; vertical-align: middle; }
+</style>
+</head>
+<body>
+<div class="doc-header">
+<img alt="Bibian" src="images/logo.png"/>
+<div class="titles">
+<h1>Bibian EIP 比比昂企業資訊入口平台—使用者操作手冊 <span class="lite-badge">精簡版</span></h1>
+<p>Bibian EIP — User Guide (Quick Reference)</p>
+</div>
+</div>
+<div class="layout">
+<nav class="toc">
+<h3>目錄</h3>
+<ol>
+<li><a href="#s0">關於本手冊</a></li>
+<li><a href="#s1">登入系統</a></li>
+<li><a href="#s2-nav">系統導覽</a></li>
+<li><a href="#s2">總覽頁面</a></li>
+<li><a href="#s3">表單共通操作</a><ul class="toc-sub"><li><a href="#s3-1">5.1 表單管理列表</a></li><li><a href="#s3-2">5.2 申請與送出</a></li><li><a href="#s3-3">5.3 簽核</a></li><li><a href="#s3-4">5.4 通知信</a></li></ul></li>
+<li><a href="#s4">表單速查</a><ul class="toc-sub"><li><a href="#f-payment">請款單</a></li><li><a href="#f-memo">簽呈單</a></li></ul></li>
+<li><a href="#s5">簽核代理人設定</a></li>
+<li><a href="#s6">登出</a></li>
+</ol>
+</nav>
+<div class="content">
+
+<section id="s0"><h2>關於本手冊</h2>
+<p>本手冊說明 Bibian EIP 的共通操作方式。所有表單的列表、申請、簽核、撤回與通知規則皆相同，寫在「表單共通操作」；各表單的位置、簽核路徑與特殊規定，請查閱「表單速查」。</p>
+<h4>目前上線表單</h4>
+<div class="table-scroll"><table class="form-index"><tr><th>表單</th><th>位置</th><th>適用公司</th><th>簽核依據</th></tr>
+<tr><td><a href="#f-payment">請款單</a></td><td>行政相關表單 ▾ → 請款單管理</td><td>網家跨境服務股份有限公司</td><td>請款總金額（含稅）</td></tr>
+<tr><td><a href="#f-memo">簽呈單</a></td><td>行政相關表單 ▾ → 簽呈單管理</td><td>網家跨境服務股份有限公司</td><td>固定路徑＋會簽單位</td></tr>
+</table></div>
+</section>
+
+<section id="s1"><h2>登入系統</h2>
+<ol>
+<li><b style="color:#c0392b">開啟 NetBird VPN，確認狀態為「Connected」</b>（公司內外網路皆須連線）。<a class="document-link" href="docs/netbird-setup-guide.pdf" target="_blank" rel="noopener" style="margin-left:8px;padding:4px 10px;font-size:12px">NetBird 設定教學</a></li>
+<li>開啟 Bibian EIP，點擊「使用 Google 登入」，以公司 Google 帳號登入。</li>
+<li>登入後自動進入「總覽」頁面。</li>
+</ol>
+<div class="note"><b>無法連線或登入？</b>請先確認 NetBird 已連線並重新整理頁面；仍無法使用時，請聯絡系統管理員。</div>
+</section>
+
+<section id="s2-nav"><h2>系統導覽</h2><p class="section-desc">登入後，可透過頁面上方的導覽列快速切換功能。</p><h3>3.1 切換主要功能</h3><p>點擊左上角九宮格圖示，可切換「總覽」及「表單申請／簽核」。</p><img alt="九宮格選單" class="shot shot-nav" src="images/02-main-menu.png"/><h3>3.2 切換子功能</h3><p>將滑鼠移至導覽列的功能分類，例如「行政相關表單」，即可展開子選單。點擊「請款單管理」後，可進入對應的操作頁面。</p><img alt="子選單展開" class="shot shot-nav" src="images/03-sub-menu.png"/><h3>3.3 確認目前位置</h3><p>Logo 下方的麵包屑會顯示目前所在位置，例如「總覽 &gt; 表單申請／簽核 &gt; 行政相關表單 &gt; 請款單管理」，可協助確認目前操作頁面。</p><h3>3.4 使用者選單</h3><p>點擊右上角的使用者名稱，可開啟使用者選單並登出系統。實際顯示功能會依帳號權限而有所不同。</p></section>
+
+<section id="s2"><h2>總覽頁面</h2>
+<a class="image-link" href="images/04-dashboard-v2.png" target="_blank" rel="noopener" title="開啟原尺寸圖片"><img alt="總覽頁面" class="shot" src="images/04-dashboard-v2.png"/></a>
+<p>登入後會先進入「總覽」，左側是自己的待辦，右側是公司公告。</p>
+<h4>我的待辦</h4>
+<p>卡片數字為目前符合該狀態的表單筆數（各表單合計），點擊卡片可前往對應列表。</p>
+<div class="table-scroll"><table>
+<tr><th>區塊</th><th>卡片</th><th>內容</th></tr>
+<tr><td>行政表單－簽核作業</td><td>待我簽核</td><td>目前等待自己簽核的表單；沒有時顯示「目前沒有待辦」</td></tr>
+<tr><td rowspan="3">行政表單－我的申請</td><td>簽核申請中</td><td>已送出、仍在簽核流程中的申請</td></tr>
+<tr><td>退回待處理</td><td>遭退回、等待自己修改後重新送出（有資料時以紅色標示）</td></tr>
+<tr><td>近 14 天已核准</td><td>最近 14 天內完成核准的申請</td></tr>
+</table></div>
+<h4>公司公告</h4>
+<ul>
+<li>依日期顯示最新公告，標籤標示類別（人事、資訊、活動、一般公告）。</li>
+<li>標示「置頂」的公告會固定顯示在最上方。</li>
+<li>點擊公告標題可查看內容；點擊右上角「更多公告 ›」可查看全部公告。</li>
+</ul>
+<h4>頁尾連結</h4>
+<ul>
+<li><b>Bibian EIP—操作手冊：</b>開啟本手冊。</li>
+<li><b>Bibian EIP—問題回報：</b>回報系統使用問題。</li>
+</ul>
+</section>
+
+<section id="s3"><h2>表單共通操作</h2>
+<p class="section-desc">以下操作適用於所有表單；截圖以請款單為例。</p>
+
+<h3 id="s3-1">5.1 表單管理列表</h3>
+<a class="image-link" href="images/06-purchase-list.png" target="_blank" rel="noopener" title="開啟原尺寸圖片"><img alt="表單管理列表（以請款單為例）" class="shot" src="images/06-purchase-list.png"/></a>
+<div class="table-scroll"><table>
+<tr><th>頁籤</th><th>內容</th></tr>
+<tr><td>我的申請單</td><td>自己建立的表單及進度</td></tr>
+<tr><td>待簽核表單</td><td>目前等待自己簽核的表單</td></tr>
+<tr><td>已簽核表單</td><td>自己處理過的表單</td></tr>
+<tr><td>全部表單</td><td>依權限可存取的全部表單</td></tr>
+</table></div>
+<div class="table-scroll"><table class="approval-actions">
+<tr><th>操作</th><th>說明</th></tr>
+<tr><td><b>編輯</b></td><td>修改草稿或退回的表單</td></tr>
+<tr><td><b>簽核</b></td><td>處理等待自己簽核的表單</td></tr>
+<tr><td><b>查看</b></td><td>查看內容與簽核歷程</td></tr>
+<tr><td><b>列印</b></td><td>列印表單</td></tr>
+<tr><td><b>複製</b></td><td>以既有資料建立新表單</td></tr>
+<tr><td><b>撤回</b></td><td>狀態為「申請中」的才可撤回（申請中：代表第一個簽核關卡尚未簽核）</td></tr>
+<tr><td><b>刪除</b></td><td>狀態為「草稿」的才可刪除</td></tr>
+</table></div>
+<h4>撤回與刪除</h4>
+<p>撤回和刪除不在每筆資料的「操作」欄，而是<b>先勾選表單</b>，再點列表上方的按鈕。</p>
+<img alt="勾選表單後的撤回與刪除按鈕" class="shot" src="images/06b-withdraw-delete.png" style="width:640px"/>
+<ol>
+<li>在「我的申請單」勾選要處理的表單，列表上方會顯示「已勾選 N 筆」。</li>
+<li>依表單狀態點擊「撤回」或「刪除」，確認後送出。</li>
+</ol>
+<div class="table-scroll"><table class="approval-actions">
+<tr><th>按鈕</th><th>可用狀態</th><th>結果</th></tr>
+<tr><td><b>撤回</b></td><td>「申請中」</td><td>表單退回草稿，可修改後重新送出；原待簽核者會收到撤回通知</td></tr>
+<tr><td><b>刪除</b></td><td>「草稿」</td><td>表單直接刪除，無法復原</td></tr>
+</table></div>
+<div class="note"><b>提醒：</b>勾選的表單不符合條件時，按鈕無法使用。例如上圖勾選的是草稿，只能刪除，不能撤回。</div>
+
+<h3 id="s3-2">5.2 申請與送出 <span class="role-tag role-applicant">申請人</span></h3>
+<ol>
+<li>於表單管理列表點擊右上角「＋新增」。</li>
+<li>依畫面填寫欄位（各表單的特殊規定請見「表單速查」）。</li>
+<li>點擊「儲存草稿」暫存，或「送出簽核」進入簽核流程。</li>
+</ol>
+<h4>遭退回時</h4>
+<p>至「我的申請單」開啟表單，依退回原因修改後重新送出。</p>
+<ul>
+<li><b>退回（重新簽核）：</b>重新送出後，從第一關重新簽核。</li>
+<li><b>退回（僅本關重審）：</b>重新送出後，直接回到退回的關卡，不需重新經過前面的關卡。</li>
+</ul>
+
+<h3 id="s3-3">5.3 簽核 <span class="role-tag role-approver">簽核者</span></h3>
+<ol>
+<li>收到通知信後，由「總覽 → 待我簽核」或列表的「待簽核表單」頁籤進入。</li>
+<li>點擊「簽核」，確認內容與附件。</li>
+<li>選擇核准或退回，填寫意見後確認送出（退回時必填原因）。</li>
+</ol>
+<a class="image-link" href="images/09-approval-form.png" target="_blank" rel="noopener" title="開啟原尺寸圖片"><img alt="簽核頁面（以請款單為例）" class="shot" src="images/09-approval-form.png"/></a>
+<div class="table-scroll"><table class="approval-actions">
+<tr><th>操作</th><th>使用時機</th></tr>
+<tr><td><b>核准本關</b></td><td>內容無誤，同意此筆申請</td></tr>
+<tr><td><b>退回（重新簽核）</b></td><td>請申請人修正，重新送出後從第一關重簽</td></tr>
+<tr><td><b>退回（僅本關重審）</b></td><td>僅部分表單的特定關卡提供，使用條件見各表單速查</td></tr>
+</table></div>
+<p>表單詳細頁可查看目前關卡與完整簽核歷程。</p>
+
+<h3 id="s3-4">5.4 通知信</h3>
+<p>表單流程有異動時，系統會寄 Email 通知相關人員。以下通知所有表單皆相同，信件標題會帶入表單名稱與單號；部分表單另有額外通知，請見各表單速查。</p>
+<div class="notify-tables"><table><tr><th colspan="2">申請人收到的通知</th></tr>
+<tr><td>送出／重新送出</td><td>已成功送審</td></tr>
+<tr><td>任一關卡退回</td><td>已遭退回，請修改後重新送審</td></tr>
+<tr><td>全部關卡核准</td><td>已通過核准</td></tr>
+<tr><td>主動撤回</td><td>已成功撤回</td></tr></table>
+<table><tr><th colspan="2">簽核者收到的通知</th></tr>
+<tr><td>輪到本人簽核</td><td>等待簽核</td></tr>
+<tr><td>申請人在簽核前撤回</td><td>已由申請人撤回，取消簽核</td></tr></table></div>
+<div class="note"><b>信件標題範例：</b>【Bibian EIP】請款單 {單號} 已成功送審<br/>設有代理人期間，待簽核通知會改寄給代理人。</div>
+</section>
+
+<section id="s4"><h2>表單速查</h2>
+<p class="section-desc">各表單只列出位置、簽核路徑與特殊規定，操作方式同「表單共通操作」。</p>
+
+<!-- ===== 表單速查卡範本：新增表單時複製此 div.form-card ===== -->
+<div class="form-card" id="f-payment">
+<h3>請款單</h3>
+<div class="card-grid">
+<div class="k">位置</div><div>行政相關表單 ▾ → 請款單管理</div>
+<div class="k">適用公司</div><div>網家跨境服務股份有限公司</div>
+<div class="k">簽核依據</div><div>請款總金額（含稅），未達門檻的關卡自動略過</div>
+<div class="k">通知信</div><div>同共通通知，無額外通知</div>
+<div class="k">核准後</div><div>列印已核准請款單，連同附件及單據正本送交財務單位</div>
+</div>
+<h4>簽核路徑</h4>
+<div class="approval-flow"><div class="flow-step"><span class="flow-num">1</span><span class="flow-role">課級主管</span><span class="flow-cond">所有金額</span></div><span class="flow-arrow">→</span><div class="flow-step"><span class="flow-num">2</span><span class="flow-role">部級主管</span><span class="flow-cond">≥ NT$3,001</span></div><span class="flow-arrow">→</span><div class="flow-step"><span class="flow-num">3</span><span class="flow-role">副總經理</span><span class="flow-cond">≥ NT$10,001</span></div><span class="flow-arrow">→</span><div class="flow-step"><span class="flow-num">4</span><span class="flow-role">總經理</span><span class="flow-cond">≥ NT$100,001</span></div><span class="flow-arrow">→</span><div class="flow-step flow-final"><span class="flow-num">5</span><span class="flow-role">財務單位</span><span class="flow-cond">資料複核</span></div></div>
+<h4>填寫注意事項</h4>
+<ul>
+<li>付款條件選「指定匯款日」時，須另填指定匯款日期。</li>
+<li>付款方式為匯款時，須選擇匯款帳戶類型與付款對象，並確認匯款資料。</li>
+<li>單據須載有公司全銜、統一編號，並蓋有對方統一發票專用章或免用統一發票專用章。</li>
+<li>請勿上傳個資相關資料（例如存摺封面）。</li>
+</ul>
+<h4>與共通流程的差異</h4>
+<ul>
+<li><b>退回（僅本關重審）：</b>僅財務關卡可用，且限退回原因不涉及金額異動；涉及金額異動請使用「退回（重新簽核）」。</li>
+</ul>
+</div>
+<!-- ===== 範本結束 ===== -->
+<div class="form-card" id="f-memo">
+<h3>簽呈單</h3>
+<div class="card-grid">
+<div class="k">位置</div><div>行政相關表單 ▾ → 簽呈單管理</div>
+<div class="k">適用公司</div><div>網家跨境服務股份有限公司</div>
+<div class="k">簽核依據</div><div>不分金額，固定路徑；會簽單位由申請人自行設定</div>
+<div class="k">通知信</div><div>同共通通知；另於核准後通知知會單位主管</div>
+<div class="k">核准後</div><div>系統以 Email 通知知會單位主管，知會主管可於「知會我的」頁籤查看</div>
+</div>
+<h4>簽核路徑</h4>
+<div class="approval-flow"><div class="flow-step"><span class="flow-num">1</span><span class="flow-role">課級主管</span><span class="flow-cond">必經</span></div><span class="flow-arrow">→</span><div class="flow-step"><span class="flow-num">2</span><span class="flow-role">部級主管</span><span class="flow-cond">必經</span></div><span class="flow-arrow">→</span><div class="flow-step"><span class="flow-num">3</span><span class="flow-role">會簽單位</span><span class="flow-cond">依設定順序<br/>全數同意</span></div><span class="flow-arrow">→</span><div class="flow-step flow-final"><span class="flow-num">4</span><span class="flow-role">總經理</span><span class="flow-cond">必經</span></div></div>
+<h4>填寫注意事項</h4>
+<ul>
+<li><b>會簽單位：</b>屬於正式簽核關卡。選到課由課級主管簽核，選到部由部級主管簽核。</li>
+<li><b>知會單位：</b>不參與簽核，核准後才會收到通知；可用「快速帶入會簽單位」一次帶入。</li>
+<li>會簽、知會皆不可選擇自己所屬單位，同一清單內不可重複。</li>
+</ul>
+<h4>與共通流程的差異</h4>
+<ul>
+<li>列表多一個「<b>知會我的</b>」頁籤：顯示已核准、且自己為知會主管的簽呈單，僅可查看。</li>
+<li>會簽關卡核准時，<b>簽核意見必填</b>（一般主管關卡為選填）。</li>
+<li>簽核頁提供「簽核意見彙整」，可直接查看前面關卡的意見。</li>
+<li>不提供「退回（僅本關重審）」，退回後一律從第一關重新簽核。</li>
+</ul>
+</div>
+
+</section>
+
+<section id="s5"><h2>簽核代理人設定 <span class="role-tag role-approver">簽核者</span></h2>
+<p>休假或出差前，可設定代理人代為簽核。<b>位置：</b>代理人設定 ▾ → 我的代理人。</p>
+<ol>
+<li>於公司區塊選擇「代理簽核者」。</li>
+<li>點擊「＋新增期間」，設定起訖日，按「確認新增」。</li>
+</ol>
+<ul>
+<li><b>編輯：</b>調整起訖日期。<b>取消：</b>提前停止已生效的期間（保留紀錄）。<b>刪除：</b>移除尚未開始的期間。</li>
+<li>各公司分開設定；代理人不可為本人或其他公司員工。</li>
+</ul>
+</section>
+
+<section id="s6"><h2>登出</h2><p>點擊右上角「Hi {姓名} ▾」→「登出」，即可離開系統並返回登入頁面。</p><img alt="使用者選單－登出" class="shot" src="images/13-logout.png" style="width:280px"/></section>
+</div>
+</div>
+<div class="doc-footer">Copyright © PChome Bibian Inc. All Rights Reserved.</div>
+</body>
+</html>
