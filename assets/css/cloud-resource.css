@@ -201,25 +201,17 @@ body{background:#eef1f5}.cloud-title{display:flex;justify-content:space-between;
 /* 雲端資源項目（申請單）與執行回報的資源編號、多行執行內容（2026-11-06） */
 /* 上方 .cloud-demand-grid>.cloud-question-group>.cloud-question 以 !important 強制 display:grid，.hidden 需用更高優先權才蓋得過 */
 .cloud-question.hidden,.cloud-demand-grid>.cloud-question-group>.cloud-question.hidden{display:none!important}
-#resourceItemChoices{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
-#resourceItemChoices .inline-text{width:180px}
-#executionSummary #executionNoteView,#executionSummary #resourceIdView{white-space:pre-wrap;overflow-wrap:anywhere}
+#executionSummary #executionNoteView{white-space:pre-wrap;overflow-wrap:anywhere}
 .execution-dialog{width:min(620px,100%)}
 .execution-dialog textarea.control{height:auto;min-height:112px;line-height:1.6;resize:vertical;white-space:pre-wrap}
-.resource-id-block{display:grid;gap:8px;padding:12px 14px;border:1px solid #d7dee7;border-radius:6px;background:#f7f9fb}
-.resource-id-block>.label{font-weight:700}
-.resource-id-rows{display:grid;gap:10px}
-.execution-dialog .resource-id-row{display:grid;grid-template-columns:230px minmax(0,1fr);align-items:center;gap:8px}
-.resource-id-name{color:#202936;font-size:14px}
-.req-star{color:#d9364b}
-@media(max-width:560px){.execution-dialog .resource-id-row{grid-template-columns:1fr;gap:5px}}
-
-/* 雲端平台選「其他」：自行輸入雲端資源項目（可新增／刪除列） */
-#resourceItemChoices:has(#customItemList){display:grid;gap:8px;justify-items:start}
-.custom-item-list{display:grid;gap:8px;width:100%}
-.custom-item-row{display:flex;align-items:center;gap:10px}
-.custom-item-row .resource-item-custom{width:min(360px,100%)}
-.custom-item-row .custom-item-del[hidden],#addCustomItem[hidden]{display:none}
+/* 回填執行紀錄：執行內容、執行者與上方日期欄位同寬（撐滿視窗內容寬度，不受 .control 的 360px 上限限制） */
+.execution-dialog .audit-content>label>.control{width:100%;max-width:none}
+/* 資源規格詳情（連結） */
+.spec-field{display:grid;gap:8px;min-width:0;justify-items:start}
+.spec-field>.control{width:100%;max-width:560px}
+.spec-field .help{margin:0}
+/* 「規格範本」連結：另開分頁；實際範本網址待資訊／SRE 提供（Demo 先指向空白頁，見規格 ICS-038） */
+.spec-field .spec-template-link{color:#1d63a8;text-decoration:underline}
 /* 回填執行紀錄視窗：疊在頂部選單之上（原 z-index:50 低於 Header，視窗變高時上緣被蓋住）；執行時間與到期停用日期同列以降低高度 */
 .audit-modal{z-index:300}
 .execution-date-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 16px}
