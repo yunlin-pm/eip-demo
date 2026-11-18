@@ -4,6 +4,8 @@ const data=[
 {status:'草稿',signer:'',no:'尚未產生單號',subject:'辦公空間調整提案',company:'網家跨境服務股份有限公司',unit:'人事總務課',applicant:'陳庭瑋 (T037)',apply:'—',approved:'—',signedByMe:false},
 {status:'申請中',signer:'羅弘奕 (B019)',no:'CBS-GSI-2026-00003',subject:'年度教育訓練計畫',company:'網家跨境服務股份有限公司',unit:'人事總務課',applicant:'陳庭瑋 (T037)',apply:'2026/09/16',approved:'—',signedByMe:false},
 {status:'簽核中',signer:'黃少佑 (B136)',no:'CBS-GSI-2026-00002',subject:'跨部門作業流程調整',company:'網家跨境服務股份有限公司',unit:'訂單服務課',applicant:'王曉明 (T021)',creator:'陳庭瑋 (T037)',apply:'2026/09/15',approved:'—',signedByMe:true},
+{status:'已作廢',signer:'',no:'CBS-GSI-2026-00010',subject:'員工旅遊補助調整',company:'網家跨境服務股份有限公司',unit:'人事總務課',applicant:'陳庭瑋 (T037)',apply:'2026/09/12',approved:'—',signedByMe:false,voidReason:'活動取消，不需再簽呈。',voidAt:'2026/09/18 09:41'},
+{status:'已核准',signer:'',no:'CBS-GSI-2026-00008',subject:'年度尾牙活動預算',company:'網家跨境服務股份有限公司',unit:'人事總務課',applicant:'陳庭瑋 (T037)',apply:'2026/09/05',approved:'2026/09/09',signedByMe:true,notifiedTo:[]},
 {status:'已核准',signer:'',no:'CBS-GSI-2026-00007',subject:'客服品質改善方案',company:'網家跨境服務股份有限公司',unit:'客服部',applicant:'王曉明 (T021)',apply:'2026/09/11',approved:'2026/09/17',signedByMe:false,notifiedTo:['陳庭瑋 (T037)']},
 {status:'已核准',signer:'',no:'CBS-GSI-2026-00001',subject:'員工活動辦理',company:'網家跨境服務股份有限公司',unit:'人事總務課',applicant:'陳庭瑋 (T037)',apply:'2026/09/10',approved:'2026/09/12',signedByMe:true,notifiedTo:[]},
 {status:'已退回',signer:'',no:'CBS-GSI-2026-00004',subject:'辦公設備配置調整',company:'網家跨境服務股份有限公司',unit:'人事總務課',applicant:'陳庭瑋 (T037)',apply:'2026/09/16',approved:'—',signedByMe:false}
@@ -15,9 +17,12 @@ function mine(r){return r.applicant===me||r.creator===me}
 const ymd=v=>(v||'').replace(/\D/g,'').slice(0,8),rowDate=v=>v==='—'?'':ymd(v);
 function selectedStatuses(){return $$('#statusFilter input:checked').map(x=>x.value)}
 function person(v){const m=String(v||'').match(/^(.*?)\s*\(([^)]+)\)$/);return{name:m?m[1]:v,id:m?m[2]:''}}
-function tone(s){return s==='草稿'?'draft':s==='已核准'?'approved':s==='已退回'?'rejected':s==='申請中'?'applying':'signing'}
-function mode(r){return r.status==='草稿'||r.status==='已退回'?'edit':r.signer===me?'approve':'view'}
-function action(r){return mode(r)==='edit'?'修改':mode(r)==='approve'?'簽核':'查看'}
+function tone(s){return s==='已作廢'?'voided':s==='草稿'?'draft':s==='已核准'?'approved':s==='已退回'?'rejected':s==='申請中'?'applying':'signing'}
+// 作廢：僅申請人本人（非新增人）可作廢；狀態限申請中、簽核中、已核准、已退回；草稿請用刪除；被其他單據引用者不可作廢（見 doc-refs.js）。
+function canVoid(r){return r.applicant===me&&['申請中','簽核中','已核准','已退回'].includes(r.status)}
+function modeKey(r){return r.status==='已作廢'?'voided':r.status==='草稿'||r.status==='已退回'?'edit':r.signer===me?'approve':canVoid(r)?'view-own':'view'}
+function mode(r){const k=modeKey(r);return k==='voided'?'voided&reason='+encodeURIComponent(r.voidReason||'')+'&at='+encodeURIComponent(r.voidAt||''):k==='edit'&&r.status==='草稿'?'edit&st=草稿':k==='view-own'?'view-own&st='+encodeURIComponent(r.status):k}
+function action(r){const k=modeKey(r);return k==='edit'?'修改':k==='approve'?'簽核':'查看'}
 function filtered(){
  const statuses=selectedStatuses(),co=$('#company').value,key=$('#keyword').value.trim().toLowerCase(),type=$('#keywordType').value,af=ymd($('#applyFrom').value),at=ymd($('#applyTo').value),pf=ymd($('#approveFrom').value),pt=ymd($('#approveTo').value);
  return data.filter(r=>{
@@ -44,12 +49,13 @@ function actionsCell(r,i){
 }
 $('#rows').addEventListener('click',e=>{const btn=e.target.closest('[data-print-i]');if(btn)printGuide(shown[Number(btn.dataset.printI)])});
 function selectedRows(){return $$('.pick:checked').map(x=>shown[Number(x.dataset.i)])}
-function selection(){const rows=selectedRows();$('#selected').textContent=rows.length;$('#withdraw').disabled=!rows.some(r=>mine(r)&&r.status==='申請中');$('#remove').disabled=!rows.some(r=>mine(r)&&r.status==='草稿')}
+function selection(){const rows=selectedRows();$('#selected').textContent=rows.length;$('#withdraw').disabled=!rows.some(r=>mine(r)&&r.status==='申請中');$('#remove').disabled=!rows.some(r=>mine(r)&&r.status==='草稿');$('#voidRow').disabled=!(rows.length===1&&canVoid(rows[0]))}
 $$('.tab').forEach(b=>b.onclick=()=>{$$('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');tab=b.dataset.tab;$('#mobileTab').value=tab;page=1;render()});
 $('#mobileTab').onchange=e=>{tab=e.target.value;$$('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));page=1;render()};
 $('#search').onclick=()=>{page=1;render()};
 $('#clear').onclick=()=>{$('#company').value='';$('#keywordType').value='all';$('#keyword').value='';$('#applyFrom').value='';$('#applyTo').value='';$('#approveFrom').value='';$('#approveTo').value='';$$('#statusFilter input').forEach(x=>x.checked=false);$('#statusSummary').textContent='全部';page=1;render()};
 $$('#statusFilter input').forEach(x=>x.onchange=()=>{const values=selectedStatuses();$('#statusSummary').textContent=values.length?values.join('、'):'全部'});
+$('#voidRow').onclick=()=>{const rows=selectedRows();if(rows.length!==1||!canVoid(rows[0]))return;const r=rows[0];ClaimVoid.open({no:r.no,status:r.status,label:'簽呈單',blockers:ClaimVoid.blockersOf(r.no),onConfirm(reason){const d=new Date(),p=n=>String(n).padStart(2,'0');r.voidReason=reason;r.voidAt=d.getFullYear()+'/'+p(d.getMonth()+1)+'/'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());r.status='已作廢';r.signer='';render();ClaimVoid.toast('簽呈單 '+r.no+' 已作廢。')}})};
 $('#selectAll').onchange=e=>{$$('.pick').forEach(x=>x.checked=e.target.checked);selection()};$('#rows').onchange=e=>{if(e.target.classList.contains('pick'))selection()};
 $('#prevPage').onclick=()=>{if(page>1){page--;render()}};$('#nextPage').onclick=()=>{page++;render()};
 $('#withdraw').onclick=()=>{const rows=selectedRows(),eligible=rows.filter(r=>mine(r)&&r.status==='申請中'),skipped=rows.length-eligible.length;eligible.forEach(r=>{r.status='草稿';r.signer='';r.no='尚未產生單號';r.apply='—'});alert(`撤回完成：成功 ${eligible.length} 筆，未處理 ${skipped} 筆。`);render()};

@@ -88,9 +88,9 @@ function confirmOrgRow(){
   const company=document.getElementById('empOrgAddCompany').value;
   const path=document.getElementById('empOrgAddDepartment').value;
   const body=document.getElementById('empOrgEditRows');
-  // 一個帳號在同一家公司只能有一個歸屬部門（跨公司可多筆；貼近 RD 每人每公司一個部門，日後可解除）。
-  const sameCompany=Array.from(body.querySelectorAll('[data-org-row]')).some(row=>row.dataset.company===company);
-  if(sameCompany){showToast(`此帳號在「${company}」已有歸屬部門，同一家公司只能有一個歸屬部門，請先刪除原資料再新增`);return}
+  // 同一家公司可有多個歸屬部門（2026-11-18 解除「同公司只能一個部門」）；同公司、同部門不可重複。
+  const sameDept=Array.from(body.querySelectorAll('[data-org-row]')).some(row=>row.dataset.company===company&&row.dataset.path===path);
+  if(sameDept){showToast(`此帳號已有「${company}」的相同歸屬部門，請勿重複新增`);return}
   body.querySelector('[data-org-empty]')?.remove();
   body.insertAdjacentHTML('beforeend',orgRowHtml(company,path));
   closeOrgAddPanel();
@@ -170,9 +170,9 @@ function saveEmployee(){
   const required=['empName','empCode','empLogin','empEmail','empLocale','empTimezone'];
   if(required.some(id=>!document.getElementById(id).value)){showToast('請完成所有必填欄位');return}
   if(!document.querySelector('#empOrgEditRows [data-org-row]')){showToast('請至少新增一筆帳號對應公司組織');return}
-  const orgCompanies=Array.from(document.querySelectorAll('#empOrgEditRows [data-org-row]')).map(r=>r.dataset.company);
-  const dupCompany=orgCompanies.find((c,i)=>orgCompanies.indexOf(c)!==i);
-  if(dupCompany){showToast(`此帳號在「${dupCompany}」有多個歸屬部門，同一家公司只能有一個歸屬部門`);return}
+  const orgKeys=Array.from(document.querySelectorAll('#empOrgEditRows [data-org-row]')).map(r=>r.dataset.company+'|'+r.dataset.path);
+  const dupOrg=orgKeys.find((k,i)=>orgKeys.indexOf(k)!==i);
+  if(dupOrg){showToast(`此帳號有重複的歸屬部門（${dupOrg.replace('|','／')}），請刪除重複的資料`);return}
   const mailRe=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if(!mailRe.test(document.getElementById('empLogin').value.trim())||!mailRe.test(document.getElementById('empEmail').value.trim())){showToast('請輸入正確的 Email 格式');return}
   const permMode=document.querySelector('input[name=permMode]:checked')?.value;

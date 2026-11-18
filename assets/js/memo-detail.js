@@ -1,6 +1,6 @@
 const params=new URLSearchParams(location.search),mode=document.getElementById('mode'),routePanel=document.getElementById('routePanel'),routeBody=document.getElementById('routeBody'),routeToggle=document.getElementById('routeToggle'),historyModal=document.getElementById('historyModal'),returnAlert=document.getElementById('returnAlert'),roundSummary=document.getElementById('roundSummary'),roundBadge=document.getElementById('roundBadge');
 function applyMode(){
-  const m=mode.value,isRead=m==='view'||m==='approve',isCopy=m==='new'&&params.has('copy'),formNo=params.get('no'),wasReturned=m==='edit';
+  const rawMode=mode.value,m=(rawMode==='view-own'||rawMode==='voided')?'view':rawMode,isRead=m==='view'||m==='approve',isCopy=m==='new'&&params.has('copy'),formNo=params.get('no'),wasReturned=m==='edit';
   document.body.classList.toggle('readonly',isRead);
   document.body.classList.toggle('show-approval-details',m==='view'||m==='approve');
   document.getElementById('newActions').hidden=m!=='new';
@@ -168,7 +168,7 @@ function unitRowsText(bodyId){
   }).join('<br>');
 }
 function buildPrintView(){
-  const m=mode.value,formNo=params.get('no')||{new:'尚未產生單號',edit:'CBS-GSI-2026-00003',approve:'CBS-GSI-2026-00002',view:'CBS-GSI-2026-00001'}[m];
+  const m=(mode.value==='view-own'||mode.value==='voided')?'view':mode.value,formNo=params.get('no')||{new:'尚未產生單號',edit:'CBS-GSI-2026-00003',approve:'CBS-GSI-2026-00002',view:'CBS-GSI-2026-00001'}[m];
   document.getElementById('printDocNo').textContent=formNo;
   const companySelect=document.querySelector('.memo-basic-panel select.control');
   document.getElementById('printCompany').textContent=companySelect?companySelect.selectedOptions[0].text:'';
@@ -198,3 +198,64 @@ function buildPrintView(){
 window.addEventListener('beforeprint',buildPrintView);
 document.querySelectorAll('.department-select').forEach(enhanceUnit);
 applyMode();
+
+// 作廢（簽呈單）：申請人可在「申請中、簽核中、已核准、已退回」作廢，須填作廢原因；被請款單等單據引用者不可作廢；作廢後為「已作廢」唯讀。
+(function(){
+  if(!window.ClaimVoid)return;
+  const ME='陳庭瑋 (T037)',$=id=>document.getElementById(id);
+  const titleEl=$('pageTitle'),alertEl=$('voidAlert'),viewBox=$('viewActions'),editBox=$('editActions');
+  const histEl=document.querySelector('#historyModal .audit-content');
+  const stageOrig=[...routeBody.querySelectorAll('.approval-stage')].map(el=>[el,el.className,el.innerHTML]);
+  const histOrig=histEl?histEl.innerHTML:'';
+  const mkBtn=()=>{const b=document.createElement('button');b.type='button';b.className='btn tool-action void-action';b.hidden=true;b.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>作廢';return b};
+  const btnView=mkBtn(),btnEdit=mkBtn();
+  editBox.appendChild(btnEdit);
+  // 申請人查看／已作廢：提供「複製」（比照請款單：查看、列印、複製）
+  const copyLink=document.createElement('a');copyLink.className='btn tool-action';copyLink.textContent='複製';copyLink.hidden=true;viewBox.appendChild(copyLink);viewBox.appendChild(btnView); // 順序：列印、複製、作廢
+  const csOrig=[...document.querySelectorAll('#countersignRows .stage-status')].map(el=>[el,el.textContent,el.className]);
+  let info=null;
+  const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const nowText=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return d.getFullYear()+'/'+p(d.getMonth()+1)+'/'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())};
+  let lastNo='';
+  const docNo=()=>(info&&lastNo)||params.get('no')||(mode.value==='view-own'?'CBS-GSI-2026-00008':mode.value==='voided'?'CBS-GSI-2026-00010':mode.value==='edit'?'CBS-GSI-2026-00003':'CBS-GSI-2026-00001');
+  const statusNow=()=>mode.value==='view-own'?(params.get('st')||'已核准'):mode.value==='edit'?'已退回':'';
+  function sync(){
+    const v=mode.value,voided=v==='voided',draft=v==='edit'&&params.get('st')==='草稿';
+    btnView.hidden=v!=='view-own';btnEdit.hidden=!(v==='edit'&&!draft);
+    copyLink.hidden=!(v==='view-own'||voided);copyLink.href='detail.html?mode=new&copy='+encodeURIComponent(docNo());
+    csOrig.forEach(([el,t,c])=>{el.textContent=t;el.className=c});
+    alertEl.hidden=!voided;
+    stageOrig.forEach(([el,cls,html])=>{el.className=cls;el.innerHTML=html});
+    if(histEl)histEl.innerHTML=histOrig;
+    document.querySelectorAll('.void-badge').forEach(x=>x.remove());
+    if(v==='view-own'||voided){routePanel.hidden=false}
+    if(v==='view-own'&&!params.get('no'))titleEl.textContent='查看簽呈單（'+docNo()+'）';
+    if(!voided)return;
+    const i=info||{reason:params.get('reason')||'活動取消，不需再簽呈。',time:(params.get('at')||'2026/09/18 09:41'),by:ME};
+    const no=docNo();
+    titleEl.textContent='查看簽呈單（'+no+'）';
+    titleEl.insertAdjacentHTML('beforeend','<span class="void-badge">已作廢</span>');
+    $('voidReasonText').textContent=i.reason;$('voidWhoText').textContent=i.by+'　'+i.time;
+    roundBadge.textContent='狀態：已作廢';
+    csOrig.forEach(([el,t])=>{if(/待簽核/.test(t)){el.textContent='已作廢';el.className='stage-status voided'}});
+    stageOrig.forEach(([el])=>{
+      if(!el.classList.contains('pending'))return;
+      el.className='approval-stage voided';
+      const st=el.querySelector('.stage-status');if(st){st.className='stage-status voided';st.textContent='已作廢'}
+      const pe=el.querySelector('.stage-person');if(pe)pe.textContent='申請人已作廢，流程終止';
+      const tm=el.querySelector('time');if(tm)tm.textContent='作廢日期：'+i.time;
+    });
+    if(histEl){histEl.querySelectorAll('.history-row').forEach(r=>{if(/退回/.test(r.textContent))r.remove()});histEl.insertAdjacentHTML('beforeend','<div class="history-row"><time>'+i.time+'</time><div><strong>申請人作廢</strong>　'+i.by+'：'+esc(i.reason)+'</div></div>')}
+  }
+  function openVoid(){
+    const no=docNo();
+    ClaimVoid.open({no,status:statusNow(),label:'簽呈單',blockers:ClaimVoid.blockersOf(no),onConfirm(reason){
+      lastNo=no;info={reason,time:nowText(),by:ME};
+      mode.value='voided';applyMode();sync();
+      ClaimVoid.toast('簽呈單已作廢。');
+    }});
+  }
+  btnView.addEventListener('click',openVoid);btnEdit.addEventListener('click',openVoid);
+  mode.addEventListener('change',()=>{if(mode.value!=='voided'){info=null;lastNo=''}sync()});
+  sync();
+})();

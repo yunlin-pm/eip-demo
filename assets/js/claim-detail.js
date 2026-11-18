@@ -207,8 +207,9 @@ if (requestedMode && [...role.options].some(option => option.value === requested
   if (window.__linkedDemoRows) window.__linkedDemoRows();
 }
 
+const READONLY_MODES = ['view', 'view-own', 'voided'];
 function applyReadonlyClaimView() {
-  if (role.value !== 'view') return;
+  if (!READONLY_MODES.includes(role.value)) return;
   document.querySelector('#editTop')?.classList.add('view-only');
   document.querySelector('#approvalTop')?.classList.add('view-only');
   document.querySelector('#editActions')?.classList.add('view-only');
@@ -221,9 +222,10 @@ function applyReadonlyClaimView() {
   const no = claimParams.get('no') || 'CBS-FRE-2026-00100';
   document.querySelector('#pageTitle').textContent = `查看請款單（${no}）`;
   document.querySelector('#summaryNo').textContent = no;
-  document.querySelector('#summaryStatus').textContent = '已送出';
+  document.querySelector('#summaryStatus').textContent = role.value === 'voided' ? '已作廢' : role.value === 'view-own' ? (claimParams.get('st') || '已核准') : '已送出';
+  document.querySelector('#summaryDate').textContent = '2026-08-12 10:15';
 }
-if (requestedMode === 'view') applyReadonlyClaimView();
+if (READONLY_MODES.includes(requestedMode)) applyReadonlyClaimView();
 role.addEventListener('change', applyReadonlyClaimView);
 
 // 新增、主管簽核、財務簽核情境不顯示列印、複製（列印、複製僅限與本人相關情境使用）
@@ -234,3 +236,81 @@ function syncClaimTopTools() {
 role.addEventListener('change', syncClaimTopTools);
 syncClaimTopTools();
 
+// 申請單位：申請人在所選請款公司只有 1 個歸屬部門時顯示文字；有 2 個以上時顯示「申請單位」下拉（預設部門系統編號較小者，可改選），簽核依所選單位的主管。
+// 編輯類情境（新增、編輯、已退回）可選；查看、主管簽核、財務簽核顯示送出時保存的單位（文字）。Demo 以申請人陳庭瑋示範：網家跨境有 2 個歸屬部門，其餘公司各 1 個。
+(function(){
+  const companySel=document.querySelector('#claimCompany'),unitText=document.querySelector('#applicantUnit'),pick=document.querySelector('#applicantUnitPick'),sel=document.querySelector('#applicantUnitSel'),summary=document.querySelector('#summaryUnit');
+  if(!companySel||!unitText||!pick||!sel)return;
+  const UNITS={'網家跨境服務股份有限公司':['總經理室／後勤支援部／人事總務課','代標代購事業本部／代購部'],'空中補給股份有限公司':['管理部'],'比比昂株式會社':['管理部']};
+  const chosen={};
+  const editable=()=>!['view','view-own','voided','manager','finance'].includes(role.value);
+  function syncUnit(){
+    const co=companySel.value,list=UNITS[co]||[],multi=list.length>1;
+    if(!(co in chosen)||!list.includes(chosen[co]))chosen[co]=list[0]||'';
+    if(multi&&editable()){
+      sel.innerHTML=list.map(u=>`<option${u===chosen[co]?' selected':''}>${u}</option>`).join('');
+      pick.hidden=false;unitText.hidden=true;
+    }else{
+      pick.hidden=true;unitText.hidden=false;unitText.textContent=chosen[co]||'—';
+    }
+    if(summary)summary.textContent=chosen[co]||'—';
+  }
+  sel.addEventListener('change',()=>{chosen[companySel.value]=sel.value;syncUnit()});
+  companySel.addEventListener('change',syncUnit);
+  role.addEventListener('change',syncUnit);
+  syncUnit();
+})();
+
+// 作廢（請款單先行）：申請人可在「申請中、簽核中、已核准、已退回」作廢，須填作廢原因；作廢後為「已作廢」唯讀。草稿請用「刪除」。
+(function(){
+  if(!window.ClaimVoid)return;
+  const params=new URLSearchParams(location.search);
+  const ME='陳庭瑋 (T037)';
+  const btn=document.createElement('button');
+  btn.type='button';btn.id='voidBtn';btn.className='btn tool-action void-action';btn.hidden=true;
+  btn.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>作廢';
+  topTools.appendChild(btn);
+  const $=s=>document.querySelector(s);
+  const histories=[...document.querySelectorAll('.history')].map(h=>[h,h.innerHTML]);
+  const routeBody=document.querySelector('.v2-route-wide .body.route');
+  const origRoute=routeBody?routeBody.innerHTML:'';
+  let info=null,wasVoid=false;
+  const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const nowText=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())};
+  const statusNow=()=>role.value==='view-own'?(params.get('st')||'已核准'):role.value.startsWith('returned-')?'已退回':'';
+  function sync(){
+    const v=role.value,eligible=v==='view-own'||v.startsWith('returned-'),voided=v==='voided';
+    btn.hidden=!eligible;
+    $('#voidAlert').classList.toggle('view-only',!voided);
+    const rp=document.querySelector('.v2-route-wide');
+    rp?.classList.toggle('is-void',voided);
+    if(rp&&(voided||v==='view-own')){rp.style.display='block';rp.classList.remove('view-only')}
+    if(routeBody&&wasVoid){routeBody.innerHTML=origRoute;routeBody.querySelector('.round-summary')?.classList.toggle('view-only',v==='edit')}
+    wasVoid=voided;
+    histories.forEach(([h,html])=>{h.innerHTML=html});
+    if(voided){
+      const i=info||{reason:params.get('reason')||'金額填寫錯誤，已另開新單重新申請。',time:params.get('at')||'2026-09-05 09:41',by:ME};
+      const no=params.get('no')||'CBS-FRE-2026-00021';
+      $('#pageTitle').textContent='查看請款單（'+no+'）';$('#summaryNo').textContent=no;
+      $('#summaryStatus').textContent='已作廢';
+      $('#voidReasonText').textContent=i.reason;$('#voidWhoText').textContent=i.by+'　'+i.time;
+      histories.forEach(([h])=>{[...h.querySelectorAll('.history-row')].forEach(r=>{if(/退回/.test(r.textContent))r.remove()});h.insertAdjacentHTML('beforeend','<div class="history-row"><time>'+i.time+'</time><div><strong>申請人作廢</strong>'+i.by+'：'+esc(i.reason)+'</div></div>')});
+      $('#approvalDetail').classList.remove('view-only');
+      if(routeBody){
+        const rs=routeBody.querySelector('.round-summary');if(rs)rs.style.display='none';
+        const pend=routeBody.querySelector('.approval-stage.pending');
+        if(pend){pend.className='approval-stage voided';const st=pend.querySelector('.stage-status');st.className='stage-status voided';st.textContent='已作廢';pend.querySelector('.stage-person').textContent='申請人已作廢，流程終止';pend.querySelector('time').textContent='作廢日期：'+i.time}
+        const badge=rp.querySelector('.round-badge');if(badge)badge.textContent='狀態：已作廢';
+      }
+    }
+  }
+  btn.addEventListener('click',()=>{
+    ClaimVoid.open({no:$('#summaryNo').textContent,status:statusNow(),label:'請款單',onConfirm(reason){
+      info={reason,time:nowText(),by:ME};
+      role.value='voided';role.dispatchEvent(new Event('change'));
+      ClaimVoid.toast('請款單已作廢。');
+    }});
+  });
+  role.addEventListener('change',()=>{if(role.value!=='voided')info=null;sync()});
+  sync();
+})();
