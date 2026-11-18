@@ -15,17 +15,36 @@ const detailRows=document.querySelector('#detailRows');
 if(detailRows){
   const copyIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>';
   const esc=v=>String(v||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
-  const detailRow=(desc,amount)=>`<tr><td><input class="control detail-desc" placeholder="請輸入摘要" value="${esc(desc)}"></td><td class="money"><span class="money-wrap"><span>NT$</span><input class="control detail-amount" inputmode="numeric" placeholder="請輸入金額" value="${amount?Number(amount).toLocaleString('en-US'):''}"></span></td><td class="detail-act"><button class="detail-copy" type="button" title="複製此筆明細（金額不複製）" aria-label="複製此筆明細">${copyIcon}</button></td><td class="detail-act"><button class="detail-remove" type="button" title="刪除此筆明細" aria-label="刪除此筆明細">🗑</button></td></tr>`;
+  const channels=['全站共攤','代標','日本代購','比比昂日貨','全家-比比昂日貨','全家-ZOZO','樂天','B2B','BBC','Fleamarket','Mercari','Rakuma','ZOZO'];
+  const channelSel=ch=>`<select class="control detail-channel" aria-label="頻道"><option value="">請選擇頻道</option>${channels.map(c=>`<option${c===ch?' selected':''}>${c}</option>`).join('')}</select>`;
+  const detailRow=(desc,amount,ch)=>`<tr><td><input class="control detail-desc" placeholder="請輸入摘要" value="${esc(desc)}"></td><td class="detail-channel-cell">${channelSel(ch)}</td><td class="money"><span class="money-wrap"><span>NT$</span><input class="control detail-amount" inputmode="numeric" placeholder="請輸入金額" value="${amount?Number(amount).toLocaleString('en-US'):''}"></span></td><td class="detail-act"><button class="detail-copy" type="button" title="複製此筆明細（金額不複製）" aria-label="複製此筆明細">${copyIcon}</button></td><td class="detail-act"><button class="detail-remove" type="button" title="刪除此筆明細" aria-label="刪除此筆明細">🗑</button></td></tr>`;
   const amountOf=tr=>Number(String(tr.querySelector('.detail-amount').value).replace(/\D/g,''))||0;
   const refreshTotal=()=>{const total=[...detailRows.children].reduce((sum,tr)=>sum+amountOf(tr),0);claimTotal.dataset.amount=total;claimTotal.textContent='NT$ '+total.toLocaleString('en-US');refreshApprovalHint()};
-  const addDetail=(desc,amount,focusSel)=>{detailRows.insertAdjacentHTML('beforeend',detailRow(desc,amount));const tr=detailRows.lastElementChild;tr.querySelector(focusSel||'.detail-desc').focus();refreshTotal()};
-  detailRows.innerHTML=detailRow('員工獎金',100000);
+  const addDetail=(desc,amount,focusSel,ch)=>{detailRows.insertAdjacentHTML('beforeend',detailRow(desc,amount,ch));const tr=detailRows.lastElementChild;tr.querySelector(focusSel||'.detail-desc').focus();refreshTotal()};
+  detailRows.innerHTML=detailRow('員工獎金',100000,'全站共攤');
   document.querySelector('#addDetail').addEventListener('click',()=>addDetail('',0));
   detailRows.addEventListener('click',e=>{
     const copyBtn=e.target.closest('.detail-copy'),removeBtn=e.target.closest('.detail-remove');
-    if(copyBtn){addDetail(copyBtn.closest('tr').querySelector('.detail-desc').value,0,'.detail-amount')}
-    else if(removeBtn){const tr=removeBtn.closest('tr');if(detailRows.children.length===1){tr.querySelector('.detail-desc').value='';tr.querySelector('.detail-amount').value=''}else tr.remove();refreshTotal()}
+    if(copyBtn){addDetail(copyBtn.closest('tr').querySelector('.detail-desc').value,0,'.detail-amount',copyBtn.closest('tr').querySelector('.detail-channel').value)}
+    else if(removeBtn){const tr=removeBtn.closest('tr');if(detailRows.children.length===1){tr.querySelector('.detail-desc').value='';tr.querySelector('.detail-channel').value='';tr.querySelector('.detail-amount').value=''}else tr.remove();refreshTotal()}
   });
+  // 頻道：支出科目為「代付款 (BBN) - 廣告費」時，送出簽核須逐列選擇頻道，其他科目可不填；草稿不檢核。
+  // Demo 僅示意此項檢核（送出鈕其餘檢核與送出流程由正式版實作）：未通過時阻擋送出、標示未選的列並提示。
+  const claimSubject=document.querySelector('#claimSubject'),channelError=document.querySelector('#channelError');
+  const clearChannelError=()=>{channelError.hidden=true;detailRows.querySelectorAll('.detail-channel.invalid').forEach(c=>c.classList.remove('invalid'))};
+  const checkChannels=()=>{
+    clearChannelError();
+    if(!claimSubject||claimSubject.value!=='代付款 (BBN) - 廣告費')return true;
+    const empty=[...detailRows.querySelectorAll('.detail-channel')].filter(c=>!c.value);
+    if(!empty.length)return true;
+    empty.forEach(c=>c.classList.add('invalid'));
+    channelError.textContent='支出科目為「代付款 (BBN) - 廣告費」時，請款明細的頻道必填，請選擇頻道。';
+    channelError.hidden=false;empty[0].scrollIntoView({block:'center',behavior:'smooth'});empty[0].focus({preventScroll:true});
+    return false;
+  };
+  document.querySelectorAll('.js-submit-claim').forEach(btn=>btn.addEventListener('click',()=>{checkChannels()}));
+  claimSubject?.addEventListener('change',clearChannelError);
+  detailRows.addEventListener('change',e=>{if(e.target.classList.contains('detail-channel'))e.target.classList.remove('invalid')});
   detailRows.addEventListener('input',e=>{if(!e.target.classList.contains('detail-amount'))return;const digits=e.target.value.replace(/\D/g,'').slice(0,9);e.target.value=digits?Number(digits).toLocaleString('en-US'):'';refreshTotal()});
 }
 // 選擇既有廠商：下拉最上方為「最近使用」（目前登入者＝新增人，含草稿，依請款公司分開，依新增時間新到舊，匯款戶名／廠商不重複，最多 10 個），下方為完整廠商清單，兩區皆可搜尋。

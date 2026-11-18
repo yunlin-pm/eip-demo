@@ -1,4 +1,4 @@
-/* 公告管理內容頁：新增（?mode=new）／編輯（?mode=edit&id=）。只有「返回」「儲存」；Demo 無後端，儲存只做檢核並提示。 */
+/* 公告管理內容頁：新增（?mode=new）／編輯（?mode=edit&id=）。只有「返回」「儲存」（通知信改在公告管理列表發送）；Demo 無後端，儲存只做檢核並提示。 */
 (function(){
   const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],params=new URLSearchParams(location.search),mode=$('#mode');
   const iso=d=>d?`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`:'';
@@ -9,12 +9,11 @@
     $$('input[name=company]').forEach(x=>x.checked=a?a.companies.includes(x.value):x.value==='CBS');
     setRadio('type',a?a.type:'');$('#title').value=a?a.title:'';$('#summary').value=a?a.summary:'';
     $('#date').value=a?iso(a.date):iso(ANN_TODAY);$('#expiry').value=a?iso(a.expiry):'';
-    setRadio('pinned',a&&a.pinned?'1':'0');setRadio('notify',a&&a.notify?'1':'0');syncNotify();setRadio('published',a?(a.published?'1':'0'):'0');
+    setRadio('pinned',a&&a.pinned?'1':'0');setRadio('published',a?(a.published?'1':'0'):'0');
     $('#content').innerHTML=a?a.content:'';
     $$('#files .file-card').forEach(x=>x.remove());(a?a.attachments:[]).forEach(f=>$('#uploadBtn').insertAdjacentHTML('beforebegin',fileCard(f)));
     counts();
   }
-  function syncNotify(){$('#notifyNote').hidden=$('input[name=notify]:checked')?.value!=='1'}
   function counts(){$('#titleCount').textContent=$('#title').value.length;$('#summaryCount').textContent=$('#summary').value.length}
   function apply(){
     const m=mode.value,a=m==='edit'?(ANNOUNCEMENTS.find(x=>x.id===params.get('id'))||annSortedAll()[0]):null;
@@ -32,13 +31,11 @@
     if(!$('#date').value)return'請選擇發佈日期。';
     if($('#expiry').value&&$('#expiry').value<$('#date').value)return'到期日期不可早於發佈日期。';
     if(!$('input[name=published]:checked'))return'請選擇是否發佈公告。';
-    if(!$('input[name=notify]:checked'))return'請選擇是否發送 Email 通知。';
     if(!$('#content').textContent.trim())return'請填寫公告內容。';
     return'';
   }
   $('#saveBtn').onclick=()=>{const err=validate();if(err){alert(err);return}alert('已儲存公告。')};
   $('#title').oninput=$('#summary').oninput=counts;
-  $$('input[name=notify]').forEach(x=>x.onchange=syncNotify);
   // 編輯器（比照簽呈單）
   document.addEventListener('click',e=>{const c=e.target.closest('[data-command]');if(!c)return;let v=null;if(c.dataset.command==='createLink'){v=prompt('請輸入連結網址');if(!v)return}document.execCommand(c.dataset.command,false,v);$('#content').focus()});
   $('#editorSize').onchange=e=>{document.execCommand('fontSize',false,e.target.value);$('#content').focus()};

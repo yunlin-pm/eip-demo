@@ -7,7 +7,7 @@ function toggleDropdown(id){var el=document.getElementById(id);if(el)el.classLis
   var list=document.getElementById('annList');if(!list||typeof ANNOUNCEMENTS==='undefined')return;
   var rows=annSorted().slice(0,5);
   list.innerHTML=rows.map(function(r){
-    return '<a class="ann-item'+(r.pinned?' is-pinned':'')+'" href="announcements/detail.html?id='+encodeURIComponent(r.id)+'"><time>'+annFmt(r.date)+'</time><div class="ann-body"><div class="ann-line"><span class="ann-type '+ANN_TYPES[r.type]+'">'+annEsc(r.type)+'</span><strong>'+annEsc(r.title)+'</strong></div><small title="'+annEsc(r.summary)+'">'+annEsc(r.summary)+'</small></div><span class="ann-badges">'+(r.pinned?'<span class="ann-pin">置頂</span>':'')+'</span></a>';
+    return '<a class="ann-item'+(r.pinned?' is-pinned':'')+'" href="announcements/detail.html?id='+encodeURIComponent(r.id)+'&from=overview"><time>'+annFmt(r.date)+'</time><div class="ann-body"><div class="ann-line"><span class="ann-type '+ANN_TYPES[r.type]+'">'+annEsc(r.type)+'</span><strong>'+annEsc(r.title)+'</strong></div><small title="'+annEsc(r.summary)+'">'+annEsc(r.summary)+'</small></div><span class="ann-badges">'+(r.pinned?'<span class="ann-pin">置頂</span>':'')+'</span></a>';
   }).join('');
   document.getElementById('annEmpty').hidden=rows.length>0;
 })();

@@ -1,10 +1,12 @@
 /* 公司公告 Demo 資料：總覽「公司公告」區塊、公告列表頁、公告內容頁共用。
    發佈日期以「今天」往回推算（days），讓排序示範不會隨時間失效。
-   公告管理欄位：companies（公告公司代碼）、expiryDays（到期日＝今天往回推的天數，負數＝未來；null＝不到期）、published（發佈公告：true 顯示／false 隱藏）、notify（發送 Email 通知公告公司全體員工）。
+   公告管理欄位：companies（公告公司代碼）、expiryDays（到期日＝今天往回推的天數，負數＝未來；null＝不到期）、published（發佈公告：true 顯示／false 隱藏）、sentAt／sentBy（通知信發送時間與發送人員，未發送為 null；在公告管理列表手動發送，每則公告只能發送一次）。
    同仁端（總覽、公告列表、公告內容）只顯示：發佈公告＝是、發佈日期≦今天、未過到期日、公告公司含登入者公司（Demo 為網家跨境 CBS）。
    排序規則：置頂旗標＝true 的排最前面（置頂之間依發佈日期新到舊），其餘依發佈日期新到舊。 */
 var ANN_COMPANIES={CBS:'網家跨境服務股份有限公司',BBN:'比比昂株式會社',ASL:'空中補給股份有限公司'};
 var ANN_COMPANY_SHORT={CBS:'網家跨境',BBN:'比比昂',ASL:'空中補給'};
+/* 通知信收件對象：各公司全體員工信箱（群組信箱）；比比昂株式會社的信箱尚未提供 */
+var ANN_COMPANY_MAIL={CBS:'tp-office@bibian.co.jp',BBN:'',ASL:'asl@japan-import.com.tw'};
 var ANN_TYPES={'一般公告':'general','人事公告':'hr','資訊公告':'it','活動公告':'event'};
 var ANNOUNCEMENTS=[
   {id:'ANN-2026-0014',type:'人事公告',pinned:true,days:2,title:'2026 年度年終考核作業時程公告',summary:'12/01 起開放年度考核自評，請各單位主管於 12/15 前完成部屬評核。',
@@ -53,13 +55,14 @@ var ANN_TODAY=(function(){var t=new Date();t.setHours(0,0,0,0);return t})();
     if(!a.companies)a.companies=e.companies||['CBS'];
     if(a.expiryDays===undefined)a.expiryDays=e.expiryDays===undefined?null:e.expiryDays;
     if(a.published===undefined)a.published=true;
-    if(a.notify===undefined)a.notify=a.pinned||a.type==='人事公告';
     var d=new Date(ANN_TODAY);d.setDate(d.getDate()-a.days);a.date=d;
     if(a.expiryDays===null){a.expiry=null}else{var x=new Date(ANN_TODAY);x.setDate(x.getDate()-a.expiryDays);a.expiry=x}
     // 新增者／最後編輯者（Demo）：新增於發佈日前 2 天，最後編輯於發佈日前 1 天（不晚於今天）
     var i=parseInt(a.id.slice(-2),10),c=new Date(a.date);c.setDate(c.getDate()-2);c.setHours(9+i%8,(i*7)%60,(i*13)%60);
     var e=new Date(a.date);e.setDate(e.getDate()-1);if(e>ANN_TODAY)e=new Date(ANN_TODAY);e.setHours(10+i%7,(i*11)%60,(i*17)%60);
     a.creator=a.creator||(i%2?'陳庭瑋':'洪榆瑄');a.created=c;a.editor=a.editor||(i%3?'陳庭瑋':'洪榆瑄');a.edited=e;
+    // 通知信發送紀錄（Demo）：已發佈且已到發佈日的置頂／人事公告視為已發送（發佈日當天發送，發送人員同最後編輯者）；其餘為未發送
+    if(a.sentAt===undefined){if(a.published&&a.days>=0&&(a.pinned||a.type==='人事公告')){var m=new Date(a.date);m.setHours(8,(i*5)%60,0);a.sentAt=m;a.sentBy=a.editor}else{a.sentAt=null;a.sentBy=''}}
   });
 })();
 /* 狀態（公告管理用）：隱藏／排程中（未到發佈日）／已到期／顯示中 */

@@ -29,10 +29,12 @@
     </section>
     <div class="resultbar"><span>查詢共 <b id="count">0</b> 筆</span></div>
     <div class="mobile-claim-list ann-cards" id="cards"></div>
-    <div class="table-wrap"><table class="ann-table ann-admin-table"><thead><tr><th class="col-edit">操作</th><th class="col-status">發佈狀態</th><th class="col-pin">置頂</th><th class="col-type">公告類型</th><th class="col-title">公告標題</th><th class="col-company">公告公司</th><th class="col-date">發佈日期</th><th class="col-date">到期日期</th><th class="col-notify">Email 通知</th><th class="col-user">最後編輯者</th><th class="col-time">最後編輯時間</th><th class="col-user">新增者</th><th class="col-time">新增時間</th></tr></thead><tbody id="rows"></tbody></table><div class="empty" id="empty" hidden>查無符合條件的公告</div></div>
+    <div class="table-wrap"><table class="ann-table ann-admin-table"><thead><tr><th class="col-edit">操作</th><th class="col-status">發佈狀態</th><th class="col-pin">置頂</th><th class="col-type">公告類型</th><th class="col-title">公告標題</th><th class="col-company">公告公司</th><th class="col-date">發佈日期</th><th class="col-date">到期日期</th><th class="col-mail">發送通知信</th><th class="col-user">最後編輯者</th><th class="col-time">最後編輯時間</th><th class="col-user">新增者</th><th class="col-time">新增時間</th></tr></thead><tbody id="rows"></tbody></table><div class="empty" id="empty" hidden>查無符合條件的公告</div></div>
     <div class="mobile-empty" id="mobileEmpty" hidden>查無符合條件的公告</div>
     <nav class="ann-pager" id="pager" aria-label="分頁"></nav>
   </main>
+  <div class="decision-modal ann-mail-modal" id="mailModal" hidden role="dialog" aria-modal="true" aria-labelledby="mailTitle"><div class="decision-backdrop" data-close-mail></div><section class="decision-dialog ann-mail-dialog"><h2 id="mailTitle"></h2><div id="mailBody"></div><div class="decision-actions" id="mailActions"></div></section></div>
+  <div class="ann-toast" id="annToast" role="status" aria-live="polite" hidden></div>
   <div id="eipAppFooter"></div><script src="../../assets/js/eip-layout.js"></script><script src="../../assets/js/announcement-data.js"></script><script src="../../assets/js/announcement-admin-list.js"></script>
 </body>
 </html>

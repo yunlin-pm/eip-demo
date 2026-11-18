@@ -37,9 +37,17 @@
 @media(max-width:700px){.approval-action-modal{padding:10px}.approval-action-body{padding:20px 18px}.approval-action-dialog>footer{padding:14px 16px}.approval-action-dialog>footer .btn{flex:1}}
 /* 請款明細：摘要／金額為可輸入欄位，每列提供複製與刪除 */
 .detail-table .detail-desc{width:100%;max-width:none}
+.body:has(>.detail-table){container-type:inline-size}
+.detail-channel-error{margin-top:8px;color:var(--red);font-size:13px}.detail-channel-error[hidden]{display:none}
+.detail-table .detail-channel.invalid{border-color:var(--red);box-shadow:0 0 0 1px var(--red)}
+.detail-channel-help{margin-bottom:4px}
+.detail-table{table-layout:fixed}
+.detail-table th.detail-channel-th,.detail-table td.detail-channel-cell{width:165px}
+.detail-table th.money{width:180px}
+.detail-table .detail-channel{width:100%;max-width:none}
 .detail-table .money-wrap{display:flex;align-items:center;justify-content:flex-end;gap:8px;white-space:nowrap}
-.detail-table .money-wrap .detail-amount{width:160px;max-width:none;text-align:right}
-.detail-table th.detail-act,.detail-table td.detail-act{width:64px;text-align:center;padding-left:6px;padding-right:6px}
+.detail-table .money-wrap .detail-amount{width:120px;max-width:none;text-align:right}
+.detail-table th.detail-act,.detail-table td.detail-act{width:48px;text-align:center;padding-left:6px;padding-right:6px}
 .detail-table td{padding-top:8px;padding-bottom:8px}
 .detail-copy,.detail-remove{border:0;background:transparent;font-size:16px;line-height:1;cursor:pointer;padding:6px 8px;border-radius:5px}
 .detail-copy{color:#0969c7}.detail-copy:hover{background:#eaf3fc}
@@ -47,7 +55,8 @@
 .detail-remove{color:#d9364b}.detail-remove:hover{background:#fff1f2}
 .detail-readonly .detail-act,body:has(#approvalTop:not(.view-only)) .detail-act,.detail-readonly .detail-add,body:has(#approvalTop:not(.view-only)) .detail-add{display:none!important}
 .detail-readonly .detail-table .control,body:has(#approvalTop:not(.view-only)) .detail-table .control{border-color:transparent;background:transparent;padding-left:0;padding-right:0;color:#202936;-webkit-text-fill-color:#202936;opacity:1;pointer-events:none}
-@media(max-width:700px){.detail-table .detail-desc,.detail-table .detail-amount{height:44px}.detail-table{table-layout:fixed}.detail-table th:nth-child(2){width:112px}.detail-table .money-wrap>span{display:none}.detail-table .money-wrap .detail-amount{width:100%}.detail-table th,.detail-table td{padding-left:6px;padding-right:6px}.detail-table .control{min-width:0}.detail-table th.detail-act,.detail-table td.detail-act{width:46px;padding-left:2px;padding-right:2px}.detail-copy,.detail-remove{padding:8px 6px}}
+.detail-readonly .detail-table select.control,body:has(#approvalTop:not(.view-only)) .detail-table select.control{-webkit-appearance:none;appearance:none;background-image:none}
+@media(max-width:700px){.detail-table .detail-desc,.detail-table .detail-amount{height:44px}.detail-table .money-wrap>span{display:none}.detail-table .money-wrap .detail-amount{width:100%}.detail-table th,.detail-table td{padding-left:6px;padding-right:6px}.detail-table .control{min-width:0}.detail-table th.detail-act,.detail-table td.detail-act{width:46px;padding-left:2px;padding-right:2px}.detail-copy,.detail-remove{padding:8px 6px}}
 /* 選擇既有廠商：可搜尋下拉，最上方為「最近使用」 */
 .vendor-combo{position:relative;max-width:360px}
 .vendor-combo .vendor-input{max-width:none;width:100%}
@@ -114,3 +123,12 @@ tr[data-foreign] .lt-real{display:none}tr[data-foreign] .lt-mask{display:inline}
 
 /* 付款方式＝現金：隱藏付款條件、指定匯款日與整塊匯款資料，改顯示「預計領取現金日」（2026-11-03） */
 .cash-only{display:none}body.is-cash .cash-only{display:block}body.is-cash .cash-hide{display:none!important}
+/* 請款明細：容器寬度不足（手機或視窗較窄）時，每筆明細改為堆疊排版：摘要與頻道各佔一列，下一列為金額＋複製／刪除 */
+@container (max-width:700px){.detail-table thead{display:none}
+.detail-table,.detail-table tbody{display:block}
+.detail-table tr{display:grid;grid-template-columns:1fr 1fr auto auto;gap:6px;padding:10px 0;border-bottom:1px solid #e5e7eb}
+.detail-table td{display:block;padding:0!important;border:0!important;width:auto!important}
+.detail-table td:first-child,.detail-table td.detail-channel-cell{grid-column:1/-1}
+.detail-table td.money{grid-column:1/3}
+.detail-table .detail-channel{height:44px}
+.detail-table td.detail-act{width:40px!important;display:flex;align-items:center;justify-content:center}}

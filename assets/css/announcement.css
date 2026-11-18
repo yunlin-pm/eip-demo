@@ -109,9 +109,44 @@
 /* 公告管理列表：欄位較多，表格可橫向捲動 */
 .ann-admin-table{min-width:1560px}
 .ann-admin-table .col-title{width:260px}
-.ann-admin-table .col-notify{width:96px}
+.ann-admin-table .col-mail{width:120px}
 .ann-admin-table .col-user{width:96px}
 .ann-admin-table .col-time{width:168px}
-.ann-notify{display:inline-flex;padding:2px 9px;border-radius:11px;background:#f3f4f6;color:#8a96a5;font-size:12px;font-weight:800;white-space:nowrap}
-.ann-notify.on{background:#fff4e0;color:#a35a00}
+/* 發送通知信：列表欄位按鈕、已發送連結、發送視窗（2026-11-18） */
+.ann-mail-btn,.ann-mail-sent{display:inline-flex;align-items:center;min-height:28px;padding:0 10px;border-radius:5px;font:inherit;font-size:13px;font-weight:800;white-space:nowrap;cursor:pointer}
+.ann-mail-btn{border:1px solid #176aa6;background:#fff;color:#176aa6}
+.ann-mail-btn:hover:not(:disabled){background:#eaf3fb}
+.ann-mail-btn:disabled{border-color:#d0d8e2;background:#f3f5f8;color:#a3aebb;cursor:not-allowed}
+.ann-mail-sent{border:1px solid transparent;background:#e8f6ee;color:#1b7a43}
+.ann-mail-sent:hover{border-color:#1b7a43}
+.ann-mail-dialog{display:flex;flex-direction:column;width:min(720px,100%);max-height:92vh}
+.ann-mail-dialog h2{flex:none}
+.ann-mail-dialog #mailBody{flex:1 1 auto;min-height:0;overflow:auto;padding-right:4px}
+.ann-mail-dialog .decision-actions{flex:none}
+.ann-mail-preview{margin:0 0 14px}
+.ann-mail-box{border:1px solid #d7dee7;border-radius:7px;background:#fff;color:#233449}
+.ann-mail-subject{display:flex;gap:12px;margin:0;padding:11px 16px;border-bottom:1px solid #e4e9ef;border-radius:7px 7px 0 0;background:#f6f8fa;font-size:14px;line-height:1.5}
+.ann-mail-subject span{flex:none;color:#667085}
+.ann-mail-subject b{color:#17324d;overflow-wrap:anywhere}
+.ann-mail-copy{padding:18px 16px 4px;font-size:14px;line-height:1.65}
+.ann-mail-copy p{margin:0 0 14px;overflow-wrap:anywhere}
+.ann-mail-cta{display:inline-block;padding:10px 18px;border-radius:3px;background:#85557e;color:#fff;font-weight:700}
+.ann-mail-info{display:grid;grid-template-columns:88px 1fr;gap:8px 12px;margin:0 0 16px;padding:12px 14px;border-radius:7px;background:#f6f8fa;font-size:14px;line-height:1.55}
+.ann-mail-info dt{color:#667085}
+.ann-mail-info dd{margin:0;color:#17324d;font-weight:700;overflow-wrap:anywhere}
+.ann-mail-lead{margin:0 0 8px;color:#17202a;font-weight:800}
+.ann-mail-companies{margin:0 0 14px;padding:0;list-style:none;border:1px solid #d7dee7;border-radius:7px}
+.ann-mail-companies li{display:flex;flex-direction:column;gap:2px;padding:10px 14px}
+.ann-mail-companies li+li{border-top:1px solid #e4e9ef}
+.ann-mail-companies span{color:#176aa6;font-size:14px;overflow-wrap:anywhere}
+.ann-mail-companies .ann-mail-none{color:#a3aebb}
+.ann-mail-warn{color:#b42318;font-size:16px}
+.ann-mail-note{margin:0;color:#667085;font-size:13px;line-height:1.6}
+.ann-toast{position:fixed;left:50%;bottom:28px;z-index:3100;max-width:calc(100vw - 32px);transform:translateX(-50%);padding:11px 18px;border-radius:7px;background:#17324d;color:#fff;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.ann-toast[hidden],.ann-mail-modal[hidden]{display:none!important}
+.ann-card-box{border:1px solid #d7dee7;border-radius:9px;background:#fff;box-shadow:0 1px 3px rgba(18,42,66,.07)}
+.ann-card-box>.ann-card{border:0;border-radius:9px 9px 0 0;box-shadow:none;background:transparent}
+.ann-card-mail-why{color:#a35a00;font-size:12px;line-height:1.4;padding-right:8px}
+.ann-card-mail{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-top:1px solid #e1e7ed;border-radius:0 0 9px 9px;background:#f8fafc;color:#667085;font-size:13px}
+@media(max-width:700px){.ann-mail-info{grid-template-columns:1fr;gap:2px}.ann-mail-info dd{margin-bottom:8px}}
 .ann-card .ann-card-sub{display:block;margin-top:2px}
