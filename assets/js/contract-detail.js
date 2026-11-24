@@ -35,15 +35,15 @@ function addUnit(sel){
 }
 $('.add-unit').onclick=()=>addUnit('');
 function applyMode(){
-  const m=mode.value,read=m==='view'||m==='approve',no=params.get('no')||DOC_NO,copy=!!params.get('copy');
-  const box={new:'newActions',edit:'editActions',view:'viewActions',approve:'approveActions'}[m];
+  const m=mode.value,read=m==='view'||m==='approve'||m==='viewOwn'||m==='voided',no=params.get('no')||DOC_NO,copy=!!params.get('copy');
+  const box={new:'newActions',edit:'editActions',view:'viewActions',viewOwn:'viewActions',voided:'viewActions',approve:'approveActions'}[m];
   $$('#newActions,#editActions,#approveActions,#viewActions').forEach(x=>x.hidden=x.id!==box);
   $('#routePanel').hidden=m==='new';$('#returnAlert').hidden=m!=='edit';$('#opinionSummary').hidden=!read;
   document.body.classList.toggle('readonly',read);document.body.classList.toggle('show-approval-details',read);
   $('#pageTitle').textContent=m==='new'?'新增合約送審申請書（尚未產生單號）':`${m==='approve'?'簽核':m==='edit'?'編輯':'查看'}合約送審申請書（${no}）`;
   $('#applyDate').textContent=m==='new'?'申請日期：送出簽核後由系統回寫':'申請日期：2026/09/24';
   setForm(m==='new'&&!copy?blankForm():SAMPLE);
-  $$('input,select,textarea,button.link-btn').forEach(el=>{if(el===mode||el.closest('#decisionModal'))return;if(el.matches('button'))return;el.disabled=read});
+  $$('input,select,textarea,button.link-btn').forEach(el=>{if(el===mode||el.closest('#decisionModal,.cv-modal'))return;if(el.matches('button'))return;el.disabled=read});
   $('#sampleFile').hidden=m==='new';
   syncBiz();syncDocs();$('#applicantUnit').textContent=applicantUnits[$('#applicant').value]||'';
 }
@@ -70,7 +70,7 @@ function validate(){
   return'';
 }
 function submit(){const err=validate();if(err){alert(err);return}
-  $('#pageTitle').textContent='合約送審申請書（CBS-GCN-2026-00008）';$('#applyDate').textContent='申請日期：'+new Date().toLocaleDateString('zh-TW',{year:'numeric',month:'2-digit',day:'2-digit'});
+  $('#pageTitle').textContent='合約送審申請書（CBS-GCN-2026-00011）';$('#applyDate').textContent='申請日期：'+new Date().toLocaleDateString('zh-TW',{year:'numeric',month:'2-digit',day:'2-digit'});
   alert('已送出簽核，系統已回寫申請日期與申請單號。')}
 ['#submitBtn','#submitBtn2'].forEach(s=>$(s).onclick=submit);['#saveDraft','#saveDraft2'].forEach(s=>$(s).onclick=()=>alert('已儲存草稿。'));
 // 列印版：依目前畫面資料產生
@@ -94,3 +94,49 @@ function buildPrint(){
 }
 window.addEventListener('beforeprint',buildPrint);
 applyMode();
+// 作廢（比照請款單、簽呈單、採購請購單）：申請人可在「申請中、簽核中、已退回、已核准」作廢；被其他單據（請款單）引用者不可作廢。
+(function(){
+  if(!window.ClaimVoid)return;
+  const ME='陳庭瑋 (T037)',viewBox=$('#viewActions'),editBox=$('#editActions'),titleEl=$('#pageTitle'),routeHead=$('#routePanel .round-badge');
+  const NO_DEFAULT={'申請中':'CBS-GCN-2026-00005','簽核中':'CBS-GCN-2026-00005','已核准':'CBS-GCN-2026-00009'};
+  const st=()=>params.get('st')||'簽核中',docNo=()=>params.get('no')||NO_DEFAULT[st()]||DOC_NO;
+  const mk=()=>{const b=document.createElement('button');b.type='button';b.className='btn tool-action void-action';b.hidden=true;b.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>作廢';return b};
+  const btn=mk(),btn2=mk();viewBox.appendChild(btn);editBox.appendChild(btn2);
+  const copyLink=viewBox.querySelector('a.tool-action');
+  const routeOrig=[...document.querySelectorAll('#routeBody .approval-stage')].map(el=>[el,el.className,el.innerHTML]);
+  let info=null;
+  const nowTxt=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return d.getFullYear()+'/'+p(d.getMonth()+1)+'/'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())};
+  function sync(){
+    const v=mode.value,voided=v==='voided',own=v==='viewOwn';
+    routeOrig.forEach(([el,c,h])=>{el.className=c;el.innerHTML=h});routeHead.textContent='目前送審輪次：1';
+    $('#voidAlert').hidden=!voided;
+    btn.hidden=!own;btn2.hidden=!(v==='edit'&&params.get('st')!=='草稿');
+    if(copyLink)copyLink.hidden=voided&&params.get('copy')==='0';
+    if(own)titleEl.textContent='查看合約送審申請書（'+docNo()+'）';
+    if(!voided)return;
+    const i=info||{reason:params.get('reason')||'簽約對象異動，作廢後重新送審。',time:params.get('at')||'2026/09/25 11:20',by:ME,from:params.get('from')||'簽核中'};
+    titleEl.textContent='查看合約送審申請書（'+docNo()+'）';titleEl.insertAdjacentHTML('beforeend','<span class="void-badge">已作廢</span>');
+    $('#voidReasonText').textContent=i.reason;$('#voidWhoText').textContent=i.by+'　'+i.time;
+    routeHead.textContent='狀態：已作廢';
+    const stages=[...document.querySelectorAll('#routeBody .approval-stage')];
+    // 作廢前已核准：④法務單位、⑤總經理亦為已核准；其餘待簽核關卡標示已作廢
+    if(i.from==='已核准')stages.slice(3).forEach((el,k)=>{el.className='approval-stage approved';const s=el.querySelector('.stage-status');s.className='stage-status approved';s.textContent='已核准';el.querySelector('time').textContent=k?'2026/09/25 10:00':'2026/09/24 16:30'});
+    stages.forEach(el=>{if(!el.classList.contains('pending'))return;el.className='approval-stage voided';
+      const s=el.querySelector('.stage-status');s.className='stage-status voided';s.textContent='已作廢';
+      el.querySelector('.stage-person').textContent='申請人已作廢，流程終止';el.querySelector('time').textContent=i.time});
+    $('#routePanel').hidden=false;
+  }
+  function openVoid(){
+    const s=mode.value==='edit'?'已退回':st(),no=docNo();
+    ClaimVoid.open({no,status:s,label:'合約送審申請書',blockers:ClaimVoid.blockersOf(no),
+      warn:'此單已核准，作廢前請先確認尚未據此提出公司印鑑申請、用印或簽約。',
+      onConfirm(reason){
+        info={reason,time:nowTxt(),by:ME,from:s};
+        params.set('no',no);mode.value='voided';history.replaceState(null,'','?mode=voided&no='+encodeURIComponent(no));
+        applyMode();sync();ClaimVoid.toast('合約送審申請書已作廢。');
+      }});
+  }
+  btn.addEventListener('click',openVoid);btn2.addEventListener('click',openVoid);
+  mode.addEventListener('change',()=>{info=null;sync()});
+  sync();
+})();

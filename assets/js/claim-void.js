@@ -1,4 +1,5 @@
 // 表單作廢：共用視窗。用法 ClaimVoid.open({no,status,label,onConfirm(reason)})；ClaimVoid.toast(text)
+// 選用參數：warn（已核准時的警語，預設為財務警語）、extraNote（附加說明）、blockMessage（自訂不可作廢原因，如已執行完成）。
 // 規則：作廢原因必填（500 字內）；按「確認作廢」後再跳「再次確認作廢」（顯眼提示作廢後不可復原），按「確定作廢」才執行；已核准加財務警語；被其他單據引用者不可作廢（blockers）；確認後由呼叫端更新狀態。
 // 被引用資料來自 window.DOC_REFS（見 doc-refs.js）：引用它的單據只要不是「已作廢」「已刪除」就算引用中。
 (function(){
@@ -21,18 +22,22 @@
     cfg=c;last=document.activeElement;
     const label=c.label||'請款單';
     q('#cvTitle').textContent='作廢'+label;
-    q('#cvNo').textContent=c.no||'—';q('#cvStatus').textContent=c.status||'—';
+    q('#cvNo').textContent=c.no||'—';q('#cvStatus').textContent=c.statusText||c.status||'—';
     let note='作廢後，這張'+label+'將無法復原、無法再送審，簽核流程會立即停止。如需重新申請，請使用「複製」另開新單。';
     if(c.status==='申請中'||c.status==='簽核中')note+='目前待簽核者的待辦將一併移除。';
+    if(c.extraNote)note+=c.extraNote;
     q('#cvNote').textContent=note;
     const warn=q('#cvWarn');
-    if(c.status==='已核准'){warn.hidden=false;warn.textContent='此單已核准，作廢前請先與財務確認款項尚未支付。'}else warn.hidden=true;
+    if(c.status==='已核准'){warn.hidden=false;warn.textContent=c.warn||'此單已核准，作廢前請先與財務確認款項尚未支付。'}else warn.hidden=true;
     // 被引用：不可作廢，提示單據類型與單號
-    const blockers=c.blockers||[],blk=q('#cvBlock'),blocked=blockers.length>0;
+    const blockers=c.blockers||[],blk=q('#cvBlock'),blocked=blockers.length>0||!!c.blockMessage;
     if(blocked){
+      const lines=[];if(c.blockMessage)lines.push(c.blockMessage);
+      if(blockers.length){
       const byType={};blockers.forEach(b=>{(byType[b.type]=byType[b.type]||[]).push(b.no)});
       const parts=Object.keys(byType).map(t=>{const nos=byType[t],shown=nos.slice(0,3).join('、');return t+' '+shown+(nos.length>3?'等共 '+nos.length+' 張':'')});
-      blk.textContent=label+' '+(c.no||'')+' 已被 '+parts.join('、')+' 引用，無法作廢。請先作廢或刪除引用它的單據。';
+      lines.push(label+' '+(c.no||'')+' 已被 '+parts.join('、')+' 引用，無法作廢。請先作廢或刪除引用它的單據。');}
+      blk.textContent=lines.join('\n');blk.style.whiteSpace='pre-line';
       blk.hidden=false;warn.hidden=true;
     }else blk.hidden=true;
     q('#cvNote').hidden=blocked;q('.cv-label').hidden=blocked;reason.hidden=blocked;q('.cv-count').hidden=blocked;
@@ -60,8 +65,8 @@
     if(fn)fn(v);
   };
   function toast(text){
-    const t=document.createElement('div');t.className='cv-toast';t.setAttribute('role','status');t.textContent=text;
-    document.body.appendChild(t);setTimeout(()=>t.remove(),3200);
+    const t=document.createElement('div');t.className='cv-toast';t.setAttribute('role','status');t.textContent=/已作廢。$/.test(text)?text+'已通知申請人與目前待簽核者（如有）。':text;
+    document.body.appendChild(t);setTimeout(()=>t.remove(),4600);
   }
   // 取得「仍在引用中」的單據（引用它的單據已作廢／已刪除者不算）
   function blockersOf(no){return ((window.DOC_REFS||{})[no]||[]).filter(r=>r.status!=='已作廢'&&r.status!=='已刪除')}

@@ -4,7 +4,7 @@ const loginUser=document.body.dataset.eipUser||'—';
 let executionRecord={executor:'林家筠 (T038)',date:'2026/09/16',note:'已完成雲端資源建立與權限設定，並通知申請人。\n服務已部署至 asia-east1，防火牆規則已同步開通。'};
 
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-function isReadonlyMode(){return['view','approve','execute','done'].includes(mode.value)}
+function isReadonlyMode(){return['view','viewOwn','voided','approve','execute','done'].includes(mode.value)}
 /* 資源規格詳情：必填，僅限填寫連結（http:// 或 https://） */
 let specSampleLoaded=false;
 /* Demo 範例：非新增情境（編輯／查看／簽核／執行）預設帶入範例規格文件連結 */
@@ -32,7 +32,7 @@ function renderOpinionSummary(){
 renderOpinionSummary();
 function applyMode(){
   loadSampleSpec();
-  const v=mode.value,readonly=['view','approve','execute','done'].includes(v),done=v==='done',executed=['view','done'].includes(v),wasReturned=v==='edit';
+  const v=mode.value,readonly=['view','viewOwn','voided','approve','execute','done'].includes(v),done=v==='done',executed=['view','done'].includes(v),wasReturned=v==='edit';
   $$('.control').forEach(x=>{if(x!==mode&&!x.closest('#executionModal'))x.disabled=readonly});
   $('#editActions').classList.toggle('view-only',readonly);
   copyBtn.hidden=v!=='edit';
@@ -41,7 +41,7 @@ function applyMode(){
   $('#approveActions').classList.toggle('view-only',v!=='approve');
   $('#executeActions').classList.toggle('view-only',v!=='execute');
   $('#doneActions').classList.toggle('view-only',v!=='done');
-  viewActions.classList.toggle('view-only',v!=='view');
+  viewActions.classList.toggle('view-only',!['view','viewOwn','voided'].includes(v));
   executionPanel.classList.toggle('view-only',!executed);
   executionSummary.hidden=!executed;
   editExecutionBtn.hidden=!done;
@@ -75,6 +75,7 @@ $('#executionConfirm').onclick=()=>{
   if(!executor||!dateValue||!note){alert('請填寫執行時間、執行內容與執行者。');return}
   const disableValue=$('#disableDateInput').value;
   if(disableValue&&disableValue<dateValue){alert('到期停用日期不可早於執行時間。');return}
+  if(params.get('voided')==='1'){closeExecutionModal();alert('此單已作廢，無法回填執行完成。');return}
   const wasExecuting=mode.value==='execute';
   executionRecord={executor,date:dateValue.replace(/-/g,'/'),note,disable:disableValue?disableValue.replace(/-/g,'/'):''};
   closeExecutionModal();
@@ -105,7 +106,7 @@ function syncCostFields(){
 $$('.cost-trigger').forEach(x=>x.addEventListener('change',syncCostFields));syncCostFields();
 routeToggle.onclick=()=>{const opening=routeBody.classList.contains('route-collapsed');routeBody.classList.toggle('route-collapsed');routeToggle.textContent=opening?'收合':'查看'};
 $('#submitBtn').onclick=e=>{e.preventDefault();if(!form.reportValidity())return;$('#docNo').textContent='CBS-ICS-2026-00006';$('#submitDate').textContent='申請日期：'+new Date().toLocaleDateString('zh-TW');alert('已送出簽核，系統已回寫申請日期與申請單號。')};
-if(params.get('copy')){mode.value='new';applyMode();$('#docNo').textContent='尚未產生單號';$('#submitDate').textContent='申請日期：送出簽核後由系統回寫'}
+if(params.get('copy')==='1'){mode.value='new';applyMode();$('#docNo').textContent='尚未產生單號';$('#submitDate').textContent='申請日期：送出簽核後由系統回寫'}
 
 function radioLabelText(name){
   const checked=document.querySelector(`input[name="${name}"]:checked`);
@@ -185,4 +186,51 @@ function buildPrintView(){
   $('#printExecutor').textContent=executed?executionRecord.executor:'—';
 }
 window.addEventListener('beforeprint',buildPrintView);
-
+// 作廢（比照請款單、簽呈單、採購請購單、公司印鑑、合約送審）：申請人可在「申請中、簽核中、已退回、已核准且 SRE 尚未執行」時作廢；已執行不可作廢。
+(function(){
+  if(!window.ClaimVoid)return;
+  const ME='陳庭瑋 (T037)',viewBox=$('#viewActions'),editBox=$('#editActions'),routeHead=$('#roundBadge');
+  const st=()=>params.get('st')||'簽核中',docNo=()=>params.get('no')||'CBS-ICS-2026-00003';
+  const mk=()=>{const b=document.createElement('button');b.type='button';b.className='btn tool-action void-action';b.hidden=true;b.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>作廢';return b};
+  const btn=mk(),btn2=mk();viewBox.appendChild(btn);editBox.appendChild(btn2);
+  const copyLink=viewBox.querySelector('a.tool-action');
+  const docTitle=document.querySelector('.cloud-basic-title>span');
+  const routeOrig=[...document.querySelectorAll('#routeBody .approval-stage')].map(el=>[el,el.className,el.innerHTML]);
+  let info=null;
+  const nowTxt=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return d.getFullYear()+'/'+p(d.getMonth()+1)+'/'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())};
+  function sync(){
+    const v=mode.value,voided=v==='voided',own=v==='viewOwn';
+    routeOrig.forEach(([el,c,h])=>{el.className=c;el.innerHTML=h});
+    $('#voidAlert').hidden=!voided;
+    btn.hidden=!own;btn2.hidden=!(v==='edit'&&params.get('st')!=='草稿');
+    if(copyLink)copyLink.hidden=voided&&params.get('copy')==='0';
+    document.querySelectorAll('.void-badge').forEach(x=>x.remove());
+    if(!voided)return;
+    const i=info||{reason:params.get('reason')||'專案取消，不再需要此資源。',time:params.get('at')||'2026/09/25 11:20',by:ME,from:params.get('from')||'簽核中'};
+    if(docTitle)docTitle.insertAdjacentHTML('beforeend','<span class="void-badge">已作廢</span>');
+    $('#voidReasonText').textContent=i.reason;$('#voidWhoText').textContent=i.by+'　'+i.time;
+    routeHead.textContent='狀態：已作廢';
+    const stages=[...document.querySelectorAll('#routeBody .approval-stage')];
+    // 作廢前已核准：全部必經關卡視為已核准（⑦總經理為條件式關卡，維持略過）；其餘待簽核關卡標示已作廢
+    if(i.from==='已核准')stages.forEach(el=>{if(el.classList.contains('skipped'))return;el.className='approval-stage approved';const s=el.querySelector('.stage-status');s.className='stage-status approved';s.textContent='已核准'});
+    stages.forEach(el=>{if(el.classList.contains('skipped')||el.classList.contains('approved'))return;el.className='approval-stage voided';
+      const s=el.querySelector('.stage-status');s.className='stage-status voided';s.textContent='已作廢';
+      el.querySelector('.stage-person').textContent='申請人已作廢，流程終止'});
+    routePanel.hidden=false;
+  }
+  function openVoid(){
+    const raw=mode.value==='edit'?'已退回':st(),no=docNo(),approved=/^已核准|^尚未執行/.test(raw)||raw==='尚未執行';
+    const s=approved?'已核准':raw;
+    ClaimVoid.open({no,status:s,statusText:approved?'已核准（尚未執行）':s,label:'雲端服務與資源申請',blockers:ClaimVoid.blockersOf(no),
+      warn:'此單已核准，作廢前請先與 SRE 確認尚未開始建立或異動資源。',
+      extraNote:approved?'具執行權限的 SRE 人員在「執行管理」會看到此單標示為「已作廢」，無法再回報執行完成。':'',
+      onConfirm(reason){
+        info={reason,time:nowTxt(),by:ME,from:s};
+        params.set('no',no);mode.value='voided';history.replaceState(null,'','?mode=voided&no='+encodeURIComponent(no));
+        applyMode();sync();ClaimVoid.toast('雲端服務與資源申請 '+no+' 已作廢。');
+      }});
+  }
+  btn.addEventListener('click',openVoid);btn2.addEventListener('click',openVoid);
+  mode.addEventListener('change',()=>{info=null;sync()});
+  sync();
+})();

@@ -1,0 +1,85 @@
+/* 國外出差申請（HTR）／國外出差請款單（HTE）共用：沿用 memo.css 版型，僅補本兩張表單專屬樣式；各表單 CSS 不互相引用 */
+.travel-page .v2-route-wide>.body.route{grid-template-columns:repeat(var(--route-cols,4),minmax(170px,1fr))}
+.travel-page .detail-grid>*{min-width:0}
+.travel-page .basic-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.travel-page .basic-grid>label{display:flex;flex-direction:column;gap:6px;min-width:0}
+.travel-page .field-note{color:#667085;font-size:12px;font-weight:400}
+.note-lines{margin:0 0 6px;padding:10px 14px;border-left:4px solid #e0a000;background:#fff9e8;color:#6b4e00;font-size:13px;line-height:1.75}
+/* 左欄欄位名稱、右欄欄位內容（比照合約送審申請「合約內容」） */
+.demand-body{display:flex;flex-direction:column;gap:0}
+.demand-row{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px 16px;align-items:start;padding:13px 0;border-bottom:1px solid #e1e7ed}
+.demand-row:last-child{border-bottom:0}
+.demand-row>.label{padding-top:9px;margin:0}
+.demand-row>.control,.demand-row textarea.control{width:100%}
+.demand-row[hidden]{display:none!important}
+.demand-choices{display:flex;align-items:center;flex-wrap:wrap;gap:8px 20px;min-height:38px}
+.demand-choices label{display:inline-flex;flex-direction:row;align-items:center;gap:6px;margin:0;font-weight:400;white-space:nowrap}
+.demand-choices input[type=radio],.demand-choices input[type=checkbox]{flex:0 0 auto;margin:0}
+.demand-choices .inline-input{width:150px;min-height:32px;height:32px;margin-left:2px}
+.demand-choices .inline-input[hidden]{display:none}
+.choice-stack{display:grid;gap:2px}
+.sub-choices{margin-left:24px;padding:4px 12px;border-left:3px solid #d7e3ef;min-height:34px}
+.sub-choices.off{opacity:.45}
+.date-line{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px}
+.date-input{width:180px}
+.days-hint{color:#475467}
+.days-hint b{font-size:16px;color:#174f7f}
+.days-hint.gm strong{color:#c4320a}
+.days-hint.error{color:#d92d20;font-weight:700}
+.amount-list{display:flex;flex-wrap:wrap;gap:8px 18px}
+.amount-list[hidden]{display:none}
+.amount-item{display:inline-flex;align-items:center;gap:6px;margin:0;font-weight:400}
+.amount-item>span{min-width:48px;font-weight:700;color:#17324d}
+.amount-item .control{width:140px;text-align:right}
+.amount-item em{font-style:normal;color:#475467}
+.travel-page .help[hidden]{display:none}
+/* 沒有右欄內容（新增／修改）時改為單欄 */
+.travel-page .detail-grid.no-side{grid-template-columns:minmax(0,1fr)}
+.travel-page .detail-grid.no-side>aside{display:none}
+.travel-page .route-preview .panel-body{padding:14px 16px}
+.opinion-empty{margin:0;padding:14px 16px;color:#7a8694;font-size:13px}
+.btn.return-current{border-color:#e63248;background:#fff;color:#c4202f}
+/* 唯讀情境 */
+.readonly .travel-page .demand-row .control:disabled,.readonly .travel-page .basic-grid .control:disabled{color:#1f2933;-webkit-text-fill-color:#1f2933;background:#f7f9fb;opacity:1}
+.readonly .travel-page textarea::placeholder,.readonly .travel-page input::placeholder{color:transparent}
+.readonly .sub-choices.off{display:none}
+/* ===== 國外出差請款單：出差旅費明細 ===== */
+.expense-table-wrap{overflow-x:auto;border:1px solid #d5dde6;border-radius:7px}
+.expense-table{min-width:1080px;font-size:13px}
+.expense-table th{padding:9px 8px;background:#f2f5f8;font-weight:800;white-space:nowrap}
+.expense-table th.req:before{content:'* ';color:#d92d20}
+.expense-table td{padding:7px 6px;vertical-align:middle;white-space:nowrap}
+.expense-table .control{width:100%;height:34px;min-height:0;padding:5px 7px}
+.expense-table .c-type{width:120px}.expense-table .c-desc{min-width:170px}.expense-table .c-cur{width:96px}.expense-table .c-days{width:70px}.expense-table .c-unit{width:110px}.expense-table .c-fx{width:112px}.expense-table .c-rate{width:86px}.expense-table .c-twd{width:120px}.expense-table .c-act{width:92px}
+.expense-table .num{text-align:right}
+.expense-table .calc{display:block;padding:0 4px;color:#344054;text-align:right}
+.expense-table .na{display:block;color:#98a2b3;text-align:center}
+.expense-table .row-act{display:flex;gap:4px;align-items:center;color:#98a2b3}
+.expense-table .row-act button{border:0;background:none;color:#164d80;cursor:pointer;padding:2px 4px;font-size:13px}
+.expense-table .row-act button.del{color:#b42318}
+.expense-table tfoot td{background:#f7f9fb;font-weight:800;border-bottom:0}
+.expense-total{font-size:17px;color:#174f7f;text-align:right}
+.expense-add{display:inline-block;margin:10px 0 0;padding:7px 14px;border:1px dashed #8aa4bf;border-radius:5px;background:#fff;color:#164d80;font-weight:700;cursor:pointer}
+.expense-notes{margin:10px 0 0;padding:0;list-style:none;color:#667085;font-size:12px;line-height:1.7}
+.pay-note{margin:10px 0 0;padding:8px 12px;border-radius:6px;background:#eef6ff;color:#174f7f;font-size:13px;font-weight:700}
+.voucher-line{display:flex;align-items:center;gap:8px}
+.voucher-line .control{width:120px}
+.htr-link{display:inline-block;margin-top:4px;color:#0969c7;font-size:12px;text-decoration:none}
+.htr-link[hidden]{display:none}
+.htr-field .control{width:100%}
+.readonly .expense-add,.readonly .expense-table .row-act{display:none!important}
+.readonly .expense-table .control:disabled{color:#1f2933;-webkit-text-fill-color:#1f2933;background:#f7f9fb;opacity:1;appearance:none;-webkit-appearance:none}
+.travel-page .attachment-area{margin-top:2px}
+@media(max-width:1100px){.travel-page .basic-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){.travel-page .v2-route-wide>.body.route{grid-template-columns:repeat(2,minmax(200px,1fr))}}
+@media(max-width:700px){.travel-page .basic-grid{grid-template-columns:1fr}.travel-page .v2-route-wide>.body.route{grid-template-columns:1fr}.demand-row{grid-template-columns:1fr;gap:6px}.demand-row>.label{padding-top:0}.demand-choices label{white-space:normal}.sub-choices{margin-left:8px}.date-input{width:100%}.travel-page .panel h2{flex-wrap:wrap;gap:4px}}
+/* 列印：簽收欄 */
+@media print{.print-sign td{height:30px}.print-expense th,.print-expense td{font-size:11px;padding:5px 6px}.print-expense .num{text-align:right}}
+/* 右欄：原出差申請摘要 */
+.htr-dl{display:grid;grid-template-columns:96px minmax(0,1fr);gap:6px 10px;margin:0;font-size:13px}
+.htr-dl dt{color:#667085}.htr-dl dd{margin:0;color:#1f2933;font-weight:700;word-break:break-all}
+.travel-page .field-note[hidden]{display:none}
+/* textarea 依 rows 顯示高度（memo.css 的 .control 固定 36px 高） */
+.travel-page textarea.control{height:auto;min-height:60px;line-height:1.55;resize:vertical}
+.readonly .travel-page .control:disabled::placeholder{-webkit-text-fill-color:transparent;color:transparent}
+.expense-full{margin-top:0}.expense-page .detail-grid{margin-bottom:0}

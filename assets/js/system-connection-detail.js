@@ -54,7 +54,7 @@ function loadForm(filled){
   setConnRows(filled?connSample:[null]);
 }
 function applyMode(){
-  const v=mode.value,readonly=['view','approve','execute','done'].includes(v),done=v==='done',executed=['view','done'].includes(v),wasReturned=v==='edit';
+  const v=mode.value,readonly=['view','viewOwn','voided','approve','execute','done'].includes(v),done=v==='done',executed=['view','done'].includes(v),wasReturned=v==='edit';
   loadForm(!(v==='new'&&!params.get('copy')));
   $$('.control').forEach(x=>{if(x!==mode&&!x.closest('#executionModal'))x.disabled=readonly});
   syncOtherFields();syncConditionalFields();syncExpiry();
@@ -66,10 +66,10 @@ function applyMode(){
   $('#approveActions').classList.toggle('view-only',v!=='approve');
   $('#executeActions').classList.toggle('view-only',v!=='execute');
   $('#doneActions').classList.toggle('view-only',v!=='done');
-  viewActions.classList.toggle('view-only',v!=='view');
+  viewActions.classList.toggle('view-only',!['view','viewOwn','voided'].includes(v));
   executionPanel.classList.toggle('view-only',!executed);
   // 已核准後（查看／執行／執行完成）關卡全部顯示為已核准；簽核中情境維持範例的簽核進度
-  const allApproved=['view','execute','done'].includes(v);
+  const allApproved=['view','execute','done'].includes(v)||(v==='viewOwn'&&/尚未執行|已核准/.test(params.get('st')||''));
   $$('.approval-stage').forEach((st,i)=>{if(!allApproved)return;st.classList.remove('pending');st.classList.add('approved');const b=st.querySelector('.stage-status');b.classList.remove('pending');b.classList.add('approved');b.textContent='已核准'});
   executionSummary.hidden=!executed;
   editExecutionBtn.hidden=!done;
@@ -83,11 +83,11 @@ function applyMode(){
   roundBadge.textContent='目前送審輪次：1';
   if(v!=='new'){routeBody.classList.add('route-collapsed');routeToggle.textContent='查看'}
 }
-function syncOtherFields(){$$('.other-toggle').forEach(x=>{const t=document.getElementById(x.dataset.target);if(!t)return;const show=x.checked;t.classList.toggle('hidden',!show);t.disabled=!show||mode.value&&['view','approve','execute','done'].includes(mode.value);if(!show)t.value=''})}
+function syncOtherFields(){$$('.other-toggle').forEach(x=>{const t=document.getElementById(x.dataset.target);if(!t)return;const show=x.checked;t.classList.toggle('hidden',!show);t.disabled=!show||mode.value&&['view','viewOwn','voided','approve','execute','done'].includes(mode.value);if(!show)t.value=''})}
 $$('.other-toggle').forEach(x=>{x.addEventListener('change',syncOtherFields);if(x.type==='radio'&&x.name)$$(`input[name="${x.name}"]`).forEach(sib=>sib.addEventListener('change',syncOtherFields))});
-function syncConditionalFields(){$$('.conditional-toggle').forEach(x=>{const t=document.getElementById(x.dataset.target);const show=x.checked;t.classList.toggle('hidden',!show);t.disabled=!show||['view','approve','execute','done'].includes(mode.value);if(!show)t.value=''})}
+function syncConditionalFields(){$$('.conditional-toggle').forEach(x=>{const t=document.getElementById(x.dataset.target);const show=x.checked;t.classList.toggle('hidden',!show);t.disabled=!show||['view','viewOwn','voided','approve','execute','done'].includes(mode.value);if(!show)t.value=''})}
 $$('.conditional-toggle').forEach(x=>x.addEventListener('change',syncConditionalFields));
-function syncExpiry(){const show=$$('input[name=duration]:checked').some(x=>x.value==='limited'),box=$('#expiryField'),field=$('#expiry');box.classList.toggle('hidden',!show);field.disabled=!show||['view','approve','execute','done'].includes(mode.value);field.required=show;if(!show)field.value=''}
+function syncExpiry(){const show=$$('input[name=duration]:checked').some(x=>x.value==='limited'),box=$('#expiryField'),field=$('#expiry');box.classList.toggle('hidden',!show);field.disabled=!show||['view','viewOwn','voided','approve','execute','done'].includes(mode.value);field.required=show;if(!show)field.value=''}
 $$('input[name=duration]').forEach(x=>x.addEventListener('change',syncExpiry));
 mode.onchange=applyMode;mode.value=params.get('mode')||'new';if(![...mode.options].some(x=>x.value===mode.value))mode.value='new';fillPersonInfo();syncOwner();applyMode();
 $('#historyLink').onclick=()=>{historyModal.hidden=false};
@@ -114,6 +114,7 @@ $('#executionConfirm').onclick=()=>{
   if(!dateValue||!note){alert('請填寫執行日期與執行內容。');return}
   const disableValue=$('#disableDateInput').value;
   if(disableValue&&disableValue<dateValue){alert('到期停用日期不可早於執行日期。');return}
+  if(params.get('voided')==='1'){closeExecutionModal();alert('此單已作廢，無法回填執行完成。');return}
   const wasExecuting=mode.value==='execute';
   executionRecord={executor:loginUser,date:dateValue.replace(/-/g,'/'),note,disable:disableValue?disableValue.replace(/-/g,'/'):''};
   closeExecutionModal();
@@ -132,7 +133,7 @@ if(!form.reportValidity())return;
 if(!$$('#envList input[type=checkbox]:checked').length){alert('請至少勾選一項使用環境。');return}
 if(!$$('#scopeList input[type=checkbox]:checked').length){alert('請至少勾選一項連線範圍。');return}
 const noProject=$$('.conditional-toggle:checked').filter(x=>!document.getElementById(x.dataset.target).value.trim()).map(x=>x.closest('label').textContent.trim());if(noProject.length&&!confirm(`${noProject.join('、')}尚未填寫專案代號，確認要送出簽核？`))return;$('#docNo').textContent='CBS-ISC-2026-00007';$('#submitDate').textContent='申請日期：'+new Date().toLocaleDateString('zh-TW');alert('已送出簽核，系統已回寫申請日期與申請單號。')};
-if(params.get('copy')){mode.value='new';sampleLoaded=null;applyMode();$('#docNo').textContent='尚未產生單號';$('#submitDate').textContent='申請日期：送出簽核後由系統回寫'}
+if(params.get('copy')&&params.get('copy')!=='0'){mode.value='new';sampleLoaded=null;applyMode();$('#docNo').textContent='尚未產生單號';$('#submitDate').textContent='申請日期：送出簽核後由系統回寫'}
 
 // ===== 列印（beforeprint 時即時帶入畫面欄位值）=====
 function printText(value){const text=(value??'').toString().trim();return text||'—'}
@@ -183,3 +184,53 @@ function buildConnectionPrintView(){
   $('#connectionPrintDisableDate').textContent=showExecution&&executionRecord.disable?executionRecord.disable:'—';
 }
 window.addEventListener('beforeprint',buildConnectionPrintView);
+// 作廢（比照雲端服務與資源申請、雲端權限申請）：申請人可在「申請中、簽核中、已退回、已核准且 SRE 尚未執行」時作廢；已執行不可作廢。
+(function(){
+  if(!window.ClaimVoid)return;
+  const ME='陳庭瑋 (T037)',viewBox=$('#viewActions'),editBox=$('#editActions'),routeHead=$('#roundBadge');
+  const st=()=>params.get('st')||'簽核中',docNo=()=>params.get('no')||'CBS-ISC-2026-00006';
+  const mk=()=>{const b=document.createElement('button');b.type='button';b.className='btn tool-action void-action';b.hidden=true;b.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>作廢';return b};
+  const btn=mk(),btn2=mk();viewBox.appendChild(btn);editBox.appendChild(btn2);
+  const copyLink=viewBox.querySelector('a.tool-action');
+  const docTitle=document.querySelector('.cloud-basic-title>span');
+  const stagesEl=()=>[...document.querySelectorAll('#routeBody .approval-stage')];
+  let info=null,snap=null;
+  const nowTxt=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return d.getFullYear()+'/'+p(d.getMonth()+1)+'/'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())};
+  // 離開已作廢情境時，還原作廢前的簽核路線（避免與各情境既有的關卡顯示互相覆蓋）
+  const restore=()=>{if(!snap)return;snap.forEach(([el,c,h])=>{el.className=c;el.innerHTML=h});snap=null};
+  function sync(){
+    const v=mode.value,voided=v==='voided',own=v==='viewOwn';
+    $('#voidAlert').hidden=!voided;
+    btn.hidden=!own;btn2.hidden=!(v==='edit'&&params.get('st')!=='草稿');
+    if(copyLink)copyLink.hidden=voided&&params.get('copy')==='0';
+    document.querySelectorAll('.void-badge').forEach(x=>x.remove());
+    if(!voided)return;
+    const i=info||{reason:params.get('reason')||'改由其他方式處理，不需要此連線。',time:params.get('at')||'2026/09/25 11:20',by:ME,from:params.get('from')||'簽核中'};
+    if(docTitle)docTitle.insertAdjacentHTML('beforeend','<span class="void-badge">已作廢</span>');
+    $('#voidReasonText').textContent=i.reason;$('#voidWhoText').textContent=i.by+'　'+i.time;
+    routeHead.textContent='狀態：已作廢';
+    const stages=stagesEl();
+    if(!snap)snap=stages.map(el=>[el,el.className,el.innerHTML]);
+    // 作廢前已核准：全部關卡視為已核准；其餘未完成關卡標示已作廢
+    if(i.from==='已核准')stages.forEach(el=>{if(el.classList.contains('skipped'))return;el.className='approval-stage approved';const s=el.querySelector('.stage-status');s.className='stage-status approved';s.textContent='已核准'});
+    stages.forEach(el=>{if(el.classList.contains('skipped')||el.classList.contains('approved'))return;el.className='approval-stage voided';
+      const s=el.querySelector('.stage-status');s.className='stage-status voided';s.textContent='已作廢';
+      el.querySelector('.stage-person').textContent='申請人已作廢，流程終止'});
+    routePanel.hidden=false;
+  }
+  function openVoid(){
+    const raw=mode.value==='edit'?'已退回':st(),no=docNo(),approved=raw==='尚未執行'||raw==='已核准';
+    const s=approved?'已核准':raw;
+    ClaimVoid.open({no,status:s,statusText:approved?'已核准（尚未執行）':s,label:'系統連線申請',blockers:ClaimVoid.blockersOf(no),
+      warn:'此單已核准，作廢前請先與 SRE 確認尚未開始設定或異動連線。',
+      extraNote:approved?'具執行權限的 SRE 人員在「執行管理」會看到此單標示為「已作廢」，無法再回報執行完成。':'',
+      onConfirm(reason){
+        info={reason,time:nowTxt(),by:ME,from:s};
+        params.set('no',no);mode.value='voided';history.replaceState(null,'','?mode=voided&no='+encodeURIComponent(no));
+        applyMode();sync();ClaimVoid.toast('系統連線申請 '+no+' 已作廢。');
+      }});
+  }
+  btn.addEventListener('click',openVoid);btn2.addEventListener('click',openVoid);
+  mode.onchange=()=>{info=null;restore();applyMode();sync()};
+  sync();
+})();

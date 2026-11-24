@@ -1,0 +1,7 @@
+/* 國外出差申請／國外出差請款單管理列表：本兩張表單專屬的欄位樣式 */
+.eip-list-page td.num,.eip-list-page th.num{text-align:right}
+.eip-list-page td.trip{white-space:nowrap}
+.eip-list-page td.place{max-width:180px;overflow:hidden;text-overflow:ellipsis}
+.eip-list-page td.htr a{color:#0969c7;text-decoration:none}
+.eip-list-page td.htr a:hover{text-decoration:underline}
+.eip-list-page .op-sep{color:#c0c7d0}

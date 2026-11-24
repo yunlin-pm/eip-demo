@@ -98,8 +98,8 @@ function syncRiskNote(){
 $$('input[name=risk1],input[name=risk2]').forEach(x=>x.addEventListener('change',syncRiskNote));syncRiskNote();
 
 const loginUser=document.body.dataset.eipUser||'—';
-let executionRecord={executor:loginUser,date:'2026/09/22',cancelDate:'2026/12/22',note:'已完成 AI 工具帳號開通，並通知申請人。'};
-function renderExecutionSummary(record){$('#executorView').textContent=record.executor;$('#executionDateView').textContent=record.date;$('#cancelDateView').textContent=record.cancelDate||'—';$('#executionNoteView').textContent=record.note;$('#disableDateView').textContent=record.disable||'—'}
+let executionRecord={executor:loginUser,date:'2026/09/22',note:'已完成 AI 工具帳號開通，並通知申請人。'};
+function renderExecutionSummary(record){$('#executorView').textContent=record.executor;$('#executionDateView').textContent=record.date;$('#executionNoteView').textContent=record.note}
 
 const approvalOpinions=[{stage:'課級主管',person:'林于婷 (T045)',status:'approved',statusText:'已核准',opinion:''},{stage:'部級主管',person:'陳大華 (B123)',status:'approved',statusText:'已核准',opinion:'請確認資料使用範圍是否涉及客戶個資。'}];
 function renderOpinionSummary(){
@@ -118,7 +118,7 @@ let sampleNtdLoaded=false;
 function loadSampleNtd(){if(sampleNtdLoaded||mode.value==='new')return;sampleNtdLoaded=true;if($('#estimateNtd').value==='')$('#estimateNtd').value='2350';syncEstimate()}
 function applyMode(){
   loadSampleNtd();
-  const v=mode.value,readonly=['view','approve','execute','done'].includes(v),done=v==='done',executed=['view','done'].includes(v),wasReturned=v==='edit';
+  const v=mode.value,readonly=['view','viewOwn','voided','approve','execute','done'].includes(v),done=v==='done',executed=['view','done'].includes(v),wasReturned=v==='edit';
   $$('.control').forEach(x=>{if(x!==mode&&!x.closest('#executionModal'))x.disabled=readonly});
   $('#editActions').classList.toggle('view-only',readonly);
   copyBtn.hidden=v!=='edit';
@@ -127,7 +127,7 @@ function applyMode(){
   $('#approveActions').classList.toggle('view-only',v!=='approve');
   $('#executeActions').classList.toggle('view-only',v!=='execute');
   $('#doneActions').classList.toggle('view-only',v!=='done');
-  viewActions.classList.toggle('view-only',v!=='view');
+  viewActions.classList.toggle('view-only',!['view','viewOwn','voided'].includes(v));
   executionPanel.classList.toggle('view-only',!executed);
   executionSummary.hidden=!executed;
   editExecutionBtn.hidden=!done;
@@ -144,19 +144,7 @@ function applyMode(){
 mode.onchange=applyMode;mode.value=params.get('mode')||'new';if(![...mode.options].some(x=>x.value===mode.value))mode.value='new';fillPersonInfo();applyMode();syncApplyItemFields();
 $('#historyLink').onclick=()=>{historyModal.hidden=false};
 $$('[data-close-history]').forEach(x=>x.onclick=()=>{historyModal.hidden=true});
-function addCalendarMonths(dateValue,months){
-  if(!dateValue||!months)return'';
-  const [year,month,day]=dateValue.split('-').map(Number),baseMonth=month-1+Number(months),targetYear=year+Math.floor(baseMonth/12),targetMonth=((baseMonth%12)+12)%12,lastDay=new Date(targetYear,targetMonth+1,0).getDate();
-  return`${targetYear}-${String(targetMonth+1).padStart(2,'0')}-${String(Math.min(day,lastDay)).padStart(2,'0')}`;
-}
 function selectedApplyItem(){return $('input[name=applyItem]:checked')?.value||'new'}
-function syncCancelDate(force=true){
-  const stop=selectedApplyItem()==='stop',field=$('#cancelDateField'),input=$('#cancelDateInput');
-  field.hidden=stop;input.required=!stop;
-  if(stop){input.value='';return}
-  if(force)input.value=addCalendarMonths($('#executionDateInput').value,Number($('#duration').value||0));
-}
-$('#executionDateInput').addEventListener('change',()=>syncCancelDate(true));
 function openExecutionModal(prefill){
   const checkedPlan=$('.plan-option:checked');
   $('#executionAiAccount').textContent=currentAiAccount()||'—';
@@ -164,10 +152,7 @@ function openExecutionModal(prefill){
   $('#executionDuration').textContent=`${$('#duration').value||'—'} 個月`;
   $('#executorInput').value=loginUser;
   $('#executionDateInput').value=prefill?prefill.date.replace(/\//g,'-'):'';
-  $('#cancelDateInput').value=prefill?.cancelDate?prefill.cancelDate.replace(/\//g,'-'):'';
   $('#executionNoteInput').value=prefill?prefill.note:'';
-  $('#disableDateInput').value=prefill&&prefill.disable?prefill.disable.replace(/\//g,'-'):'';
-  syncCancelDate(!prefill?.cancelDate);
   executionModal.hidden=false;
   requestAnimationFrame(()=>$('#executionDateInput').focus());
 }
@@ -176,12 +161,11 @@ $('#completeBtn').onclick=e=>{e.preventDefault();openExecutionModal(null)};
 editExecutionBtn.onclick=()=>openExecutionModal(executionRecord);
 $$('[data-close-execution]').forEach(x=>x.onclick=closeExecutionModal);
 $('#executionConfirm').onclick=()=>{
-  const executor=loginUser,dateValue=$('#executionDateInput').value,cancelDateValue=$('#cancelDateInput').value,note=$('#executionNoteInput').value.trim(),needsCancelDate=selectedApplyItem()!=='stop';
-  if(!dateValue||!note||(needsCancelDate&&!cancelDateValue)){alert('請填寫執行日期、預計取消日與執行內容。');return}
-  const disableValue=$('#disableDateInput').value;
-  if(disableValue&&disableValue<dateValue){alert('到期停用日期不可早於執行日期。');return}
+  const executor=loginUser,dateValue=$('#executionDateInput').value,note=$('#executionNoteInput').value.trim();
+  if(!dateValue||!note){alert('請填寫執行日期與執行內容。');return}
+  if(params.get('voided')==='1'){closeExecutionModal();alert('此單已作廢，無法回填執行完成。');return}
   const wasExecuting=mode.value==='execute';
-  executionRecord={executor,date:dateValue.replace(/-/g,'/'),cancelDate:needsCancelDate?cancelDateValue.replace(/-/g,'/'):'—',note,disable:disableValue?disableValue.replace(/-/g,'/'):''};
+  executionRecord={executor,date:dateValue.replace(/-/g,'/'),note};
   closeExecutionModal();
   alert(wasExecuting?'已回填執行完成，執行狀態更新為「已執行」。':'已更新執行紀錄。');
   if(!wasExecuting)renderExecutionSummary(executionRecord);
@@ -189,7 +173,7 @@ $('#executionConfirm').onclick=()=>{
 document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!historyModal.hidden)historyModal.hidden=true;if(!executionModal.hidden)executionModal.hidden=true});
 routeToggle.onclick=()=>{const opening=routeBody.classList.contains('route-collapsed');routeBody.classList.toggle('route-collapsed');routeToggle.textContent=opening?'收合':'查看'};
 $('#submitBtn').onclick=e=>{e.preventDefault();validateAccount();if(!form.reportValidity())return;$('#docNo').textContent='CBS-IAI-2026-00007';$('#submitDate').textContent='申請日期：'+new Date().toLocaleDateString('zh-TW');alert('已送出簽核，系統已回寫申請日期與申請單號。')};
-if(params.get('copy')){mode.value='new';applyMode();$('#docNo').textContent='尚未產生單號';$('#submitDate').textContent='申請日期：送出簽核後由系統回寫'}
+if(params.get('copy')&&params.get('copy')!=='0'){mode.value='new';applyMode();$('#docNo').textContent='尚未產生單號';$('#submitDate').textContent='申請日期：送出簽核後由系統回寫'}
 
 /* 內容頁列印：比照《雲端服務與資源申請》cloud-resource-detail.js 的 buildPrintView() 既有作法，
    於 beforeprint 時把畫面上目前的欄位值帶入畫面外的 #printSheet（定義在 ai-tool-print.css，
@@ -247,14 +231,56 @@ function buildPrintView(){
   }).join('')||'<tr><td colspan="4">尚未送出簽核</td></tr>';
   const executed=['view','done'].includes(mode.value);
   $('#printExecDate').textContent=executed?executionRecord.date:'—';
-  $('#printCancelDate').textContent=executed?(executionRecord.cancelDate||'—'):'—';
   $('#printExecutor').textContent=executed?executionRecord.executor:'—';
   $('#printExecNote').textContent=executed?executionRecord.note:'—';
-  $('#printDisableDate').textContent=executed&&executionRecord.disable?executionRecord.disable:'—';
 }
 window.addEventListener('beforeprint',buildPrintView);
-
-
-
-
-
+// 作廢（比照雲端服務與資源申請、系統連線申請）：申請人可在「申請中、簽核中、已退回、已核准且 MIS 尚未執行」時作廢；已執行不可作廢。
+(function(){
+  if(!window.ClaimVoid)return;
+  const ME='陳庭瑋 (T037)',viewBox=$('#viewActions'),editBox=$('#editActions'),routeHead=$('#roundBadge');
+  const st=()=>params.get('st')||'簽核中',docNo=()=>params.get('no')||'CBS-IAI-2026-00006';
+  const mk=()=>{const b=document.createElement('button');b.type='button';b.className='btn tool-action void-action';b.hidden=true;b.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>作廢';return b};
+  const btn=mk(),btn2=mk();viewBox.appendChild(btn);editBox.appendChild(btn2);
+  const copyLink=viewBox.querySelector('a.tool-action');
+  const docTitle=document.querySelector('.ai-basic-title>span');
+  let info=null,snap=null;
+  const nowTxt=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return d.getFullYear()+'/'+p(d.getMonth()+1)+'/'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())};
+  // 離開已作廢情境時，還原作廢前的簽核路線
+  const restore=()=>{if(!snap)return;snap.forEach(([el,c,h])=>{el.className=c;el.innerHTML=h});snap=null};
+  function sync(){
+    const v=mode.value,voided=v==='voided',own=v==='viewOwn';
+    $('#voidAlert').hidden=!voided;
+    btn.hidden=!own;btn2.hidden=!(v==='edit'&&params.get('st')!=='草稿');
+    if(copyLink)copyLink.hidden=voided&&params.get('copy')==='0';
+    document.querySelectorAll('.void-badge').forEach(x=>x.remove());
+    if(!voided)return;
+    const i=info||{reason:params.get('reason')||'改由其他方式處理，不需要此申請。',time:params.get('at')||'2026/09/25 11:20',by:ME,from:params.get('from')||'簽核中'};
+    if(docTitle)docTitle.insertAdjacentHTML('beforeend','<span class="void-badge">已作廢</span>');
+    $('#voidReasonText').textContent=i.reason;$('#voidWhoText').textContent=i.by+'　'+i.time;
+    routeHead.textContent='狀態：已作廢';
+    const stages=[...document.querySelectorAll('#routeBody .approval-stage')];
+    if(!snap)snap=stages.map(el=>[el,el.className,el.innerHTML]);
+    // 作廢前已核准：必經關卡全部視為已核准（「不需簽核」的條件式關卡維持略過）；其餘未完成關卡標示已作廢
+    if(i.from==='已核准')stages.forEach(el=>{if(el.classList.contains('skipped'))return;el.className='approval-stage approved';const s=el.querySelector('.stage-status');s.className='stage-status approved';s.textContent='已核准'});
+    stages.forEach(el=>{if(el.classList.contains('skipped')||el.classList.contains('approved'))return;el.className='approval-stage voided';
+      const s=el.querySelector('.stage-status');s.className='stage-status voided';s.textContent='已作廢';
+      el.querySelector('.stage-person').textContent='申請人已作廢，流程終止'});
+    routePanel.hidden=false;
+  }
+  function openVoid(){
+    const raw=mode.value==='edit'?'已退回':st(),no=docNo(),approved=raw==='尚未執行'||raw==='已核准';
+    const s=approved?'已核准':raw;
+    ClaimVoid.open({no,status:s,statusText:approved?'已核准（尚未執行）':s,label:'AI 工具使用申請',blockers:ClaimVoid.blockersOf(no),
+      warn:'此單已核准，作廢前請先與 MIS 確認尚未開始開通或異動 AI 工具帳號。',
+      extraNote:approved?'具執行權限的 MIS 人員在「執行管理」會看到此單標示為「已作廢」，無法再回報執行完成。':'',
+      onConfirm(reason){
+        info={reason,time:nowTxt(),by:ME,from:s};
+        params.set('no',no);mode.value='voided';history.replaceState(null,'','?mode=voided&no='+encodeURIComponent(no));
+        applyMode();sync();ClaimVoid.toast('AI 工具使用申請 '+no+' 已作廢。');
+      }});
+  }
+  btn.addEventListener('click',openVoid);btn2.addEventListener('click',openVoid);
+  mode.onchange=()=>{info=null;restore();applyMode();sync()};
+  sync();
+})();

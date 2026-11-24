@@ -20,27 +20,14 @@
 .req-page .req-choices label{display:inline-flex;flex-direction:row;align-items:center;gap:6px;margin:0;font-weight:400;white-space:nowrap}
 .req-choices input[type=radio],.req-choices input[type=checkbox]{margin:0}
 .req-choices .inline-input{width:200px;max-width:100%;height:32px;min-height:32px}
+.req-choices .effort-hours{width:120px}
 .req-page textarea.control{height:auto;min-height:96px;line-height:1.6;resize:vertical}
 .req-page .rich-editor{min-height:180px}
 
-/* PM 指派（產品課課長關卡）強調 */
-.pm-editable #pm{border-color:#f0b429;background:#fffbea}
-.pm-editable #pmLabel{color:#946200}
 
-/* 執行紀錄 */
-.req-exec-panel h2{display:flex;justify-content:space-between;align-items:center}
-.req-exec-body{display:grid;gap:10px;padding:14px 16px}
-.req-exec-body>div{display:grid;grid-template-columns:84px minmax(0,1fr);gap:8px;font-size:14px}
-.req-exec-body span{color:#697586}
-.req-exec-body b{font-weight:600;color:#1f2933;white-space:pre-line;word-break:break-word}
 
 /* 視窗：疊在頂部選單之上 */
 .audit-modal{z-index:300}
-.req-exec-dialog{width:min(520px,100%)}
-.req-exec-dialog .audit-content{display:grid;gap:14px;padding:18px}
-.req-exec-dialog label{display:flex;flex-direction:column;gap:6px}
-.req-exec-dialog .control{width:100%!important;max-width:none!important}
-.req-exec-dialog input[readonly]{background:#f2f4f7;color:#475467}
 .req-modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:4px}
 
 /* 唯讀 */
@@ -57,4 +44,18 @@
   .req-page .v2-route-wide>.body.route{grid-template-columns:1fr}
   .req-date{width:100%}
   .req-modal-actions .btn{flex:1 1 0}
+}
+/* 列印：表格固定版面，長文字自動換行，避免「系統需求」表格超出頁面右側 */
+@media print{
+  body>*:not(main){display:none!important}
+  main>*:not(#printSheet){display:none!important}
+  main{display:block;margin:0;padding:0;border:0;min-height:0}
+  #printSheet{position:static}
+  #printSheet .print-table{table-layout:fixed;width:100%}
+  #printSheet .print-table th,#printSheet .print-table td{overflow-wrap:anywhere;word-break:break-word;white-space:normal}
+  #printSheet #pBackground,#printSheet #pDetail{white-space:pre-wrap}
+  #printSheet .print-table th{width:130px}
+  #printSheet .print-approval th{width:auto}
+  #printSheet .print-approval{break-inside:avoid}
+  #printSheet .print-table tr{break-inside:avoid}
 }

@@ -23,4 +23,6 @@
   .print-required{color:#c62828}
   .print-reason{white-space:pre-wrap!important}
   .print-approval th{width:auto}
+  .print-record td{height:22px}
+  .print-record td.print-note{height:90px}
 }

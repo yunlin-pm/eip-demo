@@ -115,3 +115,14 @@
 .decision-modal .decision-body p.decision-hint{margin:0 0 10px;padding:9px 12px;color:#1d4f7c;background:#eef5fb;border:1px solid #bcd6ee;border-radius:6px;font-size:13px;line-height:1.55;font-weight:400}
 #decisionModal footer,#unableModal footer{display:flex;gap:10px}.unable-field{display:grid;gap:6px}.unable-field textarea{border:1px solid #c9d2dc;border-bottom:1px solid #164d80;border-radius:4px}.char-count{justify-self:end;color:#667085;font-size:12px}
 .decision-modal .buyer-pick{display:grid;gap:5px;margin:0 0 10px}.decision-modal .buyer-pick .label{font-weight:700}.decision-modal .buyer-pick .control{width:100%;max-width:none;box-sizing:border-box}.decision-modal .buyer-pick small{color:#667487;font-size:12px;line-height:1.5}
+/* 詢價過程（申請人於申請內容頁填寫；唯讀情境不顯示刪除欄） */
+.inquiry-row .inquiry-block{width:100%}.demand-value .inquiry-scroll{max-height:none}
+body.readonly .inquiry-table th:last-child,body.readonly .inquiry-table td:last-child{display:none}
+body.readonly .inquiry-table td:nth-child(2){width:26%}body.readonly .inquiry-table td:nth-child(3),body.readonly .inquiry-table td:nth-child(4){width:18%}
+.return-alert{align-items:flex-start}.return-alert[hidden]{display:none!important}.return-alert h3{margin:0 0 4px;font-size:16px}.return-alert .return-info{display:grid;gap:3px;font-size:14px}.return-alert .return-info span{color:#8a4b55}
+.buyer-bar{padding:10px 14px;margin:0 0 12px}.buyer-bar .bb-row{display:flex;flex-wrap:wrap;gap:6px 24px;font-size:14px}.buyer-bar .bb-row span{color:#667085}.buyer-bar .bb-row b{color:#1f2a37;font-weight:700}.buyer-bar .bb-note{margin:6px 0 0;font-size:13px;color:#1d4f7c}
+#reassignModal .rs-ref{display:grid;gap:4px;margin:0 0 10px;font-size:14px}#reassignModal .rs-ref div{display:flex;gap:10px}#reassignModal .rs-ref dt{color:#667085;min-width:130px}#reassignModal .rs-ref dd{margin:0;font-weight:700}
+@media print{.buyer-bar,#reassignLog{display:none!important}}
+body.readonly .log-table th:last-child,body.readonly .log-table td:last-child{display:table-cell}
+#procureUnitManager{display:block;width:fit-content;max-width:100%;box-sizing:border-box;margin-top:6px;padding:4px 10px;border-left:4px solid #164d80;border-radius:4px;background:#e8f1fb;color:#164d80;font-size:14px;font-weight:700}
+#procureUnitManager+.field-note{display:block;margin-top:4px;color:#c2410c;font-size:13px;font-weight:700}
