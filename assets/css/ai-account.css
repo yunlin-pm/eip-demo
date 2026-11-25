@@ -1,0 +1,67 @@
+/* AI工具帳號管理：沿用簽呈單（memo.css）與共用列表（list-management.css）版型，僅補本功能專屬樣式；各表單 CSS 不互相引用 */
+.acct-status{display:inline-block;padding:3px 10px;border-radius:14px;color:#fff;font-size:12px;font-weight:700}
+.acct-status.using{background:#25a557}.acct-status.stopped{background:#7d8792}
+.acct-overdue{margin-left:6px;color:#c62828;font-weight:700;font-size:12px}
+.acct-expire.over{color:#c62828;font-weight:700}
+.title-actions{display:flex;gap:8px}
+.mobile-status.using{background:#25a557}.mobile-status.stopped{background:#7d8792}
+.col-acct-account{word-break:break-all}
+
+/* 內容頁 */
+.acct-page .detail-grid{grid-template-columns:minmax(0,1fr);align-items:start}
+.acct-page .detail-grid>*{min-width:0}
+/* 帳號資料：標題在左、內容在右，每列以細線分隔（版型同雲端服務與資源申請「申請需求資訊」） */
+.acct-grid{display:grid;grid-template-columns:1fr;gap:14px;padding:18px 20px}
+.acct-grid>label,.acct-grid>.field{display:grid;grid-template-columns:140px minmax(0,1fr);column-gap:24px;row-gap:6px;align-items:start;min-width:0;margin:0;padding:0 0 14px;border-bottom:1px solid #e4e8ed}
+.acct-grid>label:last-child,.acct-grid>.field:last-child{border-bottom:0;padding-bottom:0}
+.acct-grid>label>.label,.acct-grid>.field>.label{padding-top:6px;color:#344054;font-size:14px}
+.acct-grid>label>:not(.label),.acct-grid>.field>:not(.label){grid-column:2}
+.acct-grid input[type=date]{width:180px;max-width:100%}
+.acct-choices{display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;min-height:36px}
+.acct-choices label{display:inline-flex;align-items:center;gap:6px;margin:0;font-weight:400;white-space:nowrap}
+.acct-choices .inline-input{width:200px;max-width:100%;height:32px;min-height:32px}
+.acct-page textarea.control{height:auto;min-height:80px;line-height:1.6;resize:vertical}
+.acct-status-view{display:flex;align-items:center;gap:8px;min-height:36px}
+.acct-fetch{display:flex;gap:8px;align-items:center;padding:14px 20px 4px}
+.acct-fetch input{flex:1;max-width:320px}
+.acct-hint{padding:0 20px 14px;margin:0}
+.acct-msg{margin:0 20px 14px;padding:9px 12px;border-radius:6px;font-size:13px;line-height:1.5}
+.acct-msg.err{background:#fdecea;color:#b42318;border:1px solid #f4b6b0}
+.acct-msg.ok{background:#e8f5ec;color:#1d7a44;border:1px solid #b8dfc4}
+.acct-msg.warn{background:#fff6e0;color:#8a5a00;border:1px solid #f0d59a}
+.acct-msg a{color:inherit;font-weight:700}
+.acct-link-table{width:100%;border-collapse:collapse}
+.acct-link-table th,.acct-link-table td{padding:9px 12px;border-bottom:1px solid #e6ebf0;text-align:left;vertical-align:top;font-size:13px}
+.acct-link-table th{background:#f5f7f9;font-weight:700;white-space:nowrap}
+.acct-link-wrap{overflow-x:auto}
+.acct-empty{padding:18px 20px;color:#667487}
+.acct-add{display:flex;gap:8px;align-items:center;padding:12px 20px 4px}
+.acct-add input{flex:1;max-width:320px}
+.readonly .acct-fetch,.readonly .acct-add,.readonly .acct-rec-form,.readonly .acct-rec-edit{display:none!important}
+.readonly .acct-page .control{background:#f3f5f7;pointer-events:none}
+.acct-link-btn{border:0;background:none;color:#1a56a0;cursor:pointer;font-size:13px;text-decoration:underline}
+@media(max-width:1200px){.acct-page .detail-grid{grid-template-columns:1fr}}
+@media(max-width:700px){
+  .acct-grid{padding:14px}
+  .acct-grid>label,.acct-grid>.field{grid-template-columns:1fr}
+  .acct-grid>label>:not(.label),.acct-grid>.field>:not(.label){grid-column:1}
+  .acct-grid input[type=date]{width:100%}
+  .acct-choices label{white-space:normal}
+  .acct-fetch,.acct-add{flex-wrap:wrap;padding-left:14px;padding-right:14px}
+  .acct-fetch input,.acct-add input{max-width:none;width:100%;flex:1 1 100%}
+  .acct-msg{margin-left:14px;margin-right:14px}
+  .acct-hint{padding-left:14px;padding-right:14px}
+}
+.acct-page [hidden]{display:none!important}
+.acct-page input[readonly]{background:#f3f5f8;color:#344054}
+.acct-val{min-height:34px;display:flex;align-items:center;gap:8px;padding-top:2px}
+.acct-dim{color:#667487}
+.acct-inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.acct-inline input{flex:1;min-width:180px;max-width:320px}
+.acct-rec-form{margin:8px 20px 14px;border:1px solid #d7dee7;border-radius:6px;background:#fafbfc}
+.acct-rec-form h3{margin:0;padding:12px 20px 0;font-size:15px;color:#344054}
+.acct-rec-form .acct-msg{margin:0}
+.acct-rec-actions{display:flex;justify-content:flex-end;gap:8px;padding:0 20px 14px}
+.acct-type{display:inline-block;padding:2px 9px;border-radius:12px;font-size:12px;font-weight:700;white-space:nowrap}
+.acct-type.t-use{background:#e5eef9;color:#1a56a0}.acct-type.t-stop{background:#eceff2;color:#58636f}
+@media(max-width:700px){.acct-rec-form{margin-left:14px;margin-right:14px}.acct-rec-form h3,.acct-rec-actions{padding-left:14px;padding-right:14px}}

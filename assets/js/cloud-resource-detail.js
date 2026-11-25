@@ -84,7 +84,17 @@ $('#executionConfirm').onclick=()=>{
 };
 document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(!historyModal.hidden)historyModal.hidden=true;if(!executionModal.hidden)executionModal.hidden=true});
 function syncOtherFields(){$$('.other-toggle').forEach(x=>{const t=document.getElementById(x.dataset.target);if(!t)return;const show=x.checked;t.classList.toggle('hidden',!show);t.disabled=!show;if(!show)t.value=''})}
-$$('.other-toggle').forEach(x=>{x.addEventListener('change',syncOtherFields);if(x.type==='radio'&&x.name)$$(`input[name="${x.name}"]`).forEach(sib=>sib.addEventListener('change',syncOtherFields))});syncOtherFields();function syncConditionalFields(){$$('.conditional-toggle').forEach(x=>{const t=document.getElementById(x.dataset.target);const show=x.checked;t.classList.toggle('hidden',!show);t.disabled=!show;if(!show)t.value=''})}$$('.conditional-toggle').forEach(x=>x.addEventListener('change',syncConditionalFields));syncConditionalFields();function syncExpiry(){const show=$$('input[name=duration]:checked').some(x=>x.value==='limited'),field=$('#expiry');field.classList.toggle('hidden',!show);field.disabled=!show;if(!show)field.value=''}$$('input[name=duration]').forEach(x=>x.addEventListener('change',syncExpiry));syncExpiry();
+$$('.other-toggle').forEach(x=>{x.addEventListener('change',syncOtherFields);if(x.type==='radio'&&x.name)$$(`input[name="${x.name}"]`).forEach(sib=>sib.addEventListener('change',syncOtherFields))});syncOtherFields();function syncConditionalFields(){$$('.conditional-toggle').forEach(x=>{const t=document.getElementById(x.dataset.target);const show=x.checked;t.classList.toggle('hidden',!show);t.disabled=!show;if(!show)t.value=''})}$$('.conditional-toggle').forEach(x=>x.addEventListener('change',syncConditionalFields));syncConditionalFields();/* 申請項目＝停用：使用期限整列隱藏且不必填；資源規格詳情加註「請填原始申請單連結」 */
+function isStopRequest(){return $$('input[name=request]:checked').some(x=>x.value==='stop')}
+function syncStopScenario(){
+  const stop=isStopRequest(),row=$('#durationRow'),radios=$$('input[name=duration]');
+  row.classList.toggle('hidden',stop);
+  radios.forEach(x=>{x.required=!stop;if(stop)x.checked=false});
+  if(stop){$('#expiry').value=''}
+  syncExpiry();
+  $('#specStopHint').classList.toggle('hidden',!stop);
+}
+function syncExpiry(){const show=$$('input[name=duration]:checked').some(x=>x.value==='limited'),field=$('#expiry');field.classList.toggle('hidden',!show);field.disabled=!show;if(!show)field.value=''}$$('input[name=duration]').forEach(x=>x.addEventListener('change',syncExpiry));syncExpiry();$$('input[name=request]').forEach(x=>x.addEventListener('change',syncStopScenario));syncStopScenario();
 function syncRiskDescription(){const show=$$('input.risk-trigger:checked').some(x=>x.value==='yes'),field=$('#riskDescription'),input=field.querySelector('textarea');field.classList.toggle('hidden',!show);input.disabled=!show;if(!show)input.value=''}
 $$('.risk-trigger').forEach(x=>x.addEventListener('change',syncRiskDescription));syncRiskDescription();
 
@@ -131,6 +141,7 @@ function environmentText(){
   return parts.length?parts.join('、'):'—';
 }
 function durationText(){
+  if(isStopRequest())return'—';
   const checked=document.querySelector('input[name="duration"]:checked');
   if(!checked)return'—';
   if(checked.value==='limited'){

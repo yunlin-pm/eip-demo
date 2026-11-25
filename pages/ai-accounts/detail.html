@@ -1,0 +1,33 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI工具帳號｜Bibian EIP Demo</title><link rel="stylesheet" href="../../assets/css/tokens.css"><link rel="stylesheet" href="../../assets/css/base.css"><link rel="stylesheet" href="../../assets/css/shell.css"><link rel="stylesheet" href="../../assets/css/eip-layout.css"><link rel="stylesheet" href="../../assets/css/memo.css"><link rel="stylesheet" href="../../assets/css/ai-account.css"></head><body class="eip-shared-layout" data-eip-root="../../" data-eip-module="operations" data-eip-l2="ai-account" data-eip-user="陳庭瑋 (T037)"><header class="eip-shell-bar demo-preview-bar"><a class="eip-shell-brand demo-preview-brand" href="../../index.html"><span class="demo-back">‹</span><b class="demo-badge">Demo</b><strong>Bibian EIP</strong></a><label class="demo-scenario">畫面情境<select id="mode"><option value="new">新增</option><option value="edit">編輯</option><option value="view">查看</option></select></label></header><div id="eipAppHeader"></div>
+<main class="memo-page acct-page"><div class="crumb">總覽　›　作業管理　›　<a href="list.html">AI工具帳號管理</a>　›　<span id="crumbLast">新增帳號</span></div>
+<div class="toolbar"><a class="btn" href="list.html">← 返回</a>
+<div id="editActions"><button class="btn primary" id="saveBtn" type="button">儲存</button></div>
+<div id="viewActions" hidden><a class="btn primary" id="toEdit" href="#">編輯</a></div></div>
+<div class="detail-grid"><div>
+<section class="panel" id="fetchPanel"><h2>由申請單帶入<small>選填</small></h2><div class="acct-fetch"><input class="control" id="fetchNo" placeholder="請輸入申請單號，例如 CBS-IAI-2026-00012"><button class="btn primary" id="fetchBtn" type="button">帶入</button></div><p class="acct-hint field-note">輸入已核准且已回報執行完成的「首次使用／續用／升級」申請單號，帶入帳號、使用者、部門、使用方式，並開啟「使用紀錄」表單帶入類型、方案與建議迄日；起日請由執行人員填寫。帶入後仍可修改，也可以不帶入、直接手動填寫。</p><div id="fetchMsg"></div></section>
+<section class="panel"><h2><span id="panelTitle">帳號資料</span></h2><div class="acct-grid">
+<label class="full"><span class="label req">AI 工具帳號</span><input class="control" id="account" type="email" maxlength="100" placeholder="請輸入帳號（Email）"></label>
+<label><span class="label req">使用者</span><select class="control" id="user"><option value="">請選擇</option></select><small class="field-note">多人共用帳號請填負責人</small></label>
+<label><span class="label req">部門</span><input class="control" id="dept" readonly placeholder="選擇使用者後自動帶出"><select class="control" id="deptSel" hidden></select><small class="field-note" id="deptNote">選擇使用者後自動帶出，不可編輯</small></label>
+<div class="field"><span class="label req">使用方式</span><div class="acct-choices" id="usageBox"><label><input type="radio" name="usage" value="個人使用"> 個人使用</label><label><input type="radio" name="usage" value="多人共用"> 多人共用</label></div></div>
+<label class="full"><span class="label">備註</span><textarea class="control" id="remark" rows="3" maxlength="200" placeholder="選填，最多 200 字"></textarea></label>
+</div></section>
+<section class="panel"><h2>目前狀況<small>依使用紀錄自動計算，不可編輯</small></h2><div class="acct-grid">
+<div class="field"><span class="label">狀態</span><div class="acct-val" id="curState"></div></div>
+<div class="field"><span class="label">目前使用工具／方案</span><div class="acct-val" id="curPlan"></div></div>
+<div class="field"><span class="label">預計結束日期</span><div class="acct-val" id="curEnd"></div></div>
+<div class="field"><span class="label">最後一次停用日</span><div class="acct-val" id="curStop"></div></div>
+</div></section>
+<section class="panel"><h2>使用紀錄<small id="recCount"></small></h2>
+<div class="acct-add"><button class="btn" id="recAddBtn" type="button">＋ 新增使用紀錄</button></div><div id="recMsg"></div>
+<div class="acct-rec-form" id="recForm" hidden><h3 id="recFormTitle">新增使用紀錄</h3><div class="acct-grid">
+<div class="field"><span class="label">來源申請單號</span><div class="acct-inline"><input class="control" id="rfNo" placeholder="選填，可輸入申請單號帶入"><button class="btn" id="rfFetch" type="button">帶入</button></div><div id="rfMsg"></div></div>
+<label><span class="label req">類型</span><select class="control" id="rfType"><option>首次使用</option><option>續用</option><option>升級</option><option>停用</option></select><small class="field-note" id="rfTypeNote"></small></label>
+<div class="field" id="rfPlanRow"><span class="label req">工具／方案</span><div class="acct-choices"><select class="control" id="rfPlan"><option value="">請選擇</option></select><input class="control inline-input" id="rfPlanNote" maxlength="50" placeholder="請說明方案名稱" hidden></div></div>
+<label><span class="label req" id="rfStartLabel">起日</span><input class="control" id="rfStart" type="date"><small class="field-note" id="rfStartNote">實際開始使用的日期，由執行人員填寫</small></label>
+<label id="rfEndRow"><span class="label">迄日</span><input class="control" id="rfEnd" type="date"><small class="field-note">預計結束日期；非必填，沒有填表示未設定</small></label>
+<label><span class="label">備註</span><input class="control" id="rfNote" maxlength="100" placeholder="選填，最多 100 字"></label>
+</div><div class="acct-rec-actions"><button class="btn" id="rfCancel" type="button">取消</button><button class="btn primary" id="rfSave" type="button">新增紀錄</button></div></div>
+<div class="acct-link-wrap" id="recWrap"></div></section>
+</div></div></main>
+<div id="eipAppFooter"></div><script src="../../assets/js/ai-account-data.js"></script><script src="../../assets/js/ai-account-detail.js"></script><script src="../../assets/js/eip-layout.js"></script></body></html>

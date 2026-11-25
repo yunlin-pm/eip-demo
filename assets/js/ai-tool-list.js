@@ -8,7 +8,12 @@ const rows=[
 {status:'已核准',execution:'尚未執行',signer:'',no:'CBS-IAI-2026-00008',item:'續用',plan:'ChatGPT Business－Standard seat',applicant:'陳庭瑋(T037)',dept:'人事總務課',duration:'12 個月',date:'2026/09/21',approved:'2026/09/24',completed:'—'},
 {status:'已核准',execution:'尚未執行',signer:'',no:'CBS-IAI-2026-00005',item:'升級',plan:'ChatGPT Business－Premium seat',applicant:'林家筠(T038)',dept:'資訊部／SRE',duration:'12 個月',date:'2026/09/08',approved:'2026/09/12',completed:'—'},
 {status:'已核准',execution:'已執行',signer:'',no:'CBS-IAI-2026-00001',item:'續用',plan:'ChatGPT Business－Standard seat',applicant:'王曉明(T021)',dept:'客戶服務部',duration:'12 個月',date:'2026/09/01',approved:'2026/09/03',completed:'2026/09/16'},
-{status:'已核准',execution:'已執行',signer:'',no:'CBS-IAI-2026-00003',item:'首次使用',plan:'ChatGPT Business－Standard seat',applicant:'王曉明(T021)',dept:'客戶服務部',duration:'3 個月',date:'2026/08/05',approved:'2026/08/08',completed:'2026/08/10'}];
+{status:'已核准',execution:'已執行',signer:'',no:'CBS-IAI-2026-00003',item:'首次使用',plan:'ChatGPT Business－Standard seat',applicant:'王曉明(T021)',dept:'客戶服務部',duration:'3 個月',date:'2026/08/05',approved:'2026/08/08',completed:'2026/08/10'},
+{status:'已核准',execution:'已執行',signer:'',no:'CBS-IAI-2026-00010',item:'停用',plan:'ChatGPT Business－Standard seat',applicant:'林家筠(T038)',dept:'資訊部／SRE',duration:'—',date:'2026/11/02',approved:'2026/11/04',completed:'2026/11/05'},
+{status:'已核准',execution:'已執行',signer:'',no:'CBS-IAI-2026-00011',item:'首次使用',plan:'ChatGPT Business－Premium seat',applicant:'陳庭瑋(T037)',dept:'人事總務課',duration:'3 個月',date:'2026/11/10',approved:'2026/11/12',completed:'2026/11/16'},
+{status:'已核准',execution:'已執行',signer:'',no:'CBS-IAI-2026-00012',item:'首次使用',plan:'ChatGPT Business－Standard seat',applicant:'朱驥瑋(B136)',dept:'代購部',duration:'3 個月',date:'2026/11/16',approved:'2026/11/18',completed:'2026/11/20'},
+{status:'已核准',execution:'已執行',signer:'',no:'CBS-IAI-2026-00013',item:'升級',plan:'ChatGPT Business－Premium seat',applicant:'王曉明(T021)',dept:'客戶服務部',duration:'6 個月',date:'2026/11/16',approved:'2026/11/18',completed:'2026/11/20'},
+{status:'已核准',execution:'已執行',signer:'',no:'CBS-IAI-2026-00014',item:'停用',plan:'其他（Claude Team）',applicant:'林家筠(T038)',dept:'資訊部／SRE',duration:'—',date:'2026/11/18',approved:'2026/11/20',completed:'2026/11/21'}];
 rows.forEach(x=>{if(!x.creator)x.creator=x.applicant});
 const itemLabel={new:'首次使用',renew:'續用',upgrade:'升級',stop:'停用'};
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],me='陳庭瑋(T037)';let tab='mine',view=[];

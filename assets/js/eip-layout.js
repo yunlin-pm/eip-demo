@@ -6,6 +6,9 @@
       {id:'info',label:'資訊相關表單',items:[{id:'cloud',label:'雲端服務與資源申請管理',href:'pages/cloud-resources/list.html'},{id:'cloud-permission',label:'雲端權限申請管理',href:'pages/cloud-permissions/list.html'},{id:'system-connection',label:'系統連線申請管理',href:'pages/system-connections/list.html'},{id:'ai-tool',label:'AI 工具使用申請管理',href:'pages/ai-tools/list.html'},{id:'requirement',label:'系統需求單管理',href:'pages/requirements/list.html'}]},
       {id:'delegate',label:'代理人設定',items:[{id:'delegate-settings',label:'人員代理設定',href:'pages/delegates/settings.html'},{id:'my-delegate',label:'我的代理人',href:'pages/delegates/my-delegate.html'}]}
     ]},
+    operations:{label:'作業管理',href:'pages/ai-accounts/list.html',sections:[
+      {id:'ai-account',label:'AI工具帳號管理',href:'pages/ai-accounts/list.html'}
+    ]},
     remittance:{label:'匯款資料維護',href:'pages/remittance/vendor-list.html',sections:[
       {id:'vendor',label:'廠商匯款資料',href:'pages/remittance/vendor-list.html'},
       {id:'payroll',label:'員工薪資帳戶資料',href:'pages/remittance/payroll-list.html'}
